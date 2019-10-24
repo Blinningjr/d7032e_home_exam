@@ -1,5 +1,7 @@
+package server.model.dice;
+
 /**
- * Interface for defining core methods of a Dice
+ * Interface for defining core methods of a Dice.
  */
 interface Dice {
     /**
@@ -9,7 +11,7 @@ interface Dice {
 
 
     /**
-     * Get value of dice as a string.
+     * Returns value of dice as a string.
      * @return value of dice as a string.
      */
     public String value_as_string();
@@ -21,9 +23,9 @@ interface Dice {
      */
     public int get_value();
 
-    
+
     /**
      * Set the value of dice
      */
-    public void set_value(int number);
+    public void set_value(int number) throws Exception;
 }
