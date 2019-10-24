@@ -10,7 +10,7 @@ public class EvolutionCard extends Card {
 
 
     /**
-     * Creates a EvolutionCard with the same attributes as the parametes.
+     * Creates a EvolutionCard.
      * @param name is the name of the card.
      * @param description is the description of the card.
      * @param efffect is the effect the card has on the game.
