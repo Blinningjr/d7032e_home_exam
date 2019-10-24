@@ -24,11 +24,11 @@ public class Deck {
 
 
     /**
-     * Pulls the first card in the deck,
+     * Draws the first card in the deck,
      * and if the deck is empty the discard is put in to the deck and shuffled.
      * @return the first card of in the deck.
      */
-    public Card pull_card() {
+    public Card draw_card() {
         if (deck.size() == 0) {
             deck = discard_pile;
             shuffle();
