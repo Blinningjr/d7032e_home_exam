@@ -6,8 +6,8 @@ import java.util.Random;
  * A normal dice with six sides.
  */
 public class DiceSix implements Dice {
-    private int value;
-    private static final Random ran = new Random();;
+    protected int value;
+    protected static final Random ran = new Random();;
 
     public DiceSix() {
         roll();
