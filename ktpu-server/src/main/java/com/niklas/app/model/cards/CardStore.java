@@ -10,6 +10,7 @@ public class CardStore {
 
     /**
      * Creates a CardStore with deck as the cards it has. 
+     * And shuffles the deck.
      * @param deck is the deck that the 
      */
     public CardStore(Deck deck) {
