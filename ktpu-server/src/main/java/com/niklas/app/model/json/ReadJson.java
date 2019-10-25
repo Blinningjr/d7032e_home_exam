@@ -30,7 +30,12 @@ public class ReadJson {
 	 */
     public ReadJson() {}
 
-
+    
+    /**
+     * Parse cards from json file.
+     * @param filepath is the file path to the json file.
+     * @return a unshuffled deck with all cards from the json file.
+     */
     public Deck read_deck_from_json(String filepath) {
         
         JSONParser jsonParser = new JSONParser();
@@ -57,6 +62,11 @@ public class ReadJson {
     }
 
 
+    /**
+     * Parses a StoreCard from a json object.
+     * @param card is a JSONObject with the StoreCard infromation.
+     * @return one or multiple cards of the same type.
+     */
     public ArrayList<Card> parse_store_card_from_json(JSONObject card) {
         JSONObject store_card_object = (JSONObject) card.get("store_card");
         
