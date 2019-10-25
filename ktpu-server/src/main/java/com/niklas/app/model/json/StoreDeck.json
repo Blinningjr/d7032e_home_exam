@@ -1,0 +1,72 @@
+[
+    {
+        "store_card": {
+            "name": "Acid Attack",
+            "description": "Deal 1 extra damage each turn (even when you don't otherwise attack).",
+            "effect": "",
+            "cost": "6",
+            "type": "Keep",
+            "quantity": "2"
+        }
+    },
+    {
+        "store_card": {
+            "name": "Alien Metabolism",
+            "description": "Buying cards costs you 1 less [Energy].",
+            "effect": "",
+            "cost": "3",
+            "type": "Keep",
+            "quantity": "2"
+        }
+    },
+    {
+        "store_card": {
+            "name": "Alpha Monster",
+            "description": "Gain 1[Star] when you attack.",
+            "effect": "",
+            "cost": "5",
+            "type": "Keep",
+            "quantity": "2"
+        }
+    },
+    {
+        "store_card": {
+            "name": "Apartment Building",
+            "description": "\"+ 3[Star]\"",
+            "effect": "",
+            "cost": "5",
+            "type": "Discard",
+            "quantity": "1"
+        }
+    },
+    {
+        "store_card": {
+            "name": "Armor Plating",
+            "description": "Ignore damage of 1.",
+            "effect": "",
+            "cost": "4",
+            "type": "Keep",
+            "quantity": "3"
+        }
+    },
+    {
+        "store_card": {
+            "name": "Commuter Train",
+            "description": "\"+ 2[Star]\"",
+            "effect": "",
+            "cost": "4",
+            "type": "Discard",
+            "quantity": "2"
+        }
+    },
+    {
+        "store_card": {
+            "name": "Corner Store",
+            "description": "\"+ 1[Star]\"",
+            "effect": "",
+            "cost": "3",
+            "type": "Discard",
+            "quantity": "4"
+        }
+    }
+]

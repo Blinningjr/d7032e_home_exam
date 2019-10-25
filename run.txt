@@ -1,0 +1,1 @@
+javac **/*.java -d ../classes -cp server/model/monsters/json-simple-1.1.jar
