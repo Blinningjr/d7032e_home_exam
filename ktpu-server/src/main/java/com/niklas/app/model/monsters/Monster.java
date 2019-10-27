@@ -6,10 +6,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import com.niklas.app.model.cards.Card;
-import com.niklas.app.model.cards.Deck;
-
-
-
+import com.niklas.app.model.cards.EvolutionCard;
+import com.niklas.app.model.cards.EvolutionDeck;
 
 
 /**
@@ -24,8 +22,8 @@ public class Monster {
     private int energy;
     private int stars;
     private boolean in_tokyo;
-    private ArrayList<Card> cards;
-    private Deck evolution_deck;
+    public ArrayList<Card> cards; //fix later
+    private EvolutionDeck evolution_deck;
 
     // Temporery to make the game work.
     public Socket connection = null;
@@ -45,7 +43,7 @@ public class Monster {
      * @param evolution_deck is the special evelution cards for this monster.
      */
     public Monster(String name, int max_hp, int hp, int energy, int stars, boolean in_tokyo, 
-                    ArrayList<Card> cards, Deck evolution_deck) {
+                    ArrayList<Card> cards, EvolutionDeck evolution_deck) {
         this.name = name;
         this.max_hp = max_hp;
         this.hp = hp;
@@ -57,7 +55,19 @@ public class Monster {
 
         evolution_deck.shuffle();
     }
+    
+    
+    public EvolutionCard draw_evolution_card() {
+    	EvolutionCard card =  evolution_deck.draw_card();
+    	return card;
+    }
 
+    
+    public void discard_evolution_card(EvolutionCard card) {
+    	evolution_deck.discard_card(card);
+    }
+
+    
 
     /**
      * Gets the maximum hit points the monster can have

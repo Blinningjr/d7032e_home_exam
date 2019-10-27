@@ -3,7 +3,6 @@ package com.niklas.app;
 import java.util.ArrayList;
 
 import com.niklas.app.controller.KTPUGame;
-import com.niklas.app.model.cards.Deck;
 import com.niklas.app.model.json.ReadJson;
 import com.niklas.app.model.monsters.Monster;
 
@@ -17,7 +16,7 @@ public class App
     public static void main( String[] args )
     {
 
-        KTPUGame game = new KTPUGame(3, 0, 
+        KTPUGame game = new KTPUGame(2, 
             "./src/main/java/com/niklas/app/model/json/Monster.json", 
             "./src/main/java/com/niklas/app/model/json/StoreDeck.json");
         // ReadJson r = new ReadJson();

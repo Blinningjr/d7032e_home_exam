@@ -11,10 +11,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.niklas.app.model.cards.Card;
-import com.niklas.app.model.cards.Deck;
 import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.EvolutionCard;
+import com.niklas.app.model.cards.EvolutionDeck;
 import com.niklas.app.model.cards.StoreCard;
+import com.niklas.app.model.cards.StoreDeck;
 import com.niklas.app.model.monsters.Monster;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class ReadJson {
      * @param filepath is the file path to the json file.
      * @return a unshuffled deck with all cards from the json file.
      */
-    public Deck read_deck_from_json(String filepath) {
+    public StoreDeck read_store_deck_from_json(String filepath) {
         
         JSONParser jsonParser = new JSONParser();
         try (FileReader reader = new FileReader(filepath))
@@ -44,11 +45,11 @@ public class ReadJson {
             Object obj = jsonParser.parse(reader);
             JSONArray card_list = (JSONArray) obj;
 
-            ArrayList<Card> cards = new ArrayList<Card>();
+            ArrayList<StoreCard> cards = new ArrayList<StoreCard>();
             for (Object Card : card_list) {
                 cards.addAll(parse_store_card_from_json( (JSONObject) Card));
             }
-            return new Deck(cards, new ArrayList<Card>());
+            return new StoreDeck(cards, new ArrayList<StoreCard>());
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -58,7 +59,7 @@ public class ReadJson {
             e.printStackTrace();
         }
         
-        return new Deck(new ArrayList<Card>(), new ArrayList<Card>());
+        return new StoreDeck(new ArrayList<StoreCard>(), new ArrayList<StoreCard>());
     }
 
 
@@ -67,7 +68,7 @@ public class ReadJson {
      * @param card is a JSONObject with the StoreCard infromation.
      * @return one or multiple cards of the same type.
      */
-    public ArrayList<Card> parse_store_card_from_json(JSONObject card) {
+    public ArrayList<StoreCard> parse_store_card_from_json(JSONObject card) {
         JSONObject store_card_object = (JSONObject) card.get("store_card");
         
         String name = (String) store_card_object.get("name");   
@@ -77,11 +78,10 @@ public class ReadJson {
         String type = (String) store_card_object.get("type");
         int quantity = Integer.valueOf( (String) store_card_object.get("quantity")); 
 
-        ArrayList<Card> cards = new ArrayList<Card>();
-        while (quantity > 0) {
+        ArrayList<StoreCard> cards = new ArrayList<StoreCard>();
+        for (int i = 0; i < quantity; i++) {
             Effect effect = new Effect(); 
             cards.add(new StoreCard(name, description, effect, cost, type));
-            quantity -= 1;
         }
 
         return cards;
@@ -134,12 +134,12 @@ public class ReadJson {
         int energy = Integer.valueOf( (String) monster_object.get("energy")); 
         int stars = Integer.valueOf( (String) monster_object.get("stars")); 
 
-        ArrayList<Card> e_cards = new ArrayList<Card>();
+        ArrayList<EvolutionCard> e_cards = new ArrayList<EvolutionCard>();
         JSONArray e_deck = (JSONArray) monster_object.get("evolution_deck");
         for (Object card : e_deck) {
             e_cards.add(parse_evolution_card( (JSONObject) card));
         }
-        Deck evolution_deck = new Deck(e_cards, new ArrayList<Card>());
+        EvolutionDeck evolution_deck = new EvolutionDeck(e_cards, new ArrayList<EvolutionCard>());
         evolution_deck.shuffle();
         return new Monster(name, max_hp, hp, energy, stars, false, new ArrayList<Card>(), evolution_deck);
     }
