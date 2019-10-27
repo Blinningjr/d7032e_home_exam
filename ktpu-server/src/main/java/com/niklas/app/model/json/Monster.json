@@ -11,7 +11,10 @@
                     "evolution_card": {
                         "name": "Red Dawn",
                         "description": "All other Monsters lose 2 HEART.",
-                        "effect": "",
+                        "effect": {
+                            "activation": "now",
+                            "added_damage": "2"
+                        },
                         "monster_name": "Kong",
                         "monster_type": "Mutant",
                         "duration": "Temporary Evolution"
@@ -29,10 +32,14 @@
             "stars": "0",
             "evolution_deck": [
                 {
-                        "evolution_card": {
+                    "evolution_card": {
                         "name": "Radioactive Waste",
                         "description": "Gain 2 ENERGY and 1 HEART.",
-                        "effect": "",
+                        "effect": {
+                            "activation": "now",
+                            "added_energy": "2",
+                            "added_hp": "1"
+                        },
                         "monster_name": "Gigazaur",
                         "monster_type": "Mutant",
                         "duration": "Temporary Evolution"
@@ -53,7 +60,10 @@
                     "evolution_card": {
                         "name": "Alien Scourge",
                         "description": "Gain 2 STAR.",
-                        "effect": "",
+                        "effect": {
+                            "activation": "now",
+                            "added_stars": "2"
+                        },
                         "monster_name": "Alienoid",
                         "monster_type": "Alien",
                         "duration": "Temporary Evolution"

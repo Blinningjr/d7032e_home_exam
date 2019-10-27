@@ -31,17 +31,16 @@ public class ReadJson {
 	 */
     public ReadJson() {}
 
-    
+
     /**
      * Parse cards from json file.
      * @param filepath is the file path to the json file.
      * @return a unshuffled deck with all cards from the json file.
      */
     public StoreDeck read_store_deck_from_json(String filepath) {
-        
         JSONParser jsonParser = new JSONParser();
-        try (FileReader reader = new FileReader(filepath))
-        {
+
+        try (FileReader reader = new FileReader(filepath)) {
             Object obj = jsonParser.parse(reader);
             JSONArray card_list = (JSONArray) obj;
 
@@ -73,14 +72,13 @@ public class ReadJson {
         
         String name = (String) store_card_object.get("name");   
         String description = (String) store_card_object.get("description");  
-        String _effect_string = (String) store_card_object.get("effect");
         int cost = Integer.valueOf( (String) store_card_object.get("cost")); 
         String type = (String) store_card_object.get("type");
         int quantity = Integer.valueOf( (String) store_card_object.get("quantity")); 
 
         ArrayList<StoreCard> cards = new ArrayList<StoreCard>();
         for (int i = 0; i < quantity; i++) {
-            Effect effect = new Effect(); 
+            Effect effect = pare_effect(store_card_object); 
             cards.add(new StoreCard(name, description, effect, cost, type));
         }
 
@@ -124,8 +122,7 @@ public class ReadJson {
      * @param monster is a JSONObject with the Monster information.
      * @return
      */
-    private Monster parse_monster_object(JSONObject monster)
-    {
+    private Monster parse_monster_object(JSONObject monster) {
         JSONObject monster_object = (JSONObject) monster.get("monster");
          
         String name = (String) monster_object.get("name");   
@@ -144,23 +141,73 @@ public class ReadJson {
         return new Monster(name, max_hp, hp, energy, stars, false, new ArrayList<Card>(), evolution_deck);
     }
 
+
     /**
      * Parses evolution card from a JSONObject and creates a EvolutionCard object.
      * @param evolution_card is a JSONObject with the evolution card information
      * @return a EvolutionCard object that has the attributes read from the parameter evolution_card.
      */
-    private EvolutionCard parse_evolution_card(JSONObject evolution_card)
-    {
+    private EvolutionCard parse_evolution_card(JSONObject evolution_card) {
         JSONObject evolution_card_object = (JSONObject) evolution_card.get("evolution_card");
-         
-        String name = (String) evolution_card_object.get("name");   
-        String description = (String) evolution_card_object.get("description");  
-        String _effect_string = (String) evolution_card_object.get("effect");  
-        String monster_name = (String) evolution_card_object.get("monster_name");  
-        String monster_type = (String) evolution_card_object.get("monster_type");  
-        String duration = (String) evolution_card_object.get("duration");  
 
-        Effect effect = new Effect(); 
+        String name = (String) evolution_card_object.get("name");
+        String description = (String) evolution_card_object.get("description");
+        Effect effect = pare_effect(evolution_card_object);
+        String monster_name = (String) evolution_card_object.get("monster_name");
+        String monster_type = (String) evolution_card_object.get("monster_type");
+        String duration = (String) evolution_card_object.get("duration");
+
         return new EvolutionCard(name, description, effect, monster_name, monster_type, duration);
+    }
+
+
+    /**
+     * Parsers effect form a JSONObject and creates a Effect object.
+     * @param effect is a JSONObject with the effect infromation.
+     * @return a Effect object that has the attributes read from the effect param.
+     */
+    private Effect pare_effect(JSONObject effect){
+    	JSONObject effect_object = (JSONObject) effect.get("effect");
+
+        String activation = (String) effect_object.get("activation");
+        Effect e = new Effect(activation);
+
+        try {
+			e.add_damage(Integer.valueOf( (String) effect_object.get("added_damage")));
+		} catch (NumberFormatException error) {
+			
+		}
+        try {
+			e.add_armor(Integer.valueOf( (String) effect_object.get("armor")));
+		} catch (NumberFormatException error) {
+			
+		}
+        try {
+			e.add_cost(Integer.valueOf( (String) effect_object.get("added_cost")));
+		} catch (NumberFormatException error) {
+			
+		}
+        try {
+			e.add_stars(Integer.valueOf( (String) effect_object.get("added_stars")));
+		} catch (NumberFormatException error) {
+			
+		}
+        try {
+			e.add_to_max_hp(Integer.valueOf( (String) effect_object.get("added_max_hp")));
+		} catch (NumberFormatException error) {
+			
+		}
+        try {
+			e.add_hp(Integer.valueOf( (String) effect_object.get("added_hp")));
+		} catch (NumberFormatException error) {
+			
+		}
+        try {
+			e.add_energy(Integer.valueOf( (String) effect_object.get("added_energy")));
+		} catch (NumberFormatException error) {
+			
+		}
+
+        return e;
     }
 }
