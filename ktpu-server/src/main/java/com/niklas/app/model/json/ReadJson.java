@@ -134,7 +134,7 @@ public class ReadJson {
         ArrayList<EvolutionCard> e_cards = new ArrayList<EvolutionCard>();
         JSONArray e_deck = (JSONArray) monster_object.get("evolution_deck");
         for (Object card : e_deck) {
-            e_cards.add(parse_evolution_card( (JSONObject) card));
+            e_cards.addAll(parse_evolution_card( (JSONObject) card));
         }
         EvolutionDeck evolution_deck = new EvolutionDeck(e_cards, new ArrayList<EvolutionCard>());
         evolution_deck.shuffle();
@@ -147,17 +147,22 @@ public class ReadJson {
      * @param evolution_card is a JSONObject with the evolution card information
      * @return a EvolutionCard object that has the attributes read from the parameter evolution_card.
      */
-    private EvolutionCard parse_evolution_card(JSONObject evolution_card) {
+    private ArrayList<EvolutionCard> parse_evolution_card(JSONObject evolution_card) {
         JSONObject evolution_card_object = (JSONObject) evolution_card.get("evolution_card");
 
         String name = (String) evolution_card_object.get("name");
         String description = (String) evolution_card_object.get("description");
-        Effect effect = pare_effect(evolution_card_object);
         String monster_name = (String) evolution_card_object.get("monster_name");
         String monster_type = (String) evolution_card_object.get("monster_type");
         String duration = (String) evolution_card_object.get("duration");
+        int quantity = Integer.valueOf( (String) evolution_card_object.get("quantity"));
 
-        return new EvolutionCard(name, description, effect, monster_name, monster_type, duration);
+        ArrayList<EvolutionCard> cards = new ArrayList<EvolutionCard>();
+        for (int i = 0; i < quantity; i++) {
+            Effect effect = pare_effect(evolution_card_object);
+            cards.add(new EvolutionCard(name, description, effect, monster_name, monster_type, duration));
+        }
+        return cards;
     }
 
 

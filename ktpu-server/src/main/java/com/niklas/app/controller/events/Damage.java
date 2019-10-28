@@ -1,20 +1,24 @@
 package com.niklas.app.controller.events;
 
+
 import com.niklas.app.online.Client;
 import com.niklas.app.online.Comunication;
 
-public class AwardEnergy implements Event {
+
+public class Damage implements Event {
     private Comunication comunication;
     private Client client;
-    private int numEnergy;
-    
-    public AwardEnergy(Comunication comunication, Client client, int numEnergy) {
+    private int damage;
+
+    public Damage(Comunication comunication, Client client, int damage) {
         this.comunication = comunication;
         this.client = client;
-        this.numEnergy = numEnergy;
+        this.damage = damage;
     }
 
     public void execute() {
-        client.get_monster().set_entergy(client.get_monster().get_energy() + numEnergy);
+        if (damage > 0) {
+    		client.get_monster().set_hp(client.get_monster().get_hp() - damage);
+    	}
     }
 }

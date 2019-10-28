@@ -5,14 +5,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.niklas.app.model.cards.CardStore;
+import com.niklas.app.model.cards.Duration;
 import com.niklas.app.model.cards.Effect;
+import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.controller.actions.Actions;
+import com.niklas.app.controller.events.Attack;
+import com.niklas.app.controller.events.AwardEnergy;
 import com.niklas.app.controller.events.AwardStarIfInTokyo;
 import com.niklas.app.controller.events.CheckDice;
 import com.niklas.app.controller.events.CheckForWinByElimination;
 import com.niklas.app.controller.events.CheckForWinByStars;
+import com.niklas.app.controller.events.CheckNumOfOnes;
+import com.niklas.app.controller.events.CheckNumOfThrees;
+import com.niklas.app.controller.events.CheckNumOfTwos;
+import com.niklas.app.controller.events.Heal;
+import com.niklas.app.controller.events.PowerUp;
 import com.niklas.app.controller.events.RollDice;
 import com.niklas.app.controller.events.Shopping;
 import com.niklas.app.model.cards.Activation;
@@ -105,17 +114,7 @@ public class KTPUGame {
     private void awardStarIfInTokyo(Client current_client) {
 		Monster currentMonster = current_client.get_monster();
 		if (currentMonster.get_in_tokyo()) {
-			AwardStarIfInTokyo asiit = new AwardStarIfInTokyo(current_client.get_monster());
-			for (int i = 0; i < currentMonster.store_cards.size(); i++) {
-				StoreCard storeCard = currentMonster.store_cards.get(i);
-				if (storeCard.get_effect().get_activation() == Activation.inTokyo) {
-					activeteGeneralAction(currentMonster, storeCard.get_effect());
-					if (storeCard.get_type() == StoreCardType.discard) {
-						currentMonster.store_cards.remove(i);
-						card_store.discard_card(storeCard);
-					}
-				}
-			}
+			AwardStarIfInTokyo asiit = new AwardStarIfInTokyo(comunication, current_client);
 			asiit.execute();
 		}
 		comunication.send_all_stats(current_client, players);
@@ -127,7 +126,7 @@ public class KTPUGame {
         for (int i = 0; i < currentMonster.store_cards.size(); i++) {
 			StoreCard storeCard = currentMonster.store_cards.get(i);
 			if (storeCard.get_effect().get_activation() == Activation.rollDice) {
-				activeteGeneralAction(currentMonster, storeCard.get_effect());
+				activeteGeneralAction(current_client, storeCard.get_effect());
 				if (storeCard.get_type() == StoreCardType.discard) {
 					currentMonster.store_cards.remove(i);
 					card_store.discard_card(storeCard);
@@ -144,7 +143,7 @@ public class KTPUGame {
 	        for (int i = 0; i < currentMonster.store_cards.size(); i++) {
 				StoreCard storeCard = currentMonster.store_cards.get(i);
 				if (storeCard.get_effect().get_activation() == Activation.shopping) {
-					activeteGeneralAction(currentMonster, storeCard.get_effect());
+					activeteGeneralAction(current_client, storeCard.get_effect());
 					if (storeCard.get_type() == StoreCardType.discard) {
 						currentMonster.store_cards.remove(i);
 						card_store.discard_card(storeCard);
@@ -160,10 +159,20 @@ public class KTPUGame {
 		for (int i = 0; i < currentMonster.store_cards.size(); i++) {
 			StoreCard storeCard = currentMonster.store_cards.get(i);
 			if (storeCard.get_effect().get_activation() == Activation.now) {
-				activeteGeneralAction(currentMonster, storeCard.get_effect());
+				activeteGeneralAction(current_client, storeCard.get_effect());
 				if (storeCard.get_type() == StoreCardType.discard) {
 					currentMonster.store_cards.remove(i);
 					card_store.discard_card(storeCard);
+				}
+			}
+		}
+		for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
+			EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
+			if (evolutionCard.get_effect().get_activation() == Activation.now) {
+				activeteGeneralAction(current_client, evolutionCard.get_effect());
+				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
+					currentMonster.evolutionCards.remove(i);
+					currentMonster.discard_evolution_card(evolutionCard);
 				}
 			}
 		}
@@ -192,10 +201,13 @@ public class KTPUGame {
         return cfwbe.getGameOver();
 	}
 	
-    private void activeteGeneralAction(Monster monster, Effect effect) {
+    private void activeteGeneralAction(Client client, Effect effect) {
 		switch (effect.get_action()) {
-			case giveStarsAndEnergy:
-				actions.giveStarsAndEnergy(monster, effect.get_added_stars(), effect.get_added_energy());
+			case giveStarsEnergyAndHp:
+				actions.giveStarsEnergyAndHp(comunication, client, effect);
+				break;
+			case damageEveryoneElse:
+				actions.damageEveryoneElse(comunication, players, effect);
 				break;
 			default:
 				throw new Error("action=" + effect.get_action() + " is not implemented");
@@ -207,63 +219,27 @@ public class KTPUGame {
 		checkDice.execute();
 		
 //    	6a. Hearts = health (max 10 unless a cord increases it)
-    	int hp = current_client.get_monster().get_hp() + checkDice.getNumHearts();
-    	if (hp > current_client.get_monster().get_max_hp()) {
-    		current_client.get_monster().set_hp(current_client.get_monster().get_max_hp());	
-    	} else {
-    		current_client.get_monster().set_hp(hp);	
-    	}
+		Heal heal = new Heal(comunication, current_client, checkDice.getNumHearts());
+		heal.execute();
+		
 //    	6b. 3 hearts = power-up
-    	if (checkDice.getNumHearts() >= 3) {
-//    		EvolutionCard evolutionCard = current_client.get_monster().draw_evolution_card();
-//			current_client.get_monster().cards.add(evolutionCard);
-    	}
+		PowerUp powerUp = new PowerUp(comunication, current_client, checkDice.getNumHearts());
+		powerUp.execute();
     	
 //    	6c. 3 of a number = victory points
-    	if (checkDice.getNumOnes() >= 3) {
-    		current_client.get_monster().set_stars(current_client.get_monster().get_stars() + 1 + checkDice.getNumOnes() - 3);
-    	}
-    	if (checkDice.getNumTwos() >= 3) {
-    		current_client.get_monster().set_stars(current_client.get_monster().get_stars() + 2 + checkDice.getNumTwos() - 3);
-    	}
-    	if (checkDice.getNumThrees() >= 3) {
-    		current_client.get_monster().set_stars(current_client.get_monster().get_stars() + 3 + checkDice.getNumThrees() - 3);
-    	}
+		CheckNumOfOnes cnoo = new CheckNumOfOnes(comunication, current_client, checkDice.getNumOnes());
+		cnoo.execute();
+    	CheckNumOfTwos cnoTwos = new CheckNumOfTwos(comunication, current_client, checkDice.getNumTwos());
+		cnoTwos.execute();
+    	CheckNumOfThrees cnoThrees= new CheckNumOfThrees(comunication, current_client, checkDice.getNumThrees());
+		cnoThrees.execute();
     	
 //    	6d. claws = attack (if in Tokyo attack everyone, else attack monster in Tokyo)
-    	if (checkDice.getNumClaws() > 0) {
-    		boolean enter_tokyo = true;
-    		if (current_client.get_monster().get_in_tokyo()) {
-    			for (Client client : players) {
-    				attack(client.get_monster(), checkDice.getNumClaws());
-				}
-    		} else {
-    			for (Client client : players) {
-    				if (client.get_monster().get_in_tokyo()) {
-						attack(client.get_monster(), checkDice.getNumClaws());
-						
-						// 6e. If you were outside, then the monster inside tokyo may decide to leave Tokyo
-                        String answer = comunication.send_leave_tokyo(client);
-                        if(answer.equalsIgnoreCase("YES")) {
-                        	client.get_monster().set_in_tokyo(false);
-                        	enter_tokyo = true;
-                        } else {
-                        	enter_tokyo = false;
-                        }
-					}
-				}
-    			if (enter_tokyo) {
-    				current_client.get_monster().set_in_tokyo(true);
-    			}
-    		}
-    	}
+		Attack attack = new Attack(comunication, current_client, players, checkDice.getNumClaws());
+		attack.execute();
     	
 //    	6f. energy = energy tokens
-    	current_client.get_monster().set_entergy(current_client.get_monster().get_energy() + checkDice.getNumEnergy());
-    }
-    
-    
-    private void attack(Monster monster, int damage) {
-    	monster.set_hp(monster.get_hp() - damage);
+		AwardEnergy awardEnergy = new AwardEnergy(comunication, current_client, checkDice.getNumEnergy());
+		awardEnergy.execute();
     }
 }

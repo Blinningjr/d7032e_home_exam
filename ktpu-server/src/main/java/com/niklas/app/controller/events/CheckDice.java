@@ -9,12 +9,12 @@ import com.niklas.app.online.Comunication;
 
 
 public class CheckDice implements Event {
-    private int numOnes = 0;
-    private int numTwos = 0;
-    private int numThrees = 0;
-    private int numHearts = 0;
-    private int numClaws = 0;
-    private int numEnergy = 0;
+    private int numOnes;
+    private int numTwos;
+    private int numThrees;
+    private int numHearts;
+    private int numClaws;
+    private int numEnergy;
 
     private ArrayList<KTPUDice> dice;
     private Comunication comunication;
@@ -24,6 +24,7 @@ public class CheckDice implements Event {
         this.dice = dice;
         this.comunication = comunication;
         this.client = client;
+        resetNum();
     }
 
     public void execute() {
@@ -50,7 +51,17 @@ public class CheckDice implements Event {
 			default:
 				throw new Error("Dice value:" + ktpuDice.get_value() + " is not implemented for KTPUDice");
 			}
-		}
+        }
+        comunication.sendRolledDice(dice, client);
+    }
+
+    private void resetNum() {
+        numOnes = 0;
+        numTwos = 0;
+        numThrees = 0;
+        numHearts = 0;
+        numClaws = 0;
+        numEnergy = 0;
     }
 
     public int getNumOnes() {

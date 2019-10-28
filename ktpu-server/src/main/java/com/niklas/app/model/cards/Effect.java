@@ -53,11 +53,20 @@ public class Effect {
       }
 
       switch (action) {
-        case "giveStarsAndEnergy":
-          this.action = Action.giveStarsAndEnergy;
+        case "giveStarsEnergyAndHp":
+          this.action = Action.giveStarsEnergyAndHp;
           break;
-        case "stat":
-          this.action = Action.stat;
+        case "damageEveryoneElse":
+            this.action = Action.damageEveryoneElse;
+            break;
+        case "addArmor":
+          this.action = Action.addArmor;
+          break;
+        case "addCost":
+          this.action = Action.addCost;
+          break;
+        case "addDamage":
+          this.action = Action.addDamage;
           break;
         default:
         throw new Error("action= "+ action + " is not implemented");

@@ -21,6 +21,7 @@ public class Monster {
     private boolean in_tokyo;
     private boolean isDead;
     public ArrayList<StoreCard> store_cards; //fix later
+    public ArrayList<EvolutionCard> evolutionCards; //fix later
     private EvolutionDeck evolution_deck;
 
 
@@ -47,17 +48,18 @@ public class Monster {
         this.evolution_deck = evolution_deck;
         isDead = false;
 
+        evolutionCards = new ArrayList<EvolutionCard>();
+
         evolution_deck.shuffle();
     }
 
 
     public String cards_to_string() {
-        String cards_string = "{:";
+        String cards_string = "";
         for (StoreCard card : store_cards) {
-            cards_string += card.to_string();
-            cards_string += ":";
+            cards_string += "\t" + card.to_string() + ":";
         }
-        return cards_string + "}";
+        return cards_string;
     }
     
     

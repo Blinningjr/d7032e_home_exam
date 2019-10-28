@@ -6,7 +6,7 @@ package com.niklas.app.model.cards;
 public class EvolutionCard extends Card {
     private final String monster_name;
     private final String monster_type;
-    private final String duration;
+    private final Duration duration;
 
 
     /**
@@ -24,7 +24,16 @@ public class EvolutionCard extends Card {
         
         this.monster_name = monster_name;
         this.monster_type = monster_type;
-        this.duration = duration;
+        switch (duration) {
+            case "permanentEvolution":
+                this.duration = Duration.permanentEvolution;
+                break;
+            case "temporaryEvolution":
+                this.duration = Duration.temporaryEvolution;
+                break;
+            default:
+                throw new Error("StoreCardType= "+ duration + " is not implemented");
+            }
     }
 
 
@@ -55,7 +64,7 @@ public class EvolutionCard extends Card {
      * Gets the duration of the EvolutionCard.
      * @return the duration of the EvolutionCard as a String.
      */
-    public String get_duration() {
+    public Duration getDuration() {
         return duration;
     }
 }

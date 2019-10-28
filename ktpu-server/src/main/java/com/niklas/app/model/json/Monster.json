@@ -13,12 +13,13 @@
                         "description": "All other Monsters lose 2 HEART.",
                         "effect": {
                             "activation": "now",
-                            "action": "stat",
+                            "action": "damageEveryoneElse",
                             "added_damage": "2"
                         },
                         "monster_name": "Kong",
                         "monster_type": "Mutant",
-                        "duration": "Temporary Evolution"
+                        "duration": "temporaryEvolution",
+                        "quantity": "1"
                     }
                 }
             ]
@@ -38,13 +39,14 @@
                         "description": "Gain 2 ENERGY and 1 HEART.",
                         "effect": {
                             "activation": "now",
-                            "action": "stat",
+                            "action": "giveStarsEnergyAndHp",
                             "added_energy": "2",
                             "added_hp": "1"
                         },
                         "monster_name": "Gigazaur",
                         "monster_type": "Mutant",
-                        "duration": "Temporary Evolution"
+                        "duration": "temporaryEvolution",
+                        "quantity": "2"
                     }
                 }
             ]
@@ -64,12 +66,13 @@
                         "description": "Gain 2 STAR.",
                         "effect": {
                             "activation": "now",
-                            "action": "giveStarsAndEnergy",
+                            "action": "giveStarsEnergyAndHp",
                             "added_stars": "2"
                         },
                         "monster_name": "Alienoid",
                         "monster_type": "Alien",
-                        "duration": "Temporary Evolution"
+                        "duration": "temporaryEvolution",
+                        "quantity": "2"
                     }
                 }
             ]
