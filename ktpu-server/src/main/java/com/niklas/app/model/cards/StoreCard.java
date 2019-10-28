@@ -5,7 +5,7 @@ package com.niklas.app.model.cards;
  */
 public class StoreCard extends Card {
     private final int cost;
-    private final String type;
+    private final StoreCardType type;
 
 
     /**
@@ -20,7 +20,17 @@ public class StoreCard extends Card {
         super(name, description, effect);
 
         this.cost = cost;
-        this.type = type;
+
+        switch (type) {
+		case "keep":
+			this.type = StoreCardType.keep;
+			break;
+        case "discard":
+			this.type = StoreCardType.discard;
+			break;
+		default:
+            throw new Error("StoreCardType= "+ type + " is not implemented");
+		}
     }
 
 
@@ -42,7 +52,7 @@ public class StoreCard extends Card {
      * Gets the type of StoreCard.
      * @return the type of StoreCard.
      */
-    public String get_type() {
+    public StoreCardType get_type() {
         return type;
     }
 }

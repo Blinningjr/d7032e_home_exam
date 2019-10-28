@@ -9,7 +9,7 @@
                 "added_damage": "1"
             },
             "cost": "6",
-            "type": "Keep",
+            "type": "keep",
             "quantity": "0"
         }
     },
@@ -23,7 +23,7 @@
                 "added_cost": "-1"
             },
             "cost": "3",
-            "type": "Keep",
+            "type": "keep",
             "quantity": "0"
         }
     },
@@ -37,7 +37,7 @@
                 "added_stars": "1"
             },
             "cost": "5",
-            "type": "Keep",
+            "type": "keep",
             "quantity": "0"
         }
     },
@@ -51,7 +51,7 @@
                 "added_stars": "3"
             },
             "cost": "5",
-            "type": "Discard",
+            "type": "discard",
             "quantity": "0"
         }
     },
@@ -65,7 +65,7 @@
                 "armor": "1"
             },
             "cost": "4",
-            "type": "Keep",
+            "type": "keep",
             "quantity": "0"
         }
     },
@@ -79,7 +79,7 @@
                 "added_stars": "2"
             },
             "cost": "4",
-            "type": "Discard",
+            "type": "discard",
             "quantity": "0"
         }
     },
@@ -93,7 +93,7 @@
                 "added_stars": "1"
             },
             "cost": "1",
-            "type": "Discard",
+            "type": "discard",
             "quantity": "10"
         }
     }

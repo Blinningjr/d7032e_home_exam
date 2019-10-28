@@ -7,11 +7,13 @@ import java.util.Collections;
 import com.niklas.app.model.cards.CardStore;
 import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.StoreCard;
+import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.controller.actions.Actions;
 import com.niklas.app.controller.events.AwardStarIfInTokyo;
 import com.niklas.app.controller.events.CheckForWinByElimination;
 import com.niklas.app.controller.events.CheckForWinByStars;
 import com.niklas.app.controller.events.RollDice;
+import com.niklas.app.controller.events.Shopping;
 import com.niklas.app.model.cards.Activation;
 import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.json.ReadJson;
@@ -88,8 +90,7 @@ public class KTPUGame {
     		check_dice(dice, current_player);
     		
 //    		7. Decide to buy things for energy
-			//TODO: Fix
-    		shoping(current_player);
+    		shopping(current_player);
 
 //    		8. Check victory conditions
 			is_game_on = checkIfGameIsNotOver(current_player);
@@ -108,7 +109,7 @@ public class KTPUGame {
 				StoreCard storeCard = currentMonster.store_cards.get(i);
 				if (storeCard.get_effect().get_activation() == Activation.inTokyo) {
 					activeteGeneralAction(currentMonster, storeCard.get_effect());
-					if (storeCard.get_type() == "Discard") {
+					if (storeCard.get_type() == StoreCardType.discard) {
 						currentMonster.store_cards.remove(i);
 						card_store.discard_card(storeCard);
 					}
@@ -126,7 +127,7 @@ public class KTPUGame {
 			StoreCard storeCard = currentMonster.store_cards.get(i);
 			if (storeCard.get_effect().get_activation() == Activation.rollDice) {
 				activeteGeneralAction(currentMonster, storeCard.get_effect());
-				if (storeCard.get_type() == "Discard") {
+				if (storeCard.get_type() == StoreCardType.discard) {
 					currentMonster.store_cards.remove(i);
 					card_store.discard_card(storeCard);
 				}
@@ -134,6 +135,37 @@ public class KTPUGame {
 		}
 		rollDice.execute();
         return rollDice.getDice();
+	}
+	
+	 private void shopping(Client current_client) {
+			Shopping shopping = new Shopping(card_store, comunication, current_client);
+			Monster currentMonster = current_client.get_monster();
+	        for (int i = 0; i < currentMonster.store_cards.size(); i++) {
+				StoreCard storeCard = currentMonster.store_cards.get(i);
+				if (storeCard.get_effect().get_activation() == Activation.shopping) {
+					activeteGeneralAction(currentMonster, storeCard.get_effect());
+					if (storeCard.get_type() == StoreCardType.discard) {
+						currentMonster.store_cards.remove(i);
+						card_store.discard_card(storeCard);
+					}
+				}
+			}
+	        shopping.execute();
+	        checkCards(current_client);
+    }
+	 
+	private void checkCards(Client current_client) {
+		Monster currentMonster = current_client.get_monster();
+		for (int i = 0; i < currentMonster.store_cards.size(); i++) {
+			StoreCard storeCard = currentMonster.store_cards.get(i);
+			if (storeCard.get_effect().get_activation() == Activation.now) {
+				activeteGeneralAction(currentMonster, storeCard.get_effect());
+				if (storeCard.get_type() == StoreCardType.discard) {
+					currentMonster.store_cards.remove(i);
+					card_store.discard_card(storeCard);
+				}
+			}
+		}
 	}
 
 	private boolean checkIfGameIsNotOver(Client current_client) {
@@ -168,25 +200,6 @@ public class KTPUGame {
 				throw new Error("action=" + effect.get_action() + " is not implemented");
 		}
 	}
-    
-    private void shoping(Client current_client) {
-    	ArrayList<StoreCard> store_cards = new ArrayList<StoreCard>();
-    	for (StoreCard storeCard : card_store.get_inventory()) {
-    		store_cards.add(storeCard);
-        }
-
-        String answer = comunication.send_shoping(current_client, card_store);
-        int buy = Integer.parseInt(answer);
-        if(buy>0 && (current_client.get_monster().get_energy() >= store_cards.get(buy -1).get_cost())) { 
-        	try {
-        		current_client.get_monster().set_entergy(current_client.get_monster().get_energy() -  store_cards.get(buy - 1).get_cost());
-				current_client.get_monster().store_cards.add(card_store.buy(buy-1));
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-    }
     
     private void check_dice(ArrayList<KTPUDice> dice, Client current_client) {
     	int num_ones = 0;

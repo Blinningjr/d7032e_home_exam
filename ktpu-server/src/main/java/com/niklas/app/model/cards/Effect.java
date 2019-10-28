@@ -29,6 +29,10 @@ public class Effect {
         case "checkForWinByElimination":  
           this.activation = Activation.checkForWinByElimination;
           break;
+        case "shopping":  
+          this.activation = Activation.shopping;
+          break;
+        
         case "attack":
           this.activation = Activation.attack;
           break;

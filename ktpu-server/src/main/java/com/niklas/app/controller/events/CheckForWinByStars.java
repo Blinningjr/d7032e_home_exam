@@ -8,7 +8,7 @@ import com.niklas.app.online.Comunication;
 
 
 public class CheckForWinByStars implements Event {
-    private static final int NUM_STARS_NEEDED_TO_WIN = 1;
+    private static final int NUM_STARS_NEEDED_TO_WIN = 20;
     private ArrayList<Client> clients;
     private Comunication comunication;
     private boolean gameOver;

@@ -93,7 +93,7 @@ public class Comunication {
     			+ " health left. Do you wish to leave Tokyo? [YES/NO]\n");
     }
     
-    public String send_shoping(Client client, CardStore card_store) {
+    public String send_shopping(Client client, CardStore card_store) {
     	 String msg = "PURCHASE:Do you want to buy any of the cards from the store? (you have " 
     	            + client.get_monster().get_energy() + " energy) [#/-1]:" + card_store.inverntory_to_String() + "\n";
     	 return sendMessage(client, msg);
