@@ -14,7 +14,7 @@ public class Effect {
 	private int added_hp = 0;
   private int added_energy = 0;
   // private int extra_dice = 0;
-
+  
     public Effect(String activation, String action) {
       switch (activation) {
         case "inTokyo":
@@ -22,6 +22,12 @@ public class Effect {
           break;
         case "rollDice":
           this.activation = Activation.rollDice;
+          break;
+        case "checkForWinByStars":
+          this.activation = Activation.checkForWinByStars;
+          break;
+        case "checkForWinByElimination":  
+          this.activation = Activation.checkForWinByElimination;
           break;
         case "attack":
           this.activation = Activation.attack;

@@ -1,11 +1,7 @@
 package com.niklas.app.model.monsters;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 
-import com.niklas.app.model.cards.Card;
 import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.EvolutionDeck;
 import com.niklas.app.model.cards.StoreCard;
@@ -23,6 +19,7 @@ public class Monster {
     private int energy;
     private int stars;
     private boolean in_tokyo;
+    private boolean isDead;
     public ArrayList<StoreCard> store_cards; //fix later
     private EvolutionDeck evolution_deck;
 
@@ -48,6 +45,7 @@ public class Monster {
         this.in_tokyo = in_tokyo;
         this.store_cards = store_cards;
         this.evolution_deck = evolution_deck;
+        isDead = false;
 
         evolution_deck.shuffle();
     }
@@ -164,5 +162,13 @@ public class Monster {
      */
     public void set_in_tokyo(boolean in_tokyo) {
         this.in_tokyo = in_tokyo;
+    }
+
+    public boolean getIsDead() {
+        return isDead;
+    }
+
+    public void setIsDead(boolean isDead) {
+        this.isDead = isDead;
     }
 }

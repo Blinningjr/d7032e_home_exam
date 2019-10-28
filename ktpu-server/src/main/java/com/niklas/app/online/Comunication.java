@@ -98,4 +98,12 @@ public class Comunication {
     	            + client.get_monster().get_energy() + " energy) [#/-1]:" + card_store.inverntory_to_String() + "\n";
     	 return sendMessage(client, msg);
     }
+
+    public void sendWinner(Client current_client, ArrayList<Client> clients) {
+        String msg = "Victory: " + current_client.get_monster().get_name() + " has won.\n";
+        String _w = sendMessage(current_client, msg);
+        for (int i = 0; i < clients.size(); i++) {
+            String _p  = sendMessage(clients.get(i), msg);
+        }
+    }
 }

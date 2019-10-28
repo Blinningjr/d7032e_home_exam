@@ -9,6 +9,8 @@ import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.controller.actions.Actions;
 import com.niklas.app.controller.events.AwardStarIfInTokyo;
+import com.niklas.app.controller.events.CheckForWinByElimination;
+import com.niklas.app.controller.events.CheckForWinByStars;
 import com.niklas.app.controller.events.RollDice;
 import com.niklas.app.model.cards.Activation;
 import com.niklas.app.model.dice.KTPUDice;
@@ -19,7 +21,6 @@ import com.niklas.app.online.Comunication;
 
 
 public class KTPUGame {
-    private static final int NUM_STARS_NEEDED_TO_WIN = 20;
     private ArrayList<Client> players;
     private CardStore card_store;
 	private Comunication comunication;
@@ -53,7 +54,6 @@ public class KTPUGame {
     }
     
     private void game_loop() {
-    	boolean is_game_on = true;
     	/*
 	        Game loop:
 	        pre: Award a monster in Tokyo 1 star
@@ -72,31 +72,32 @@ public class KTPUGame {
 	        7. Decide to buy things for energy
 	          7a. Play "DISCARD" cards immediately
 	        8. Check victory conditions
-    	*/  
+		*/
+		boolean is_game_on = true;
     	while (is_game_on) {
-    		Client current_client = players.remove(0);
+    		Client current_player = players.remove(0);
     		
 //    		pre: Award a monster in Tokyo 1 star
-			awardStarIfInTokyo(current_client);
+			awardStarIfInTokyo(current_player);
     		
 //    		1-5.
-    		ArrayList<KTPUDice> dice = rollDice(current_client);
+    		ArrayList<KTPUDice> dice = rollDice(current_player);
     		
-//    		6. Sum up totals
-    		check_dice(dice, current_client);
+//    		6. Sum up totals 
+			//TODO: Fix
+    		check_dice(dice, current_player);
     		
 //    		7. Decide to buy things for energy
-    		shoping(current_client);
-    		
+			//TODO: Fix
+    		shoping(current_player);
+
 //    		8. Check victory conditions
-    		is_game_on =  check_if_a_monster_has_won(current_client.get_monster());
-    		if (!is_game_on) {
-    			System.out.println("Game Over");
-    			return;
-    		}
-    		
-    		players.add(current_client);
-    	}
+			is_game_on = checkIfGameIsNotOver(current_player);
+
+    		players.add(current_player);
+		}
+//    	Client winner = players.remove(players.size() - 1);
+//		comunication.sendWinner(winner, players);
     }
     
     private void awardStarIfInTokyo(Client current_client) {
@@ -118,9 +119,9 @@ public class KTPUGame {
 		comunication.send_all_stats(current_client, players);
 	}
 	
-	private ArrayList<KTPUDice> rollDice(Client client) {
-		RollDice rollDice = new RollDice(comunication, client);
-		Monster currentMonster = client.get_monster();
+	private ArrayList<KTPUDice> rollDice(Client current_client) {
+		RollDice rollDice = new RollDice(comunication, current_client);
+		Monster currentMonster = current_client.get_monster();
         for (int i = 0; i < currentMonster.store_cards.size(); i++) {
 			StoreCard storeCard = currentMonster.store_cards.get(i);
 			if (storeCard.get_effect().get_activation() == Activation.rollDice) {
@@ -133,7 +134,30 @@ public class KTPUGame {
 		}
 		rollDice.execute();
         return rollDice.getDice();
-    }
+	}
+
+	private boolean checkIfGameIsNotOver(Client current_client) {
+		ArrayList<Client> clients = new ArrayList<Client>();
+		clients.add(current_client);
+		for (Client client : players) {
+			clients.add(client);
+		}
+		boolean winByStars = checkForWinByStars(clients);
+		boolean winByElimination = checkForWinByElimination(clients);
+		return !(winByStars || winByElimination);
+	}
+	
+	private boolean checkForWinByStars(ArrayList<Client> clients) {
+		CheckForWinByStars cfwbs = new CheckForWinByStars(clients, comunication);
+		cfwbs.execute();
+        return cfwbs.getGameOver();
+	}
+	
+	private boolean checkForWinByElimination(ArrayList<Client> clients) {
+		CheckForWinByElimination cfwbe = new CheckForWinByElimination(clients, comunication);
+		cfwbe.execute();
+        return cfwbe.getGameOver();
+	}
 	
     private void activeteGeneralAction(Monster monster, Effect effect) {
 		switch (effect.get_action()) {
@@ -255,12 +279,5 @@ public class KTPUGame {
     
     private void attack(Monster monster, int damage) {
     	monster.set_hp(monster.get_hp() - damage);
-    }
-    
-    private boolean check_if_a_monster_has_won(Monster monster) {
-    	if (monster.get_stars() >= NUM_STARS_NEEDED_TO_WIN) {
-    		return false;
-    	}
-    	return true;
     }
 }
