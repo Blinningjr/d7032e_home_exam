@@ -2,19 +2,18 @@ package com.niklas.app.controller.events;
 
 import java.util.ArrayList;
 
-import com.niklas.app.model.monsters.Monster;
+import com.niklas.app.model.GameState;
 import com.niklas.app.online.Client;
-import com.niklas.app.online.Comunication;
 
 public class Attack implements Event {
-    private Comunication comunication;
+    private GameState gameState;
     private Client attackingClient;
     private ArrayList<Client> clients;
     private int numClaws;
     private int bonusDamage;
 
-    public Attack(Comunication comunication, Client attackingClient, ArrayList<Client> clients, int numClaws) {
-        this.comunication = comunication;
+    public Attack(GameState gameState, Client attackingClient, ArrayList<Client> clients, int numClaws) {
+        this.gameState = gameState;
         this.attackingClient = attackingClient;
         this.clients = clients;
         this.numClaws = numClaws;
@@ -25,19 +24,19 @@ public class Attack implements Event {
     public void execute() {
         if (numClaws + bonusDamage > 0) {
     		boolean enter_tokyo = true;
-    		if (attackingClient.get_monster().get_in_tokyo()) {
+    		if (attackingClient.getMonster().getInTokyo()) {
     			for (Client client : clients) {
     				attack(client, numClaws + bonusDamage);
 				}
     		} else {
     			for (Client client : clients) {
-    				if (client.get_monster().get_in_tokyo()) {
+    				if (client.getMonster().getInTokyo()) {
 						attack(client,numClaws);
 						
 						// 6e. If you were outside, then the monster inside tokyo may decide to leave Tokyo
-                        String answer = comunication.send_leave_tokyo(client);
+                        String answer = gameState.getComunication().send_leave_tokyo(client);
                         if(answer.equalsIgnoreCase("YES")) {
-                        	client.get_monster().set_in_tokyo(false);
+                        	client.getMonster().set_in_tokyo(false);
                         	enter_tokyo = true;
                         } else {
                         	enter_tokyo = false;
@@ -45,14 +44,14 @@ public class Attack implements Event {
 					}
 				}
     			if (enter_tokyo) {
-    				attackingClient.get_monster().set_in_tokyo(true);
+    				attackingClient.getMonster().set_in_tokyo(true);
     			}
     		}
     	}
     }
 
     private void attack(Client defendingClient, int damage) {
-        Defend defend = new Defend(comunication, attackingClient, defendingClient, damage);
+        Defend defend = new Defend(gameState.getComunication(), attackingClient, defendingClient, damage);
         defend.execute();
     }
 

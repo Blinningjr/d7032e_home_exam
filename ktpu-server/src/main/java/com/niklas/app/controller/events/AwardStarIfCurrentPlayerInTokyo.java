@@ -1,8 +1,6 @@
 package com.niklas.app.controller.events;
 
 
-import java.util.ArrayList;
-
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Activation;
 import com.niklas.app.model.cards.Duration;
@@ -10,51 +8,32 @@ import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
-import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.monsters.Monster;
+import com.niklas.app.online.Client;
 
 
-
-public class RollDice implements Event{
-    private int numDice;
-    private int numRerolls;
+public class AwardStarIfCurrentPlayerInTokyo implements Event {
     private GameState gameState;
-    private ArrayList<KTPUDice> dice;
+    private int stars;
 
-    public RollDice(GameState gameState) {
-        this.gameState = gameState;
-        numDice = 6;
-        numRerolls = 3;
+    public AwardStarIfCurrentPlayerInTokyo(GameState gameState) {
+    	this.gameState = gameState;
+        stars = 1;
     }
 
     public void execute() {
-        checkCards();
-        dice = new ArrayList<KTPUDice>();
-        for (int i = 0; i < numDice; i++) {
-        	dice.add(new KTPUDice());
+        Client currentPlayer = gameState.getCurrentPlayer();
+        if (currentPlayer.getMonster().getInTokyo()) {
+            checkCards();
+            AwardStar awardStar = new AwardStar(gameState.getComunication(), currentPlayer, stars);
+            awardStar.execute();
         }
-        for (int i = 0; i < numRerolls; i++) {
-        	int[] reroll = gameState.getComunication().send_reroll_dice(dice, gameState.getCurrentPlayer());
-        	if (reroll.length > 0 && reroll[0] > 0) {
-        		for (int j : reroll) {
-					dice.get(j-1).roll();
-				}
-        	} else{
-        		return;
-        	}
-        }
+        gameState.getComunication().sendAllStats(currentPlayer, gameState.getPlayers());
     }
 
-    public ArrayList<KTPUDice> getDice() {
-        return dice;
-    }
 
-    public void addDice(int numDice) {
-        this.numDice += numDice;
-    }
-
-    public void addRerolls(int numRerolls){
-        this.numRerolls += numRerolls;
+    public void addStars(int stars) {
+        this.stars += stars;
     }
 
     private void checkCards() {
@@ -62,11 +41,11 @@ public class RollDice implements Event{
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
-			if (effect.getActivation() == Activation.RollDice) {
+			if (effect.getActivation() == Activation.AwardStarIfCurrentPlayerInTokyo) {
 				switch (effect.getAction()) {
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event RollDice");
+                            + " is not implemented for event AwardStarIfCurrentPlayerInTokyo");
                 }
 				if (storeCard.getType() == StoreCardType.discard) {
 					currentMonster.storeCards.remove(i);
@@ -77,11 +56,11 @@ public class RollDice implements Event{
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
             EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
             Effect effect = evolutionCard.getEffect();
-			if (effect.getActivation() == Activation.RollDice) {
+			if (effect.getActivation() == Activation.AwardStarIfCurrentPlayerInTokyo) {
 				switch (effect.getAction()) {
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event RollDice");
+                            + " is not implemented for event AwardStarIfCurrentPlayerInTokyo");
                 }
 				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
 					currentMonster.evolutionCards.remove(i);

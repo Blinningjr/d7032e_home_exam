@@ -49,7 +49,7 @@ public abstract class Card {
      * Gets the effect of the card.
      * @return the effect of the card as a Effect object.
      */
-    public Effect get_effect() {
+    public Effect getEffect() {
         return effect;
     }
 }

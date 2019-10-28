@@ -1,19 +1,19 @@
 package com.niklas.app.controller.events;
 
+import com.niklas.app.model.GameState;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
-import com.niklas.app.online.Comunication;
 
 
 public class Heal implements Event {
-    private Comunication comunication;
+    private GameState gameState;
     private Client client; 
 
     private int addedMaxHp;
     private int healing;
 
-    public Heal(Comunication comunication, Client client, int numHearts) {
-        this.comunication = comunication;
+    public Heal(GameState gameState, Client client, int numHearts) {
+        this.gameState = gameState;
         this.client = client;
         healing = numHearts;
 
@@ -21,7 +21,7 @@ public class Heal implements Event {
     }
 
     public void execute() {
-        Monster monster = client.get_monster();
+        Monster monster = client.getMonster();
         int maxHp = monster.get_max_hp() + addedMaxHp;
         int newHp = monster.get_hp() + healing;
         if (newHp > maxHp) {

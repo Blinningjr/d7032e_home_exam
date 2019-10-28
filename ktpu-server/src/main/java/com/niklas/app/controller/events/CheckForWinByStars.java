@@ -3,28 +3,29 @@ package com.niklas.app.controller.events;
 
 import java.util.ArrayList;
 
+import com.niklas.app.model.GameState;
 import com.niklas.app.online.Client;
-import com.niklas.app.online.Comunication;
 
 
 public class CheckForWinByStars implements Event {
     private static final int NUM_STARS_NEEDED_TO_WIN = 200;
-    private ArrayList<Client> clients;
-    private Comunication comunication;
+    private GameState gameState;
     private boolean gameOver;
 
-    public CheckForWinByStars(ArrayList<Client> clients, Comunication comunication) {
-        this.clients = clients;
-        this.comunication = comunication;
+    public CheckForWinByStars(GameState gameState) {
+        this.gameState = gameState;
         gameOver = false;
     }
 
     public void execute() {
+        ArrayList<Client> clients = new ArrayList<Client>();
+        clients.add(gameState.getCurrentPlayer());
+        clients.addAll(gameState.getPlayers());
         for (Client client : clients) {
-            if (client.get_monster().get_stars() >= NUM_STARS_NEEDED_TO_WIN) {
+            if (client.getMonster().getStars() >= NUM_STARS_NEEDED_TO_WIN) {
                 Client winner = client;
                 clients.remove(winner);
-                comunication.sendWinner(winner, clients);
+                gameState.getComunication().sendWinner(winner, clients);
                 clients.add(winner);
                 gameOver = true;
                 return;

@@ -3,9 +3,8 @@ package com.niklas.app.controller.events;
 
 import java.util.ArrayList;
 
+import com.niklas.app.model.GameState;
 import com.niklas.app.model.dice.KTPUDice;
-import com.niklas.app.online.Client;
-import com.niklas.app.online.Comunication;
 
 
 public class CheckDice implements Event {
@@ -17,13 +16,11 @@ public class CheckDice implements Event {
     private int numEnergy;
 
     private ArrayList<KTPUDice> dice;
-    private Comunication comunication;
-    private Client client;
+    private GameState gameState;
 
-    public CheckDice(ArrayList<KTPUDice> dice, Comunication comunication, Client client) {
+    public CheckDice(GameState gameState, ArrayList<KTPUDice> dice) {
+        this.gameState = gameState;
         this.dice = dice;
-        this.comunication = comunication;
-        this.client = client;
         resetNum();
     }
 
@@ -52,7 +49,7 @@ public class CheckDice implements Event {
 				throw new Error("Dice value:" + ktpuDice.get_value() + " is not implemented for KTPUDice");
 			}
         }
-        comunication.sendRolledDice(dice, client);
+        gameState.getComunication().sendRolledDice(dice, gameState.getCurrentPlayer());
     }
 
     private void resetNum() {

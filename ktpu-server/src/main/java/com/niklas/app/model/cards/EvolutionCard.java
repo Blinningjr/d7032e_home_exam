@@ -4,7 +4,7 @@ package com.niklas.app.model.cards;
  * Defines attributes and funtionalety of EvolutionCard.
  */
 public class EvolutionCard extends Card {
-    private final String monster_name;
+    private final String monsterName;
     private final String monster_type;
     private final Duration duration;
 
@@ -22,7 +22,7 @@ public class EvolutionCard extends Card {
                         String duration) {
         super(name, description, effect);
         
-        this.monster_name = monster_name;
+        this.monsterName = monster_name;
         this.monster_type = monster_type;
         switch (duration) {
             case "permanentEvolution":
@@ -46,8 +46,8 @@ public class EvolutionCard extends Card {
      * Gets the name of the monster that the card is for.
      * @return the name of the monster that the card is for as a string.
      */
-    public String get_monster_name() {
-        return monster_name;
+    public String getMonsterName() {
+        return monsterName;
     }
 
 

@@ -19,7 +19,7 @@ public class Client {
         this.out_to_client = out_to_client;
     }
     
-    public Monster get_monster() {
+    public Monster getMonster() {
     	return monster;
     }
     

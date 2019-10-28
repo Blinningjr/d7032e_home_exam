@@ -17,35 +17,32 @@ public class Effect {
   
     public Effect(String activation, String action) {
       switch (activation) {
-        case "inTokyo":
-          this.activation = Activation.inTokyo;
+        case "AwardStarIfCurrentPlayerInTokyo":
+          this.activation = Activation.AwardStarIfCurrentPlayerInTokyo;
           break;
-        case "rollDice":
-          this.activation = Activation.rollDice;
+        case "RollDice":
+          this.activation = Activation.RollDice;
           break;
+        case "Shopping":
+          this.activation = Activation.Shopping;
+          break;
+        case "Now":
+          this.activation = Activation.Now;
+          break;
+
         case "checkForWinByStars":
           this.activation = Activation.checkForWinByStars;
           break;
         case "checkForWinByElimination":  
           this.activation = Activation.checkForWinByElimination;
           break;
-        case "shopping":  
-          this.activation = Activation.shopping;
-          break;
-        
         case "attack":
           this.activation = Activation.attack;
           break;
         case "defend":
           this.activation = Activation.defend;
           break;
-        case "now":
-          this.activation = Activation.now;
-          break;
         case "rolled":
-          this.activation = Activation.rolled;
-          break;
-        case "buying":
           this.activation = Activation.rolled;
           break;
         default:
@@ -102,11 +99,11 @@ public class Effect {
     }
     
     
-    public Activation get_activation() {
+    public Activation getActivation() {
     	return activation;
     }
 
-    public Action get_action() {
+    public Action getAction() {
     	return action;
     }
     

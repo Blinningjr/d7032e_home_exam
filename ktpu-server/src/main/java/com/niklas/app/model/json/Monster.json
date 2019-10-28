@@ -12,7 +12,7 @@
                         "name": "Red Dawn",
                         "description": "All other Monsters lose 2 HEART.",
                         "effect": {
-                            "activation": "now",
+                            "activation": "Now",
                             "action": "damageEveryoneElse",
                             "added_damage": "2"
                         },
@@ -38,7 +38,7 @@
                         "name": "Radioactive Waste",
                         "description": "Gain 2 ENERGY and 1 HEART.",
                         "effect": {
-                            "activation": "now",
+                            "activation": "Now",
                             "action": "giveStarsEnergyAndHp",
                             "added_energy": "2",
                             "added_hp": "1"
@@ -65,7 +65,7 @@
                         "name": "Alien Scourge",
                         "description": "Gain 2 STAR.",
                         "effect": {
-                            "activation": "now",
+                            "activation": "Now",
                             "action": "giveStarsEnergyAndHp",
                             "added_stars": "2"
                         },

@@ -52,7 +52,7 @@ public class StoreCard extends Card {
      * Gets the type of StoreCard.
      * @return the type of StoreCard.
      */
-    public StoreCardType get_type() {
+    public StoreCardType getType() {
         return type;
     }
 }

@@ -1,6 +1,5 @@
 package com.niklas.app.model.cards;
 
-import java.util.ArrayList;
 
 /**
  * Defines attributes and funtionalety of a CardStore.
@@ -44,7 +43,7 @@ public class CardStore {
      * Puts a card into the CardStores decks discard pile.
      * @param card is the card that is placed in the CardStores decks discard pile.
      */
-    public void discard_card(StoreCard store_card) {
+    public void discardCard(StoreCard store_card) {
         deck.discard_card(store_card);
     }
 

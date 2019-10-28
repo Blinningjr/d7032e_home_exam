@@ -51,7 +51,7 @@ public class Comunication {
 
                 clients.add( new Client(monsters.get(onlineClient), connection_socket, in_from_client, out_to_client));
                 
-                System.out.println("Connected to " + clients.get(onlineClient).get_monster().get_name());
+                System.out.println("Connected to " + clients.get(onlineClient).getMonster().get_name());
             }
             return clients;
         } catch (Exception e) {
@@ -59,14 +59,14 @@ public class Comunication {
         }
     }
 
-    public void send_all_stats(Client current_client, ArrayList<Client> clients){
-        String statusUpdate = "You are " + current_client.get_monster().get_name() + " and it is your turn. Here are the stats";
+    public void sendAllStats(Client current_client, ArrayList<Client> clients){
+        String statusUpdate = "You are " + current_client.getMonster().get_name() + " and it is your turn. Here are the stats";
         clients.add(0, current_client);
         for(int i=0; i< clients.size(); i++) {
-            statusUpdate += ":"+clients.get(i).get_monster().get_name() + (clients.get(i).get_monster().get_in_tokyo()?" is in Tokyo ":" is not in Tokyo ");
-            statusUpdate += "with " + clients.get(i).get_monster().get_hp() + " health, " + clients.get(i).get_monster().get_stars() + " stars, ";
-            statusUpdate += clients.get(i).get_monster().get_energy() + " energy, and owns the following cards:";
-            statusUpdate += clients.get(i).get_monster().cards_to_string();
+            statusUpdate += ":"+clients.get(i).getMonster().get_name() + (clients.get(i).getMonster().getInTokyo()?" is in Tokyo ":" is not in Tokyo ");
+            statusUpdate += "with " + clients.get(i).getMonster().get_hp() + " health, " + clients.get(i).getMonster().getStars() + " stars, ";
+            statusUpdate += clients.get(i).getMonster().get_energy() + " energy, and owns the following cards:";
+            statusUpdate += clients.get(i).getMonster().cards_to_string();
         }
         clients.remove(0);
         this.sendMessage(current_client, statusUpdate + "\n");
@@ -99,18 +99,22 @@ public class Comunication {
     }
     
     public String send_leave_tokyo(Client client) {
-    	return sendMessage(client, "ATTACKED:You have " + client.get_monster().get_hp() 
+    	return sendMessage(client, "ATTACKED:You have " + client.getMonster().get_hp() 
     			+ " health left. Do you wish to leave Tokyo? [YES/NO]\n");
     }
     
-    public String send_shopping(Client client, CardStore card_store) {
-    	 String msg = "PURCHASE:Do you want to buy any of the cards from the store? (you have " 
-    	            + client.get_monster().get_energy() + " energy) [#/-1]:" + card_store.inverntory_to_String() + "\n";
-    	 return sendMessage(client, msg);
+    public String send_shopping(Client client, CardStore card_store, int extraCost) {
+        String extraCostString = "";
+        if (extraCost != 0) {
+            extraCostString = ":\tPrice is incrised with " + extraCost + "energy.:";
+        }
+        String msg = "PURCHASE:Do you want to buy any of the cards from the store? (you have " 
+            + client.getMonster().get_energy() + " energy) [#/-1]:" + extraCostString + card_store.inverntory_to_String() + "\n";
+    	return sendMessage(client, msg);
     }
 
     public void sendWinner(Client current_client, ArrayList<Client> clients) {
-        String msg = "Victory: " + current_client.get_monster().get_name() + " has won.\n";
+        String msg = "Victory: " + current_client.getMonster().get_name() + " has won.\n";
         String _w = sendMessage(current_client, msg);
         for (int i = 0; i < clients.size(); i++) {
             String _p  = sendMessage(clients.get(i), msg);

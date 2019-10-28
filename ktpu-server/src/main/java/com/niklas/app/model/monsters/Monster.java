@@ -20,7 +20,7 @@ public class Monster {
     private int stars;
     private boolean in_tokyo;
     private boolean isDead;
-    public ArrayList<StoreCard> store_cards; //fix later
+    public ArrayList<StoreCard> storeCards; //fix later
     public ArrayList<EvolutionCard> evolutionCards; //fix later
     private EvolutionDeck evolution_deck;
 
@@ -37,14 +37,14 @@ public class Monster {
      * @param evolution_deck is the special evelution cards for this monster.
      */
     public Monster(String name, int max_hp, int hp, int energy, int stars, boolean in_tokyo, 
-                    ArrayList<StoreCard> store_cards, EvolutionDeck evolution_deck) {
+                    ArrayList<StoreCard> storeCards, EvolutionDeck evolution_deck) {
         this.name = name;
         this.max_hp = max_hp;
         this.hp = hp;
         this.energy = energy;
         this.stars = stars;
         this.in_tokyo = in_tokyo;
-        this.store_cards = store_cards;
+        this.storeCards = storeCards;
         this.evolution_deck = evolution_deck;
         isDead = false;
 
@@ -56,7 +56,7 @@ public class Monster {
 
     public String cards_to_string() {
         String cards_string = "";
-        for (StoreCard card : store_cards) {
+        for (StoreCard card : storeCards) {
             cards_string += "\t" + card.to_string() + ":";
         }
         return cards_string;
@@ -135,7 +135,7 @@ public class Monster {
      * Gets the amount of stars the monster has.
      * @return the amount of starts that this monster has
      */
-    public int get_stars() {
+    public int getStars() {
         return stars;
     }
 
@@ -153,7 +153,7 @@ public class Monster {
      * Gets if the monster is in tokyo.
      * @return true if monster is in tokyo.
      */
-    public boolean get_in_tokyo() {
+    public boolean getInTokyo() {
         return in_tokyo;
     }
 
