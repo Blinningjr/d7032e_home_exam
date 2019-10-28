@@ -138,7 +138,7 @@ public class ReadJson {
         }
         EvolutionDeck evolution_deck = new EvolutionDeck(e_cards, new ArrayList<EvolutionCard>());
         evolution_deck.shuffle();
-        return new Monster(name, max_hp, hp, energy, stars, false, new ArrayList<Card>(), evolution_deck);
+        return new Monster(name, max_hp, hp, energy, stars, false, new ArrayList<StoreCard>(), evolution_deck);
     }
 
 

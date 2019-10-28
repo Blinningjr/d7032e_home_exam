@@ -13,6 +13,7 @@
                         "description": "All other Monsters lose 2 HEART.",
                         "effect": {
                             "activation": "now",
+                            "action": "stat",
                             "added_damage": "2"
                         },
                         "monster_name": "Kong",
@@ -37,6 +38,7 @@
                         "description": "Gain 2 ENERGY and 1 HEART.",
                         "effect": {
                             "activation": "now",
+                            "action": "stat",
                             "added_energy": "2",
                             "added_hp": "1"
                         },
@@ -62,6 +64,7 @@
                         "description": "Gain 2 STAR.",
                         "effect": {
                             "activation": "now",
+                            "action": "stat",
                             "added_stars": "2"
                         },
                         "monster_name": "Alienoid",

@@ -16,7 +16,7 @@ public class App
     public static void main( String[] args )
     {
 
-        KTPUGame game = new KTPUGame(2, 
+        KTPUGame game = new KTPUGame(1, 
             "./src/main/java/com/niklas/app/model/json/Monster.json", 
             "./src/main/java/com/niklas/app/model/json/StoreDeck.json");
         // ReadJson r = new ReadJson();

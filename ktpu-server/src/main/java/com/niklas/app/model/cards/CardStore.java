@@ -1,5 +1,7 @@
 package com.niklas.app.model.cards;
 
+import java.util.ArrayList;
+
 /**
  * Defines attributes and funtionalety of a CardStore.
  */
@@ -20,6 +22,10 @@ public class CardStore {
             inverntory[i] = this.deck.draw_card();
         }
     }
+    
+    public String inverntory_to_String() {
+    	return "[1] " + inverntory[0].to_string() + ":" + "[2] " + inverntory[1].to_string() + ":" + "[3] " + inverntory[2].to_string() + ":";
+    }
 
 
     /**
@@ -28,7 +34,7 @@ public class CardStore {
      * @return the card that is on inventory position "card_position".
      */
     public StoreCard buy(int card_position) {
-        StoreCard card = inverntory[card_position];
+    	StoreCard card = inverntory[card_position];
         inverntory[card_position] = deck.draw_card();
         return card;
     }

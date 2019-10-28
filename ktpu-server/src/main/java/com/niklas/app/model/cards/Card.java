@@ -22,6 +22,11 @@ public abstract class Card {
     }
 
 
+    public String to_string() {
+        return "[" + name  + ", Description= " + description + "]";
+    }
+
+
     /**
      * Gets the name of the card.
      * @return the name of the card as a String.

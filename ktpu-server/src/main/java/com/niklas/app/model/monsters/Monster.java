@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import com.niklas.app.model.cards.Card;
 import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.EvolutionDeck;
+import com.niklas.app.model.cards.StoreCard;
 
 
 /**
@@ -22,7 +23,7 @@ public class Monster {
     private int energy;
     private int stars;
     private boolean in_tokyo;
-    public ArrayList<Card> cards; //fix later
+    public ArrayList<StoreCard> store_cards; //fix later
     private EvolutionDeck evolution_deck;
 
     // Temporery to make the game work.
@@ -43,17 +44,27 @@ public class Monster {
      * @param evolution_deck is the special evelution cards for this monster.
      */
     public Monster(String name, int max_hp, int hp, int energy, int stars, boolean in_tokyo, 
-                    ArrayList<Card> cards, EvolutionDeck evolution_deck) {
+                    ArrayList<StoreCard> store_cards, EvolutionDeck evolution_deck) {
         this.name = name;
         this.max_hp = max_hp;
         this.hp = hp;
         this.energy = energy;
         this.stars = stars;
         this.in_tokyo = in_tokyo;
-        this.cards = cards;
+        this.store_cards = store_cards;
         this.evolution_deck = evolution_deck;
 
         evolution_deck.shuffle();
+    }
+
+
+    public String cards_to_string() {
+        String cards_string = "{:";
+        for (StoreCard card : store_cards) {
+            cards_string += card.to_string();
+            cards_string += ":";
+        }
+        return cards_string + "}";
     }
     
     
@@ -67,7 +78,9 @@ public class Monster {
     	evolution_deck.discard_card(card);
     }
 
-    
+    public void add_hp(int hp) {
+    	this.hp += hp;
+    }
 
     /**
      * Gets the maximum hit points the monster can have

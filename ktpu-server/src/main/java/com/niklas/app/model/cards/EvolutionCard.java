@@ -28,6 +28,11 @@ public class EvolutionCard extends Card {
     }
 
 
+    public String to_string() {
+        return "[" + super.get_name() + ", Monster type= " + monster_type + ", Duration= " + duration + ", Description= " + get_description() + "]";
+    }
+
+
     /**
      * Gets the name of the monster that the card is for.
      * @return the name of the monster that the card is for as a string.
