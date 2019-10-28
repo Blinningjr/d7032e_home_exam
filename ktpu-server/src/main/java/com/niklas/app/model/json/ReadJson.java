@@ -170,7 +170,8 @@ public class ReadJson {
     	JSONObject effect_object = (JSONObject) effect.get("effect");
 
         String activation = (String) effect_object.get("activation");
-        Effect e = new Effect(activation);
+        String action = (String) effect_object.get("action");
+        Effect e = new Effect(activation, action);
 
         try {
 			e.add_damage(Integer.valueOf( (String) effect_object.get("added_damage")));

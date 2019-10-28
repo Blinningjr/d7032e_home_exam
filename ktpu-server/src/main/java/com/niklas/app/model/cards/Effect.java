@@ -3,7 +3,8 @@ package com.niklas.app.model.cards;
 
 public class Effect {
     
-	private String activation;
+  private Activation activation;
+  private Action action;
 	
 	private int added_damage = 0;
 	private int armor = 0;
@@ -11,18 +12,54 @@ public class Effect {
 	private int added_stars = 0;
 	private int added_max_hp = 0;
 	private int added_hp = 0;
-    private int added_energy = 0;
+  private int added_energy = 0;
+  // private int extra_dice = 0;
 
-    public Effect(String activation) {
-    	this.activation = activation;
+    public Effect(String activation, String action) {
+      switch (activation) {
+        case "inTokyo":
+          this.activation = Activation.inTokyo;
+          break;
+        case "rollDice":
+          this.activation = Activation.rollDice;
+          break;
+        case "attack":
+          this.activation = Activation.attack;
+          break;
+        case "defend":
+          this.activation = Activation.defend;
+          break;
+        case "now":
+          this.activation = Activation.now;
+          break;
+        case "rolled":
+          this.activation = Activation.rolled;
+          break;
+        case "buying":
+          this.activation = Activation.rolled;
+          break;
+        default:
+          throw new Error("activation= "+ activation + " is not implemented");
+      }
+
+      switch (action) {
+        case "giveStarsAndEnergy":
+          this.action = Action.giveStarsAndEnergy;
+          break;
+        case "stat":
+          this.action = Action.stat;
+          break;
+        default:
+        throw new Error("action= "+ action + " is not implemented");
+      }
     }
     
     public void add_damage(int damage) {
-		added_damage += damage;
+		  added_damage += damage;
     }
     
     public void add_armor(int armor) {
-		this.armor += armor;
+		  this.armor += armor;
     }
     
     public void add_cost(int cost) {
@@ -34,11 +71,11 @@ public class Effect {
     }
     
     public void add_to_max_hp(int max_hp) {
-		added_max_hp += max_hp;
+		  added_max_hp += max_hp;
     }
     
     public void add_hp(int hp) {
-		added_hp += hp;
+		  added_hp += hp;
     }
     
     public void add_energy(int energy) {
@@ -46,8 +83,12 @@ public class Effect {
     }
     
     
-    public String get_activation() {
+    public Activation get_activation() {
     	return activation;
+    }
+
+    public Action get_action() {
+    	return action;
     }
     
     public int get_added_damage() {
@@ -77,5 +118,4 @@ public class Effect {
     public int get_added_energy() {
     	return added_energy;
     }
-    
 }

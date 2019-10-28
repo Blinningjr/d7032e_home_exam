@@ -10,7 +10,7 @@
             },
             "cost": "6",
             "type": "Keep",
-            "quantity": "2"
+            "quantity": "0"
         }
     },
     {
@@ -24,7 +24,7 @@
             },
             "cost": "3",
             "type": "Keep",
-            "quantity": "2"
+            "quantity": "0"
         }
     },
     {
@@ -33,12 +33,12 @@
             "description": "Gain 1[Star] when you attack.",
             "effect": {
                 "activation": "attack",
-                "action": "stat",
+                "action": "giveStarsAndEnergy",
                 "added_stars": "1"
             },
             "cost": "5",
             "type": "Keep",
-            "quantity": "2"
+            "quantity": "0"
         }
     },
     {
@@ -47,12 +47,12 @@
             "description": "\"+ 3[Star]\"",
             "effect": {
                 "activation": "now",
-                "action": "stat",
+                "action": "giveStarsAndEnergy",
                 "added_stars": "3"
             },
             "cost": "5",
             "type": "Discard",
-            "quantity": "1"
+            "quantity": "0"
         }
     },
     {
@@ -60,13 +60,13 @@
             "name": "Armor Plating",
             "description": "Ignore damage of 1.",
             "effect": {
-                "activation": "attacked",
+                "activation": "defend",
                 "action": "stat",
                 "armor": "1"
             },
             "cost": "4",
             "type": "Keep",
-            "quantity": "3"
+            "quantity": "0"
         }
     },
     {
@@ -75,12 +75,12 @@
             "description": "\"+ 2[Star]\"",
             "effect": {
                 "activation": "now",
-                "action": "stat",
+                "action": "giveStarsAndEnergy",
                 "added_stars": "2"
             },
             "cost": "4",
             "type": "Discard",
-            "quantity": "2"
+            "quantity": "0"
         }
     },
     {
@@ -89,12 +89,12 @@
             "description": "\"+ 1[Star]\"",
             "effect": {
                 "activation": "now",
-                "action": "stat",
+                "action": "giveStarsAndEnergy",
                 "added_stars": "1"
             },
-            "cost": "3",
+            "cost": "1",
             "type": "Discard",
-            "quantity": "4"
+            "quantity": "10"
         }
     }
 ]

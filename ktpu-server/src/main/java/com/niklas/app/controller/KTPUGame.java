@@ -1,35 +1,35 @@
 package com.niklas.app.controller;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.ServerSocket;
-import java.net.Socket;
+
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Scanner;
 
 import com.niklas.app.model.cards.CardStore;
 import com.niklas.app.model.cards.Effect;
-import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
-import com.niklas.app.model.cards.Card;
+import com.niklas.app.controller.actions.Actions;
+import com.niklas.app.controller.events.AwardStarIfInTokyo;
+import com.niklas.app.controller.events.RollDice;
+import com.niklas.app.model.cards.Activation;
 import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.json.ReadJson;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 import com.niklas.app.online.Comunication;
 
+
 public class KTPUGame {
     private static final int NUM_STARS_NEEDED_TO_WIN = 20;
     private ArrayList<Client> players;
     private CardStore card_store;
-    private Comunication comunication;
+	private Comunication comunication;
+	private Actions actions;
 
 
     public KTPUGame(int tot_num_players, String monster_filepath, String store_card_filepath) {
         ReadJson json_reader = new ReadJson();
-        comunication = new Comunication();
+		comunication = new Comunication();
+		actions = new Actions();
         
         ArrayList<Monster> monsters = json_reader.read_monsters_from_json(monster_filepath);
         Collections.shuffle(monsters);
@@ -52,36 +52,35 @@ public class KTPUGame {
         game_loop();
     }
     
-    public void game_loop() {
+    private void game_loop() {
     	boolean is_game_on = true;
     	/*
-        Game loop:
-        pre: Award a monster in Tokyo 1 star
-        1. Roll 6 dice
-        2. Decide which dice to keep
-        3. Reroll remaining dice
-        4. Decide which dice to keep 
-        5. Reroll remaining dice
-        6. Sum up totals
-          6a. Hearts = health (max 10 unless a cord increases it)
-          6b. 3 hearts = power-up
-          6c. 3 of a number = victory points
-          6d. claws = attack (if in Tokyo attack everyone, else attack monster in Tokyo)
-          6e. If you were outside, then the monster inside tokyo may decide to leave Tokyo
-          6f. energy = energy tokens
-        7. Decide to buy things for energy
-          7a. Play "DISCARD" cards immediately
-        8. Check victory conditions
-    */  
+	        Game loop:
+	        pre: Award a monster in Tokyo 1 star
+	        1. Roll 6 dice
+	        2. Decide which dice to keep
+	        3. Reroll remaining dice
+	        4. Decide which dice to keep 
+	        5. Reroll remaining dice
+	        6. Sum up totals
+	          6a. Hearts = health (max 10 unless a cord increases it)
+	          6b. 3 hearts = power-up
+	          6c. 3 of a number = victory points
+	          6d. claws = attack (if in Tokyo attack everyone, else attack monster in Tokyo)
+	          6e. If you were outside, then the monster inside tokyo may decide to leave Tokyo
+	          6f. energy = energy tokens
+	        7. Decide to buy things for energy
+	          7a. Play "DISCARD" cards immediately
+	        8. Check victory conditions
+    	*/  
     	while (is_game_on) {
     		Client current_client = players.remove(0);
     		
 //    		pre: Award a monster in Tokyo 1 star
-    		awards_star_is_monster_is_in_tokyo(current_client.get_monster());
-    		comunication.send_all_stats(current_client, players);
+			awardStarIfInTokyo(current_client);
     		
 //    		1-5.
-    		ArrayList<KTPUDice> dice = role_dice(current_client, 6, 3);
+    		ArrayList<KTPUDice> dice = rollDice(current_client);
     		
 //    		6. Sum up totals
     		check_dice(dice, current_client);
@@ -100,11 +99,53 @@ public class KTPUGame {
     	}
     }
     
-    public void add_effect_boost(Client client, Effect effect) {
-    	
+    private void awardStarIfInTokyo(Client current_client) {
+		Monster currentMonster = current_client.get_monster();
+		if (currentMonster.get_in_tokyo()) {
+			AwardStarIfInTokyo asiit = new AwardStarIfInTokyo(current_client.get_monster());
+			for (int i = 0; i < currentMonster.store_cards.size(); i++) {
+				StoreCard storeCard = currentMonster.store_cards.get(i);
+				if (storeCard.get_effect().get_activation() == Activation.inTokyo) {
+					activeteGeneralAction(currentMonster, storeCard.get_effect());
+					if (storeCard.get_type() == "Discard") {
+						currentMonster.store_cards.remove(i);
+						card_store.discard_card(storeCard);
+					}
+				}
+			}
+			asiit.execute();
+		}
+		comunication.send_all_stats(current_client, players);
+	}
+	
+	private ArrayList<KTPUDice> rollDice(Client client) {
+		RollDice rollDice = new RollDice(comunication, client);
+		Monster currentMonster = client.get_monster();
+        for (int i = 0; i < currentMonster.store_cards.size(); i++) {
+			StoreCard storeCard = currentMonster.store_cards.get(i);
+			if (storeCard.get_effect().get_activation() == Activation.rollDice) {
+				activeteGeneralAction(currentMonster, storeCard.get_effect());
+				if (storeCard.get_type() == "Discard") {
+					currentMonster.store_cards.remove(i);
+					card_store.discard_card(storeCard);
+				}
+			}
+		}
+		rollDice.execute();
+        return rollDice.getDice();
     }
+	
+    private void activeteGeneralAction(Monster monster, Effect effect) {
+		switch (effect.get_action()) {
+			case giveStarsAndEnergy:
+				actions.giveStarsAndEnergy(monster, effect.get_added_stars(), effect.get_added_energy());
+				break;
+			default:
+				throw new Error("action=" + effect.get_action() + " is not implemented");
+		}
+	}
     
-    public void shoping(Client current_client) {
+    private void shoping(Client current_client) {
     	ArrayList<StoreCard> store_cards = new ArrayList<StoreCard>();
     	for (StoreCard storeCard : card_store.get_inventory()) {
     		store_cards.add(storeCard);
@@ -115,7 +156,7 @@ public class KTPUGame {
         if(buy>0 && (current_client.get_monster().get_energy() >= store_cards.get(buy -1).get_cost())) { 
         	try {
         		current_client.get_monster().set_entergy(current_client.get_monster().get_energy() -  store_cards.get(buy - 1).get_cost());
-				current_client.get_monster().store_cards.add(card_store.buy(buy));
+				current_client.get_monster().store_cards.add(card_store.buy(buy-1));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -123,7 +164,7 @@ public class KTPUGame {
         }
     }
     
-    public void check_dice(ArrayList<KTPUDice> dice, Client current_client) {
+    private void check_dice(ArrayList<KTPUDice> dice, Client current_client) {
     	int num_ones = 0;
     	int num_twos = 0;
     	int num_threes = 0;
@@ -169,13 +210,13 @@ public class KTPUGame {
     	}
     	
 //    	6c. 3 of a number = victory points
-    	if (num_ones >= 0) {
+    	if (num_ones >= 3) {
     		current_client.get_monster().set_stars(current_client.get_monster().get_stars() + 1 + num_ones - 3);
     	}
-    	if (num_twos >= 0) {
+    	if (num_twos >= 3) {
     		current_client.get_monster().set_stars(current_client.get_monster().get_stars() + 2 + num_twos - 3);
     	}
-    	if (num_threes >= 0) {
+    	if (num_threes >= 3) {
     		current_client.get_monster().set_stars(current_client.get_monster().get_stars() + 3 + num_threes - 3);
     	}
     	
@@ -212,42 +253,14 @@ public class KTPUGame {
     }
     
     
-    public void attack(Monster monster, int damage) {
+    private void attack(Monster monster, int damage) {
     	monster.set_hp(monster.get_hp() - damage);
     }
     
-    
-//    pre: Award a monster in Tokyo 1 star
-    public void awards_star_is_monster_is_in_tokyo(Monster monster) {
-		if (monster.get_in_tokyo()) {
-			monster.set_stars(monster.get_stars() + 1);
-		}
-    }
-    
-    public boolean check_if_a_monster_has_won(Monster monster) {
+    private boolean check_if_a_monster_has_won(Monster monster) {
     	if (monster.get_stars() >= NUM_STARS_NEEDED_TO_WIN) {
     		return false;
     	}
     	return true;
-    }
-    
-    
-    public ArrayList<KTPUDice> role_dice(Client client,int num_dice, int num_rerolls) {
-//    	1. Roll 6 dice
-    	ArrayList<KTPUDice> dice = new ArrayList<KTPUDice>();
-        for (int i = 0; i < num_dice; i++) {
-        	dice.add(new KTPUDice());
-        }
-        for (int i = 0; i < num_rerolls; i++) {
-        	int[] reroll = comunication.send_reroll_dice(dice, client);
-        	if (reroll.length > 0) {
-        		for (int j : reroll) {
-					dice.get(j).roll();
-				}
-        	} else{
-        		return dice;
-        	}
-        }
-        return dice;
     }
 }

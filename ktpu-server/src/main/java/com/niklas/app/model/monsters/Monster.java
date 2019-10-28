@@ -26,11 +26,6 @@ public class Monster {
     public ArrayList<StoreCard> store_cards; //fix later
     private EvolutionDeck evolution_deck;
 
-    // Temporery to make the game work.
-    public Socket connection = null;
-    public BufferedReader inFromClient = null;
-    public DataOutputStream outToClient = null;
-
 
     /**
      * Creates a Monster.

@@ -64,7 +64,7 @@
                         "description": "Gain 2 STAR.",
                         "effect": {
                             "activation": "now",
-                            "action": "stat",
+                            "action": "giveStarsAndEnergy",
                             "added_stars": "2"
                         },
                         "monster_name": "Alienoid",
