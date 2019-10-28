@@ -10,6 +10,7 @@ import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.controller.actions.Actions;
 import com.niklas.app.controller.events.AwardStarIfInTokyo;
+import com.niklas.app.controller.events.CheckDice;
 import com.niklas.app.controller.events.CheckForWinByElimination;
 import com.niklas.app.controller.events.CheckForWinByStars;
 import com.niklas.app.controller.events.RollDice;
@@ -87,7 +88,7 @@ public class KTPUGame {
     		
 //    		6. Sum up totals 
 			//TODO: Fix
-    		check_dice(dice, current_player);
+    		checkDice(dice, current_player);
     		
 //    		7. Decide to buy things for energy
     		shopping(current_player);
@@ -201,73 +202,45 @@ public class KTPUGame {
 		}
 	}
     
-    private void check_dice(ArrayList<KTPUDice> dice, Client current_client) {
-    	int num_ones = 0;
-    	int num_twos = 0;
-    	int num_threes = 0;
-    	int num_hearts = 0;
-    	int num_claws = 0;
-    	int num_energy = 0;
-    	
-    	for (KTPUDice ktpuDice : dice) {
-			switch (ktpuDice.get_value()) {
-			case KTPUDice.ONE:
-				num_ones += 1;
-				break;
-			case KTPUDice.TWO:
-				num_twos += 1;
-				break;
-			case KTPUDice.THREE:
-				num_threes += 1;
-				break;
-			case KTPUDice.HEART:
-				num_hearts += 1;
-				break;
-			case KTPUDice.CLAWS:
-				num_claws += 1;
-				break;
-			case KTPUDice.ENERGY:
-				num_energy += 1;
-				break;
-			default:
-				throw new Error("Dice value:" + ktpuDice.get_value() + " is not implemented");
-			}
-		}
+    private void checkDice(ArrayList<KTPUDice> dice, Client current_client) {
+		CheckDice checkDice = new CheckDice(dice, comunication, current_client);
+		checkDice.execute();
+		
 //    	6a. Hearts = health (max 10 unless a cord increases it)
-    	int hp = current_client.get_monster().get_hp() + num_hearts;
+    	int hp = current_client.get_monster().get_hp() + checkDice.getNumHearts();
     	if (hp > current_client.get_monster().get_max_hp()) {
     		current_client.get_monster().set_hp(current_client.get_monster().get_max_hp());	
     	} else {
     		current_client.get_monster().set_hp(hp);	
     	}
 //    	6b. 3 hearts = power-up
-    	if (num_hearts >= 3) {
+    	if (checkDice.getNumHearts() >= 3) {
 //    		EvolutionCard evolutionCard = current_client.get_monster().draw_evolution_card();
 //			current_client.get_monster().cards.add(evolutionCard);
     	}
     	
 //    	6c. 3 of a number = victory points
-    	if (num_ones >= 3) {
-    		current_client.get_monster().set_stars(current_client.get_monster().get_stars() + 1 + num_ones - 3);
+    	if (checkDice.getNumOnes() >= 3) {
+    		current_client.get_monster().set_stars(current_client.get_monster().get_stars() + 1 + checkDice.getNumOnes() - 3);
     	}
-    	if (num_twos >= 3) {
-    		current_client.get_monster().set_stars(current_client.get_monster().get_stars() + 2 + num_twos - 3);
+    	if (checkDice.getNumTwos() >= 3) {
+    		current_client.get_monster().set_stars(current_client.get_monster().get_stars() + 2 + checkDice.getNumTwos() - 3);
     	}
-    	if (num_threes >= 3) {
-    		current_client.get_monster().set_stars(current_client.get_monster().get_stars() + 3 + num_threes - 3);
+    	if (checkDice.getNumThrees() >= 3) {
+    		current_client.get_monster().set_stars(current_client.get_monster().get_stars() + 3 + checkDice.getNumThrees() - 3);
     	}
     	
 //    	6d. claws = attack (if in Tokyo attack everyone, else attack monster in Tokyo)
-    	if (num_claws > 0) {
+    	if (checkDice.getNumClaws() > 0) {
     		boolean enter_tokyo = true;
     		if (current_client.get_monster().get_in_tokyo()) {
     			for (Client client : players) {
-    				attack(client.get_monster(), num_claws);
+    				attack(client.get_monster(), checkDice.getNumClaws());
 				}
     		} else {
     			for (Client client : players) {
     				if (client.get_monster().get_in_tokyo()) {
-						attack(client.get_monster(), num_claws);
+						attack(client.get_monster(), checkDice.getNumClaws());
 						
 						// 6e. If you were outside, then the monster inside tokyo may decide to leave Tokyo
                         String answer = comunication.send_leave_tokyo(client);
@@ -286,7 +259,7 @@ public class KTPUGame {
     	}
     	
 //    	6f. energy = energy tokens
-    	current_client.get_monster().set_entergy(current_client.get_monster().get_energy() + num_energy);
+    	current_client.get_monster().set_entergy(current_client.get_monster().get_energy() + checkDice.getNumEnergy());
     }
     
     
