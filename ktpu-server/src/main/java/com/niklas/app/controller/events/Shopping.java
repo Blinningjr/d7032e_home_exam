@@ -25,16 +25,17 @@ public class Shopping implements Event {
     public void execute() {
         checkCards();
         Client currentPlayer = gameState.getCurrentPlayer();
+        Monster currentMonster = currentPlayer.getMonster();
         CardStore cardStore = gameState.getCardStore();
         StoreCard[] storeCards = cardStore.get_inventory();
 
-        String answer = gameState.getComunication().send_shopping(currentPlayer, cardStore, extraCost);
+        String answer = gameState.getComunication().sendShopping(currentPlayer, cardStore, extraCost);
         int buy = Integer.parseInt(answer);
-
-        if(buy>0 && (currentPlayer.getMonster().get_energy() >= storeCards[buy -1].get_cost() + extraCost)) { 
+        int cost = storeCards[buy -1].get_cost() + extraCost;
+        if(buy>0 && (currentMonster.getEnergy() >= cost)) { 
         	try {
-        		currentPlayer.getMonster().set_entergy(currentPlayer.getMonster().get_energy() -  storeCards[buy - 1].get_cost() + extraCost);
-                currentPlayer.getMonster().storeCards.add(cardStore.buy(buy-1));
+        		currentMonster.setEnergy(currentPlayer.getMonster().getEnergy() -cost);
+                currentMonster.storeCards.add(cardStore.buy(buy-1));
                 checkBoughtCard();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -48,14 +49,15 @@ public class Shopping implements Event {
     }
 
     private void checkBoughtCard() {
-        Monster currentMonster = gameState.getCurrentPlayer().getMonster();
+        Client currentPlayer = gameState.getCurrentPlayer();
+        Monster currentMonster = currentPlayer.getMonster();
         StoreCard storeCard = currentMonster.storeCards.get(currentMonster.storeCards.size() - 1);
         Effect effect = storeCard.getEffect();
         if (effect.getActivation() == Activation.Now) {
             switch (effect.getAction()) {
                 case giveStarsEnergyAndHp:
                     gameState.action.giveStarsEnergyAndHp(gameState,
-                        gameState.getCurrentPlayer(), effect);
+                        currentPlayer, effect);
                     break;
                 case damageEveryoneElse:
                     gameState.action.damageEveryoneElse(gameState, effect);

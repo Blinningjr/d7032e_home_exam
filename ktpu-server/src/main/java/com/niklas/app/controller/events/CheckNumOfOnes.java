@@ -30,7 +30,7 @@ public class CheckNumOfOnes implements Event {
         Client client = gameState.getCurrentPlayer();
         if (numOnes >= numOnesNeeded) {
             checkCards();
-    		client.getMonster().set_stars(client.getMonster().getStars() + starsAdded + numOnes - numOnesNeeded);
+    		client.getMonster().setStars(client.getMonster().getStars() + starsAdded + numOnes - numOnesNeeded);
     	}
     }
 

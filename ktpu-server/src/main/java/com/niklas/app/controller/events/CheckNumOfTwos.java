@@ -29,7 +29,7 @@ public class CheckNumOfTwos implements Event {
         Client client = gameState.getCurrentPlayer();
         if (numTwos >= numTwosNeeded) {
             checkCards();
-    		client.getMonster().set_stars(client.getMonster().getStars() + starsAdded + numTwos - numTwosNeeded);
+    		client.getMonster().setStars(client.getMonster().getStars() + starsAdded + numTwos - numTwosNeeded);
     	}
     }
 

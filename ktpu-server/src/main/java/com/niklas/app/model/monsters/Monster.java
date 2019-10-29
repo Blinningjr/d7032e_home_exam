@@ -14,43 +14,43 @@ import com.niklas.app.model.cards.StoreCard;
  */
 public class Monster {
     private String name;
-    private final int max_hp;
+    private final int maxHp;
     private int hp;
     private int energy;
     private int stars;
-    private boolean in_tokyo;
+    private boolean inTokyo;
     private boolean isDead;
     public ArrayList<StoreCard> storeCards; //fix later
     public ArrayList<EvolutionCard> evolutionCards; //fix later
-    private EvolutionDeck evolution_deck;
+    private EvolutionDeck evolutionDeck;
 
 
     /**
      * Creates a Monster.
      * @param name is the name of the monster.
-     * @param max_hp is the maximum hit points of the monster.
+     * @param maxHp is the maximum hit points of the monster.
      * @param hp is the monsters hit points.
      * @param energy is the monsters energy.
      * @param stars is the monsters stars.
      * @param in_tokyo is if the monster is in tokyo.
      * @param cards is the cards the monster has.
-     * @param evolution_deck is the special evelution cards for this monster.
+     * @param evolutionDeck is the special evelution cards for this monster.
      */
-    public Monster(String name, int max_hp, int hp, int energy, int stars, boolean in_tokyo, 
-                    ArrayList<StoreCard> storeCards, EvolutionDeck evolution_deck) {
+    public Monster(String name, int maxHp, int hp, int energy, int stars, boolean in_tokyo, 
+                    ArrayList<StoreCard> storeCards, EvolutionDeck evolutionDeck) {
         this.name = name;
-        this.max_hp = max_hp;
+        this.maxHp = maxHp;
         this.hp = hp;
         this.energy = energy;
         this.stars = stars;
-        this.in_tokyo = in_tokyo;
+        this.inTokyo = in_tokyo;
         this.storeCards = storeCards;
-        this.evolution_deck = evolution_deck;
+        this.evolutionDeck = evolutionDeck;
         isDead = false;
 
         evolutionCards = new ArrayList<EvolutionCard>();
 
-        evolution_deck.shuffle();
+        this.evolutionDeck.shuffle();
     }
 
 
@@ -63,17 +63,17 @@ public class Monster {
     }
     
     
-    public EvolutionCard draw_evolution_card() {
-    	EvolutionCard card =  evolution_deck.draw_card();
+    public EvolutionCard drawEvolutionCard() {
+    	EvolutionCard card =  evolutionDeck.draw_card();
     	return card;
     }
 
     
     public void discardEvolutionCard(EvolutionCard card) {
-    	evolution_deck.discard_card(card);
+    	evolutionDeck.discard_card(card);
     }
 
-    public void add_hp(int hp) {
+    public void addHp(int hp) {
     	this.hp += hp;
     }
 
@@ -81,8 +81,8 @@ public class Monster {
      * Gets the maximum hit points the monster can have
      * @return the maximim hit points as a int.
      */
-    public int get_max_hp() {
-        return max_hp;
+    public int getMaxHp() {
+        return maxHp;
     }
 
 
@@ -108,7 +108,7 @@ public class Monster {
      * Gets the name of the monster.
      * @return the name of this monster.
      */
-    public String get_name() {
+    public String getName() {
         return name;
     }
 
@@ -117,7 +117,7 @@ public class Monster {
      * Gets the energy of the monster.
      * @return the energy this monster has.
      */
-    public int get_energy() {
+    public int getEnergy() {
         return energy;
     }
 
@@ -126,7 +126,7 @@ public class Monster {
      * Sets the energy of the monster
      * @param energy is this monsters new energy.
      */
-    public void set_entergy(int energy) {
+    public void setEnergy(int energy) {
         this.energy = energy;
     }
 
@@ -144,7 +144,7 @@ public class Monster {
      * Sets the amount of stars the monster has.
      * @param stars is the new amount of stars this monster have. 
      */
-    public void set_stars(int stars) {
+    public void setStars(int stars) {
         this.stars = stars;
     }
 
@@ -154,7 +154,7 @@ public class Monster {
      * @return true if monster is in tokyo.
      */
     public boolean getInTokyo() {
-        return in_tokyo;
+        return inTokyo;
     }
 
 
@@ -163,7 +163,7 @@ public class Monster {
      * @param in_tokyo is the new value of in_tokyo.
      */
     public void setInTokyo(boolean in_tokyo) {
-        this.in_tokyo = in_tokyo;
+        this.inTokyo = in_tokyo;
     }
 
     public boolean getIsDead() {

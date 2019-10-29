@@ -29,7 +29,7 @@ public class Heal implements Event {
     public void execute() {
     	checkCards();
         Monster monster = client.getMonster();
-        int maxHp = monster.get_max_hp() + addedMaxHp;
+        int maxHp = monster.getMaxHp() + addedMaxHp;
         int newHp = monster.getHp() + healing;
         if (newHp > maxHp) {
             newHp = maxHp;

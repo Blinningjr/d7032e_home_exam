@@ -27,7 +27,7 @@ public class PowerUp implements Event {
         Monster monster = gameState.getCurrentPlayer().getMonster();
         if (numHearts >= heartsNeeded) {
             checkCards();
-            EvolutionCard evolutionCard = monster.draw_evolution_card();
+            EvolutionCard evolutionCard = monster.drawEvolutionCard();
             monster.evolutionCards.add(evolutionCard);
             checkNewCard();
         }

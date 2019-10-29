@@ -29,7 +29,7 @@ public class CheckNumOfThrees implements Event {
         Client client = gameState.getCurrentPlayer();
         if (numThrees >= numThreesNeeded) {
             checkCards();
-    		client.getMonster().set_stars(client.getMonster().getStars() + starsAdded + numThrees - numThreesNeeded);
+    		client.getMonster().setStars(client.getMonster().getStars() + starsAdded + numThrees - numThreesNeeded);
     	}
     }
 

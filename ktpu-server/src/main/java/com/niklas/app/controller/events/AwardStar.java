@@ -25,7 +25,7 @@ public class AwardStar implements Event {
 
     public void execute() {
         checkCards();
-        client.getMonster().set_stars(client.getMonster().getStars() + stars);
+        client.getMonster().setStars(client.getMonster().getStars() + stars);
     }
 
     public void add_stars(int stars) {

@@ -25,7 +25,7 @@ public class AwardEnergy implements Event {
 
     public void execute() {
         checkCards();
-        client.getMonster().set_entergy(client.getMonster().get_energy() + numEnergy);
+        client.getMonster().setEnergy(client.getMonster().getEnergy() + numEnergy);
     }
 
     private void checkCards() {
