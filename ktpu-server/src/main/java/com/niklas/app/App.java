@@ -1,22 +1,15 @@
 package com.niklas.app;
 
-import java.util.ArrayList;
 
 import com.niklas.app.controller.KTPUGame;
-import com.niklas.app.model.json.ReadJson;
-import com.niklas.app.model.monsters.Monster;
 
 
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public static void main( String[] args )
     {
 
-        KTPUGame game = new KTPUGame(2, 
+        new KTPUGame(3, 
             "./src/main/java/com/niklas/app/model/json/Monster.json", 
             "./src/main/java/com/niklas/app/model/json/StoreDeck.json");
         System.exit(0);

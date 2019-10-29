@@ -5,12 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.niklas.app.model.cards.CardStore;
-import com.niklas.app.model.cards.Duration;
-import com.niklas.app.model.cards.Effect;
-import com.niklas.app.model.cards.EvolutionCard;
-import com.niklas.app.model.cards.StoreCard;
-import com.niklas.app.model.cards.StoreCardType;
-import com.niklas.app.controller.actions.Actions;
 import com.niklas.app.controller.events.Attack;
 import com.niklas.app.controller.events.AwardEnergy;
 import com.niklas.app.controller.events.AwardStarIfCurrentPlayerInTokyo;
@@ -25,7 +19,6 @@ import com.niklas.app.controller.events.PowerUp;
 import com.niklas.app.controller.events.RollDice;
 import com.niklas.app.controller.events.Shopping;
 import com.niklas.app.model.GameState;
-import com.niklas.app.model.cards.Activation;
 import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.json.ReadJson;
 import com.niklas.app.model.monsters.Monster;
@@ -54,13 +47,15 @@ public class KTPUGame {
         }
 
 		Comunication comunication = new Comunication();
-        ArrayList<Client> players = comunication.init_comunication(monsters);
+        ArrayList<Client> players = comunication.initComunication(monsters);
 		Collections.shuffle(players);
 		CardStore cardStore = new CardStore(json_reader.read_store_deck_from_json(store_card_filepath));
 		
 		gameState = new GameState(players, cardStore, comunication);
 
         game_loop();
+        
+        gameState.getComunication().closeSocet();
     }
     
     private void game_loop() {
@@ -85,27 +80,24 @@ public class KTPUGame {
 		*/
 		boolean is_game_on = true;
     	while (is_game_on) {
-    		Client current_player = gameState.getCurrentPlayer();
-//    		pre: Award a monster in Tokyo 1 star
-			awardStarIfInTokyo();
-    		
-//    		1-5.
-    		ArrayList<KTPUDice> dice = rollDice();
-    		
-//    		6. Sum up totals 
-			//TODO: Fix
-    		checkDice(dice);
-    		
-//    		7. Decide to buy things for energy
-    		shopping();
+			if (!gameState.getCurrentPlayer().getMonster().getIsDead()) {
+				// pre: Award a monster in Tokyo 1 star
+				awardStarIfInTokyo();
+				
+				// 1-5.
+				ArrayList<KTPUDice> dice = rollDice();
+				
+				// 6. Sum up totals 
+				checkDice(dice);
+				
+				// 7. Decide to buy things for energy
+				shopping();
 
-//    		8. Check victory conditions
-			is_game_on = checkIfGameIsNotOver();
-
-    		gameState.nextTurn();
+				// 8. Check victory conditions
+				is_game_on = checkIfGameIsNotOver();
+			}
+			gameState.nextTurn();
 		}
-//    	Client winner = players.remove(players.size() - 1);
-//		comunication.sendWinner(winner, players);
     }
     
     private void awardStarIfInTokyo() {

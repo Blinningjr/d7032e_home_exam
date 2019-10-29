@@ -8,7 +8,7 @@ import com.niklas.app.online.Client;
 
 
 public class CheckForWinByStars implements Event {
-    private static final int NUM_STARS_NEEDED_TO_WIN = 200;
+    private static final int NUM_STARS_NEEDED_TO_WIN = 20;
     private GameState gameState;
     private boolean gameOver;
 
@@ -25,7 +25,7 @@ public class CheckForWinByStars implements Event {
             if (client.getMonster().getStars() >= NUM_STARS_NEEDED_TO_WIN) {
                 Client winner = client;
                 clients.remove(winner);
-                gameState.getComunication().sendWinner(winner, clients);
+                gameState.getComunication().sendStarsWinner(winner, clients);
                 clients.add(winner);
                 gameOver = true;
                 return;

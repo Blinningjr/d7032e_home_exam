@@ -90,7 +90,7 @@ public class Monster {
      * Gets the hit points of the monster.
      * @return the hit points of this monster.
      */
-    public int get_hp() {
+    public int getHp() {
         return hp;
     }
 
@@ -99,7 +99,7 @@ public class Monster {
      * Sets the hit points of the monster.
      * @param hp is the new hit points of this monster.
      */
-    public void set_hp(int hp) {
+    public void setHp(int hp) {
         this.hp = hp;
     }
 
@@ -162,7 +162,7 @@ public class Monster {
      * Sets the value of in_tokyo.
      * @param in_tokyo is the new value of in_tokyo.
      */
-    public void set_in_tokyo(boolean in_tokyo) {
+    public void setInTokyo(boolean in_tokyo) {
         this.in_tokyo = in_tokyo;
     }
 

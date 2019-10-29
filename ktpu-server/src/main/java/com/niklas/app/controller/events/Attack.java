@@ -31,7 +31,7 @@ public class Attack implements Event {
     public void execute() {
         checkCards();
         if (numClaws + bonusDamage > 0) {
-    		boolean enter_tokyo = true;
+    		boolean enterTokyo = true;
     		if (attackingClient.getMonster().getInTokyo()) {
     			for (Client client : clients) {
     				attack(client, numClaws + bonusDamage);
@@ -40,19 +40,19 @@ public class Attack implements Event {
     			for (Client client : clients) {
     				if (client.getMonster().getInTokyo()) {
 						attack(client,numClaws);
-						
-						// 6e. If you were outside, then the monster inside tokyo may decide to leave Tokyo
-                        String answer = gameState.getComunication().send_leave_tokyo(client);
-                        if(answer.equalsIgnoreCase("YES")) {
-                        	client.getMonster().set_in_tokyo(false);
-                        	enter_tokyo = true;
-                        } else {
-                        	enter_tokyo = false;
+						if (client.getMonster().getInTokyo()) {
+                            // 6e. If you were outside, then the monster inside tokyo may decide to leave Tokyo
+                            String answer = gameState.getComunication().send_leave_tokyo(client);
+                            if(answer.equalsIgnoreCase("YES")) {
+                                client.getMonster().setInTokyo(false);
+                            } else {
+                                enterTokyo = false;
+                            }
                         }
 					}
 				}
-    			if (enter_tokyo) {
-    				attackingClient.getMonster().set_in_tokyo(true);
+    			if (enterTokyo) {
+    				attackingClient.getMonster().setInTokyo(true);
     			}
     		}
     	}

@@ -10,7 +10,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.niklas.app.model.cards.Card;
 import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.EvolutionDeck;

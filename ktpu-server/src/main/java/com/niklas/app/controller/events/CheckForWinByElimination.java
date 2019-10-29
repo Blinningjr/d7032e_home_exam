@@ -22,14 +22,15 @@ public class CheckForWinByElimination implements Event {
         clients.addAll(gameState.getPlayers());
         ArrayList<Client> aliveClients = new ArrayList<Client>();
         for (Client client : clients) {
-            if (client.getMonster().getIsDead()) {
+            if (!client.getMonster().getIsDead()) {
                 aliveClients.add(client);
             } 
         }
         if (aliveClients.size() == 1) {
+            gameOver = true;
             Client winner = aliveClients.get(0);
             clients.remove(winner);
-            gameState.getComunication().sendWinner(winner, clients);
+            gameState.getComunication().sendEliminationWinner(winner, clients);
             clients.add(winner);
         }
     }

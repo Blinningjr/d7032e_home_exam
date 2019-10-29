@@ -5,14 +5,11 @@ import java.util.ArrayList;
 
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Activation;
-import com.niklas.app.model.cards.Duration;
 import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
-import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.monsters.Monster;
-
 
 
 public class RollDice implements Event{
@@ -34,7 +31,7 @@ public class RollDice implements Event{
         	dice.add(new KTPUDice());
         }
         for (int i = 0; i < numRerolls; i++) {
-        	int[] reroll = gameState.getComunication().send_reroll_dice(dice, gameState.getCurrentPlayer());
+        	int[] reroll = gameState.getComunication().sendRerollDice(dice, gameState.getCurrentPlayer());
         	if (reroll.length > 0 && reroll[0] > 0) {
         		for (int j : reroll) {
 					dice.get(j-1).roll();

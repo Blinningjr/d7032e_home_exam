@@ -3,11 +3,9 @@ package com.niklas.app.controller.events;
 
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Activation;
-import com.niklas.app.model.cards.Duration;
 import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
-import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 

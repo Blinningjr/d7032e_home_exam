@@ -22,7 +22,7 @@ public class CardStore {
         }
     }
     
-    public String inverntory_to_String() {
+    public String inverntoryToString() {
     	return "[1] " + inverntory[0].to_string() + ":" + "[2] " + inverntory[1].to_string() + ":" + "[3] " + inverntory[2].to_string() + ":";
     }
 

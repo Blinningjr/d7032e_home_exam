@@ -23,11 +23,13 @@ public class Heal implements Event {
     public void execute() {
         Monster monster = client.getMonster();
         int maxHp = monster.get_max_hp() + addedMaxHp;
-        int newHp = monster.get_hp() + healing;
+        int newHp = monster.getHp() + healing;
         if (newHp > maxHp) {
             newHp = maxHp;
         }
-        monster.set_hp(newHp);
+        if (!monster.getIsDead()) {
+            monster.setHp(newHp);
+        }
     }
 
     public void addHealing(int healing) {
