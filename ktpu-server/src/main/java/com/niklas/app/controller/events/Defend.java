@@ -41,12 +41,18 @@ public class Defend implements Event {
     }
 
     private void checkCards() {
-        Monster currentMonster = gameState.getCurrentPlayer().getMonster();
+        Monster currentMonster = defendingClient.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.Defend) {
 				switch (effect.getAction()) {
+                    case giveStarsEnergyAndHp:
+                        gameState.action.giveStarsEnergyAndHp(gameState, defendingClient, effect);
+                        break;
+                    case damageEveryoneElse:
+                        gameState.action.damageEveryoneElse(gameState, effect);
+                        break;
                     case addArmor:
                         gameState.action.addarmor(this, effect);
                         break;
@@ -65,6 +71,12 @@ public class Defend implements Event {
             Effect effect = evolutionCard.getEffect();
 			if (effect.getActivation() == Activation.Defend) {
 				switch (effect.getAction()) {
+                    case giveStarsEnergyAndHp:
+                        gameState.action.giveStarsEnergyAndHp(gameState, defendingClient, effect);
+                        break;
+                    case damageEveryoneElse:
+                        gameState.action.damageEveryoneElse(gameState, effect);
+                        break;
                     case addArmor:
                         gameState.action.addarmor(this, effect);
                         break;

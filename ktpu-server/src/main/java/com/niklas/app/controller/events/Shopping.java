@@ -72,12 +72,19 @@ public class Shopping implements Event {
     }
 
     private void checkCards() {
-        Monster currentMonster = gameState.getCurrentPlayer().getMonster();
+        Client client = gameState.getCurrentPlayer();
+        Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.Shopping) {
 				switch (effect.getAction()) {
+                    case giveStarsEnergyAndHp:
+                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        break;
+                    case damageEveryoneElse:
+                        gameState.action.damageEveryoneElse(gameState, effect);
+                        break;
                     case addCost:
                         gameState.action.addCost(this, effect);
                         break;
@@ -96,6 +103,12 @@ public class Shopping implements Event {
             Effect effect = evolutionCard.getEffect();
 			if (effect.getActivation() == Activation.Shopping) {
 				switch (effect.getAction()) {
+                    case giveStarsEnergyAndHp:
+                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        break;
+                    case damageEveryoneElse:
+                        gameState.action.damageEveryoneElse(gameState, effect);
+                        break;
                     case addCost:
                         gameState.action.addCost(this, effect);
                         break;

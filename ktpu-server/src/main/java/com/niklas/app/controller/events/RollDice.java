@@ -5,11 +5,14 @@ import java.util.ArrayList;
 
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Activation;
+import com.niklas.app.model.cards.Duration;
 import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
+import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.monsters.Monster;
+import com.niklas.app.online.Client;
 
 
 public class RollDice implements Event{
@@ -55,20 +58,27 @@ public class RollDice implements Event{
     }
 
     private void checkCards() {
-        Monster currentMonster = gameState.getCurrentPlayer().getMonster();
+        Client client = gameState.getCurrentPlayer();
+        Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.RollDice) {
 				switch (effect.getAction()) {
+                    case giveStarsEnergyAndHp:
+                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        break;
+                    case damageEveryoneElse:
+                        gameState.action.damageEveryoneElse(gameState, effect);
+                        break;
                     default:
                         throw new Error("action=" + effect.getAction() 
                             + " is not implemented for event RollDice");
                 }
-//				if (storeCard.getType() == StoreCardType.discard) {
-//					currentMonster.storeCards.remove(i);
-//				    gameState.getCardStore().discardCard(storeCard);
-//				}
+				if (storeCard.getType() == StoreCardType.discard) {
+					currentMonster.storeCards.remove(i);
+				    gameState.getCardStore().discardCard(storeCard);
+				}
 			}
         }
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
@@ -76,14 +86,20 @@ public class RollDice implements Event{
             Effect effect = evolutionCard.getEffect();
 			if (effect.getActivation() == Activation.RollDice) {
 				switch (effect.getAction()) {
+                    case giveStarsEnergyAndHp:
+                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        break;
+                    case damageEveryoneElse:
+                        gameState.action.damageEveryoneElse(gameState, effect);
+                        break;
                     default:
                         throw new Error("action=" + effect.getAction() 
                             + " is not implemented for event RollDice");
                 }
-//				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
-//					currentMonster.evolutionCards.remove(i);
-//                    currentMonster.discardEvolutionCard(evolutionCard);
-//				}
+				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
+					currentMonster.evolutionCards.remove(i);
+                    currentMonster.discardEvolutionCard(evolutionCard);
+				}
 			}
 		}
     }

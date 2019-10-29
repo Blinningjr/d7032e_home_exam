@@ -17,8 +17,50 @@ public class Effect {
   
     public Effect(String activation, String action) {
       switch (activation) {
+        case "Attack":
+          this.activation = Activation.Attack;
+          break;
+        case "AwardEnergy":
+          this.activation = Activation.AwardEnergy;
+          break;
+        case "AwardStar":
+          this.activation = Activation.AwardStar;
+          break;
         case "AwardStarIfCurrentPlayerInTokyo":
           this.activation = Activation.AwardStarIfCurrentPlayerInTokyo;
+          break;
+        case "CheckDice":
+          this.activation = Activation.CheckDice;
+          break;
+        case "CheckForWinByElimination":
+          this.activation = Activation.CheckForWinByElimination;
+          break;
+        case "CheckForWinByStars":
+          this.activation = Activation.CheckForWinByStars;
+          break;
+        case "CheckNumOfOnes":
+          this.activation = Activation.CheckNumOfOnes;
+          break;
+        case "CheckNumOfThrees":
+          this.activation = Activation.CheckNumOfThrees;
+          break;
+        case "CheckNumOfTwos":
+          this.activation = Activation.CheckNumOfTwos;
+          break;
+        case "Damage":
+          this.activation = Activation.Damage;
+          break;
+        case "Defend":
+          this.activation = Activation.Defend;
+          break;
+        case "Heal":
+          this.activation = Activation.Heal;
+          break;
+        case "Now":
+          this.activation = Activation.Now;
+          break;
+        case "PowerUp":
+          this.activation = Activation.PowerUp;
           break;
         case "RollDice":
           this.activation = Activation.RollDice;
@@ -26,25 +68,7 @@ public class Effect {
         case "Shopping":
           this.activation = Activation.Shopping;
           break;
-        case "Now":
-          this.activation = Activation.Now;
-          break;
-        case "Defend":
-          this.activation = Activation.Defend;
-          break;
-        case "Attack":
-          this.activation = Activation.Attack;
-          break;
 
-        case "checkForWinByStars":
-          this.activation = Activation.checkForWinByStars;
-          break;
-        case "checkForWinByElimination":  
-          this.activation = Activation.checkForWinByElimination;
-          break;
-        case "rolled":
-          this.activation = Activation.rolled;
-          break;
         default:
           throw new Error("activation= "+ activation + " is not implemented");
       }

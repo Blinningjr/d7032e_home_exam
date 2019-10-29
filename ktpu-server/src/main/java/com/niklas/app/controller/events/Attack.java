@@ -79,6 +79,9 @@ public class Attack implements Event {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, attackingClient, effect);
                         break;
+                    case damageEveryoneElse:
+                        gameState.action.damageEveryoneElse(gameState, effect);
+                        break;
                     case addDamage:
                         gameState.action.addDamage(this, effect);
                         break;
@@ -99,6 +102,9 @@ public class Attack implements Event {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, attackingClient, effect);
+                        break;
+                    case damageEveryoneElse:
+                        gameState.action.damageEveryoneElse(gameState, effect);
                         break;
                     case addDamage:
                         gameState.action.addDamage(this, effect);
