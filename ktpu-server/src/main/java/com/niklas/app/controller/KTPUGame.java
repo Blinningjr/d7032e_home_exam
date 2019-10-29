@@ -52,13 +52,9 @@ public class KTPUGame {
 		CardStore cardStore = new CardStore(json_reader.read_store_deck_from_json(store_card_filepath));
 		
 		gameState = new GameState(players, cardStore, comunication);
-
-        game_loop();
-        
-        gameState.getComunication().closeSocet();
     }
     
-    private void game_loop() {
+    public void startGame() {
     	/*
 	        Game loop:
 	        pre: Award a monster in Tokyo 1 star
@@ -98,7 +94,12 @@ public class KTPUGame {
 			}
 			gameState.nextTurn();
 		}
-    }
+		gameState.getComunication().closeSocet();
+	}
+	
+	public GameState getGameState() {
+		return gameState;
+	}
     
     private void awardStarIfInTokyo() {
 		AwardStarIfCurrentPlayerInTokyo asicpit = new AwardStarIfCurrentPlayerInTokyo(gameState);
