@@ -25,7 +25,7 @@ public class AwardStarIfCurrentPlayerInTokyo implements Event {
         Client currentPlayer = gameState.getCurrentPlayer();
         if (currentPlayer.getMonster().getInTokyo()) {
             checkCards();
-            AwardStar awardStar = new AwardStar(gameState.getComunication(), currentPlayer, stars);
+            AwardStar awardStar = new AwardStar(gameState, currentPlayer, stars);
             awardStar.execute();
         }
         gameState.getComunication().sendAllStats(currentPlayer, gameState.getPlayers());
@@ -47,10 +47,10 @@ public class AwardStarIfCurrentPlayerInTokyo implements Event {
                         throw new Error("action=" + effect.getAction() 
                             + " is not implemented for event AwardStarIfCurrentPlayerInTokyo");
                 }
-				if (storeCard.getType() == StoreCardType.discard) {
-					currentMonster.storeCards.remove(i);
-				    gameState.getCardStore().discardCard(storeCard);
-				}
+//				if (storeCard.getType() == StoreCardType.discard) {
+//					currentMonster.storeCards.remove(i);
+//				    gameState.getCardStore().discardCard(storeCard);
+//				}
 			}
         }
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
@@ -62,10 +62,10 @@ public class AwardStarIfCurrentPlayerInTokyo implements Event {
                         throw new Error("action=" + effect.getAction() 
                             + " is not implemented for event AwardStarIfCurrentPlayerInTokyo");
                 }
-				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
-					currentMonster.evolutionCards.remove(i);
-                    currentMonster.discard_evolution_card(evolutionCard);
-				}
+//				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
+//					currentMonster.evolutionCards.remove(i);
+//                    currentMonster.discardEvolutionCard(evolutionCard);
+//				}
 			}
 		}
     }

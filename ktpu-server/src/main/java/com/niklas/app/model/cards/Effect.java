@@ -29,18 +29,18 @@ public class Effect {
         case "Now":
           this.activation = Activation.Now;
           break;
+        case "Defend":
+          this.activation = Activation.Defend;
+          break;
+        case "Attack":
+          this.activation = Activation.Attack;
+          break;
 
         case "checkForWinByStars":
           this.activation = Activation.checkForWinByStars;
           break;
         case "checkForWinByElimination":  
           this.activation = Activation.checkForWinByElimination;
-          break;
-        case "attack":
-          this.activation = Activation.attack;
-          break;
-        case "defend":
-          this.activation = Activation.defend;
           break;
         case "rolled":
           this.activation = Activation.rolled;

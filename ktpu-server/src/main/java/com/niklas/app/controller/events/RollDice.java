@@ -68,10 +68,10 @@ public class RollDice implements Event{
                         throw new Error("action=" + effect.getAction() 
                             + " is not implemented for event RollDice");
                 }
-				if (storeCard.getType() == StoreCardType.discard) {
-					currentMonster.storeCards.remove(i);
-				    gameState.getCardStore().discardCard(storeCard);
-				}
+//				if (storeCard.getType() == StoreCardType.discard) {
+//					currentMonster.storeCards.remove(i);
+//				    gameState.getCardStore().discardCard(storeCard);
+//				}
 			}
         }
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
@@ -83,10 +83,10 @@ public class RollDice implements Event{
                         throw new Error("action=" + effect.getAction() 
                             + " is not implemented for event RollDice");
                 }
-				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
-					currentMonster.evolutionCards.remove(i);
-                    currentMonster.discard_evolution_card(evolutionCard);
-				}
+//				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
+//					currentMonster.evolutionCards.remove(i);
+//                    currentMonster.discardEvolutionCard(evolutionCard);
+//				}
 			}
 		}
     }

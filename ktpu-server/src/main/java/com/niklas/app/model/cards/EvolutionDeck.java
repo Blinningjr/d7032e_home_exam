@@ -30,7 +30,7 @@ public class EvolutionDeck {
      */
     public EvolutionCard draw_card() {
         if (deck.size() == 0) {
-            deck = discard_pile;
+            deck.addAll(discard_pile);
             shuffle();
             discard_pile.clear();
         }

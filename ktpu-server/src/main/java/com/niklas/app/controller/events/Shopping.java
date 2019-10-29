@@ -54,11 +54,11 @@ public class Shopping implements Event {
         if (effect.getActivation() == Activation.Now) {
             switch (effect.getAction()) {
                 case giveStarsEnergyAndHp:
-                    gameState.action.giveStarsEnergyAndHp(gameState.getComunication(),
+                    gameState.action.giveStarsEnergyAndHp(gameState,
                         gameState.getCurrentPlayer(), effect);
                     break;
                 case damageEveryoneElse:
-                    gameState.action.damageEveryoneElse(gameState.getComunication(), gameState.getPlayers(), effect);
+                    gameState.action.damageEveryoneElse(gameState, effect);
                     break;
                 default:
                     throw new Error("action=" + effect.getAction() 
@@ -105,7 +105,7 @@ public class Shopping implements Event {
                 }
 				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
 					currentMonster.evolutionCards.remove(i);
-                    currentMonster.discard_evolution_card(evolutionCard);
+                    currentMonster.discardEvolutionCard(evolutionCard);
 				}
 			}
 		}

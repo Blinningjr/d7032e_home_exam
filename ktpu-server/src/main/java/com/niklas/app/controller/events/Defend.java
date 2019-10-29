@@ -1,19 +1,26 @@
 package com.niklas.app.controller.events;
 
 
+import com.niklas.app.model.GameState;
+import com.niklas.app.model.cards.Activation;
+import com.niklas.app.model.cards.Duration;
+import com.niklas.app.model.cards.Effect;
+import com.niklas.app.model.cards.EvolutionCard;
+import com.niklas.app.model.cards.StoreCard;
+import com.niklas.app.model.cards.StoreCardType;
+import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
-import com.niklas.app.online.Comunication;
 
 
 public class Defend implements Event {
-    private Comunication comunication;
+    private GameState gameState;
     private Client attackingClient;
     private Client defendingClient;
     private int damage;
     private int armor;
 
-    public Defend(Comunication comunication, Client attackingClient, Client defendingClient, int damage) {
-        this.comunication = comunication;
+    public Defend(GameState gameState, Client attackingClient, Client defendingClient, int damage) {
+        this.gameState = gameState;
         this.attackingClient = attackingClient;
         this.defendingClient = defendingClient;
         this.damage = damage;
@@ -22,7 +29,8 @@ public class Defend implements Event {
     }
 
     public void execute() {
-        Damage d = new Damage(comunication, defendingClient, damage - armor);
+        checkCards();
+        Damage d = new Damage(gameState, defendingClient, damage - armor);
         d.execute();
     }
 
@@ -30,5 +38,45 @@ public class Defend implements Event {
         if (addedArmor > 0) {
             armor += addedArmor;
         } 
+    }
+
+    private void checkCards() {
+        Monster currentMonster = gameState.getCurrentPlayer().getMonster();
+        for (int i = 0; i < currentMonster.storeCards.size(); i++) {
+            StoreCard storeCard = currentMonster.storeCards.get(i);
+            Effect effect = storeCard.getEffect();
+			if (effect.getActivation() == Activation.Defend) {
+				switch (effect.getAction()) {
+                    case addArmor:
+                        gameState.action.addarmor(this, effect);
+                        break;
+                    default:
+                        throw new Error("action=" + effect.getAction() 
+                            + " is not implemented for event Defend");
+                }
+				if (storeCard.getType() == StoreCardType.discard) {
+					currentMonster.storeCards.remove(i);
+				    gameState.getCardStore().discardCard(storeCard);
+				}
+			}
+        }
+        for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
+            EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
+            Effect effect = evolutionCard.getEffect();
+			if (effect.getActivation() == Activation.Defend) {
+				switch (effect.getAction()) {
+                    case addArmor:
+                        gameState.action.addarmor(this, effect);
+                        break;
+                    default:
+                        throw new Error("action=" + effect.getAction() 
+                            + " is not implemented for event Defend");
+                }
+				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
+					currentMonster.evolutionCards.remove(i);
+                    currentMonster.discardEvolutionCard(evolutionCard);
+				}
+			}
+		}
     }
 }

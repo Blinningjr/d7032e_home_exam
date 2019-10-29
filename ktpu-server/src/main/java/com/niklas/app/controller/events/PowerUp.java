@@ -31,7 +31,7 @@ public class PowerUp implements Event {
 
     private void checkNewCard() {
         Monster currentMonster = gameState.getCurrentPlayer().getMonster();
-        EvolutionCard evolutionCard = currentMonster.evolutionCards.get(currentMonster.storeCards.size() - 1);
+        EvolutionCard evolutionCard = currentMonster.evolutionCards.get(currentMonster.evolutionCards.size() - 1);
         Effect effect = evolutionCard.getEffect();
         if (effect.getActivation() == Activation.Now) {
             switch (effect.getAction()) {
@@ -47,8 +47,8 @@ public class PowerUp implements Event {
                         + " is not implemented for event PowerUp");
             }
             if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
-                currentMonster.evolutionCards.remove(currentMonster.storeCards.size() - 1);
-                currentMonster.discard_evolution_card(evolutionCard);
+                currentMonster.evolutionCards.remove(currentMonster.evolutionCards.size() - 1);
+                currentMonster.discardEvolutionCard(evolutionCard);
             }
         }
     }

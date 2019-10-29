@@ -35,12 +35,10 @@ import com.niklas.app.online.Comunication;
 
 public class KTPUGame {
     private GameState gameState;
-	private Actions actions;
-
+    
 
     public KTPUGame(int tot_num_players, String monster_filepath, String store_card_filepath) {
         ReadJson json_reader = new ReadJson();
-		actions = new Actions();
         
         ArrayList<Monster> monsters = json_reader.read_monsters_from_json(monster_filepath);
         Collections.shuffle(monsters);
@@ -96,7 +94,7 @@ public class KTPUGame {
     		
 //    		6. Sum up totals 
 			//TODO: Fix
-    		checkDice(dice, current_player);
+    		checkDice(dice);
     		
 //    		7. Decide to buy things for energy
     		shopping();

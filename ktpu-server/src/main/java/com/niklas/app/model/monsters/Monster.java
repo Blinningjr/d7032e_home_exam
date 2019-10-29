@@ -69,7 +69,7 @@ public class Monster {
     }
 
     
-    public void discard_evolution_card(EvolutionCard card) {
+    public void discardEvolutionCard(EvolutionCard card) {
     	evolution_deck.discard_card(card);
     }
 

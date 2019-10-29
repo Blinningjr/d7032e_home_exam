@@ -4,7 +4,7 @@
             "name": "Acid Attack",
             "description": "Deal 1 extra damage each turn (even when you don't otherwise attack).",
             "effect": {
-                "activation": "checkCards",
+                "activation": "Attack",
                 "action": "addDamage",
                 "added_damage": "1"
             },
@@ -32,7 +32,7 @@
             "name": "Alpha Monster",
             "description": "Gain 1[Star] when you attack.",
             "effect": {
-                "activation": "attack",
+                "activation": "Attack",
                 "action": "giveStarsEnergyAndHp",
                 "added_stars": "1"
             },
@@ -60,7 +60,7 @@
             "name": "Armor Plating",
             "description": "Ignore damage of 1.",
             "effect": {
-                "activation": "defend",
+                "activation": "Defend",
                 "action": "addArmor",
                 "armor": "1"
             },

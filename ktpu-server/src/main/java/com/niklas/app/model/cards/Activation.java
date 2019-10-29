@@ -7,10 +7,10 @@ public enum Activation {
     RollDice,
     Shopping,
     Now,
-
+    Defend,
+    Attack,
+    
     checkForWinByStars,
     checkForWinByElimination,
-    attack,
-    defend,
     rolled
 }
