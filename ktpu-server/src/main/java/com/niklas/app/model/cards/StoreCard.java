@@ -35,7 +35,7 @@ public class StoreCard extends Card {
 
 
     public String to_string() {
-        return "[" + super.get_name() + ", Cost= " + cost + ", Type= " + type + ", Description= " + super.get_description() + "]";
+        return "[" + super.getName() + ", Cost= " + cost + ", Type= " + type + ", Description= " + super.get_description() + "]";
     }
 
 
@@ -43,7 +43,7 @@ public class StoreCard extends Card {
      * Gets the energy cost of the StoreCard.
      * @return the cost of the StoreCard as a int.
      */
-    public int get_cost() {
+    public int getCost() {
         return cost;
     }
 

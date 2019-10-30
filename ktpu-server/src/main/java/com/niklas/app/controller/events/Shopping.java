@@ -32,7 +32,7 @@ public class Shopping implements Event {
         String answer = gameState.getComunication().sendShopping(currentPlayer, cardStore, extraCost);
         int buy = Integer.parseInt(answer);
         if (buy > 0){
-            int cost = storeCards[buy -1].get_cost() + extraCost;
+            int cost = storeCards[buy -1].getCost() + extraCost;
             if(currentMonster.getEnergy() >= cost) { 
                 try {
                     currentMonster.setEnergy(currentPlayer.getMonster().getEnergy() - cost);

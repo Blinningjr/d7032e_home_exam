@@ -13,6 +13,7 @@ public class TestClient extends Thread {
     private boolean flag;
     private boolean leaveTokyo;
     private String name;
+    private String storeInput;
 
     public TestClient() {
        
@@ -26,6 +27,7 @@ public class TestClient extends Thread {
         rerolled = new ArrayList<Integer>();
         flag = false;
         leaveTokyo = true;
+        storeInput = "-1\n";
         //Server stuffs
         try {
             Socket aSocket = new Socket("localhost", 2048);
@@ -61,7 +63,7 @@ public class TestClient extends Thread {
                     }
                 } else if(message[0].equalsIgnoreCase("PURCHASE")) {
                     if(bot) {
-                        outToServer.writeBytes("-1\n");
+                        outToServer.writeBytes(storeInput);
                     }
                     else
                         outToServer.writeBytes(sc.nextLine() + "\n");
@@ -95,4 +97,7 @@ public class TestClient extends Thread {
         return name;
     }
 
+    public synchronized void setStoreInput(String input) {
+        storeInput = input;
+    }
 }

@@ -1,6 +1,8 @@
 package com.niklas.app;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
@@ -17,7 +19,9 @@ import com.niklas.app.controller.events.CheckNumOfOnes;
 import com.niklas.app.controller.events.CheckNumOfThrees;
 import com.niklas.app.controller.events.CheckNumOfTwos;
 import com.niklas.app.controller.events.PowerUp;
+import com.niklas.app.controller.events.Shopping;
 import com.niklas.app.model.GameState;
+import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
@@ -701,5 +705,136 @@ public class AppTest {
         assertEquals(false, monster.getInTokyo());
         assertEquals(true, monsterInTokyo.getInTokyo());
         assertEquals(monsterInTokyoHP, monsterInTokyo.getHp());
+    }
+
+    /**
+     *  13.Buying Cards (As long as long as you have the Energy, you can take any of the following actions)
+     *      Purchase a card = Pay energy equal to the card cost(replace purchased cards with new from the deck)
+     */
+    @Test
+    public void testNoPurchase() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        StoreCard[] inventory = gameState.getCardStore().getInventory();
+        StoreCard[] oldInventory = new StoreCard[inventory.length];
+        for (int i = 0; i < oldInventory.length; i++) {
+            oldInventory[i] = inventory[i];
+        }
+        int cardCost = inventory[0].getCost();
+        String input = "-1\n";
+        int energy = cardCost - 1;
+        int expectedNumCards = monster.storeCards.size();
+        
+        monster.setEnergy(energy);
+
+        testClient1.setStoreInput(input);
+        testClient2.setStoreInput(input);
+        testClient3.setStoreInput(input);
+
+        Shopping shopping = new Shopping(gameState);
+        shopping.execute();
+
+        assertEquals(energy, monster.getEnergy());
+        assertEquals(expectedNumCards, monster.storeCards.size());
+        assertArrayEquals(oldInventory, inventory);
+    }
+
+    /**
+     *  13.Buying Cards (As long as long as you have the Energy, you can take any of the following actions)
+     *      Purchase a card = Pay energy equal to the card cost(replace purchased cards with new from the deck)
+     */
+    @Test
+    public void testPurchaseLow() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        StoreCard[] inventory = gameState.getCardStore().getInventory();
+        StoreCard[] oldInventory = new StoreCard[inventory.length];
+        for (int i = 0; i < oldInventory.length; i++) {
+            oldInventory[i] = inventory[i];
+        }
+        int pos = 2;
+        int cardCost = inventory[pos-1].getCost();
+        String input = pos + "\n";
+        int energy = cardCost - 1;
+        int expectedNumCards = monster.storeCards.size();
+        
+        monster.setEnergy(energy);
+
+        testClient1.setStoreInput(input);
+        testClient2.setStoreInput(input);
+        testClient3.setStoreInput(input);
+
+        Shopping shopping = new Shopping(gameState);
+        shopping.execute();
+
+        assertEquals(energy, monster.getEnergy());
+        assertEquals(expectedNumCards, monster.storeCards.size());
+        assertArrayEquals(oldInventory, inventory);
+    }
+
+     /**
+     *  13.Buying Cards (As long as long as you have the Energy, you can take any of the following actions)
+     *      Purchase a card = Pay energy equal to the card cost(replace purchased cards with new from the deck)
+     */
+    @Test
+    public void testPurchaseEqual() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        StoreCard[] inventory = gameState.getCardStore().getInventory();
+        StoreCard[] oldInventory = new StoreCard[inventory.length];
+        for (int i = 0; i < oldInventory.length; i++) {
+            oldInventory[i] = inventory[i];
+        }
+        int pos = 1;
+        int cardCost = inventory[pos-1].getCost();
+        String input = pos + "\n";
+        int energy = cardCost;
+        int expectedNumCards = monster.storeCards.size() + 1;
+        
+        monster.setEnergy(energy);
+
+        testClient1.setStoreInput(input);
+        testClient2.setStoreInput(input);
+        testClient3.setStoreInput(input);
+
+        Shopping shopping = new Shopping(gameState);
+        shopping.execute();
+
+        assertEquals(0, monster.getEnergy());
+        assertEquals(expectedNumCards, monster.storeCards.size());
+        assertNotEquals(oldInventory[pos-1], inventory[pos-1]);
+    }
+
+    /**
+     *  13.Buying Cards (As long as long as you have the Energy, you can take any of the following actions)
+     *      Purchase a card = Pay energy equal to the card cost(replace purchased cards with new from the deck)
+     */
+    @Test
+    public void testPurchaseLarg() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        StoreCard[] inventory = gameState.getCardStore().getInventory();
+        StoreCard[] oldInventory = new StoreCard[inventory.length];
+        for (int i = 0; i < oldInventory.length; i++) {
+            oldInventory[i] = inventory[i];
+        }
+        int pos = 3;
+        int cardCost = inventory[pos - 1].getCost();
+        String input = pos + "\n";
+        int energy = cardCost + 1;
+        int expectedNumCards = monster.storeCards.size() + 1;
+        
+        monster.setEnergy(energy);
+
+        testClient1.setStoreInput(input);
+        testClient2.setStoreInput(input);
+        testClient3.setStoreInput(input);
+
+        Shopping shopping = new Shopping(gameState);
+        shopping.execute();
+
+        assertEquals(1, monster.getEnergy());
+        assertEquals(expectedNumCards, monster.storeCards.size());
+        assertNotEquals(oldInventory[pos-1], inventory[pos-1]);
     }
 }

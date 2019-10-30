@@ -31,7 +31,7 @@ public abstract class Card {
      * Gets the name of the card.
      * @return the name of the card as a String.
      */
-    public String get_name(){
+    public String getName(){
         return name;
     }
 

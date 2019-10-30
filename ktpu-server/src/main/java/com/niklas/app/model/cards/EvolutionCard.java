@@ -38,7 +38,7 @@ public class EvolutionCard extends Card {
 
 
     public String to_string() {
-        return "[" + super.get_name() + ", Monster type= " + monster_type + ", Duration= " + duration + ", Description= " + get_description() + "]";
+        return "[" + super.getName() + ", Monster type= " + monster_type + ", Duration= " + duration + ", Description= " + get_description() + "]";
     }
 
 
