@@ -49,7 +49,7 @@ public class Actions {
 	}
 
 	public void addCost(Shopping shopping, Effect effect) {
-		shopping.add_cost(effect.get_added_cost());
+		shopping.addCost(effect.get_added_cost());
 	}
 
 	public void addDamage(Attack attack, Effect effect) {

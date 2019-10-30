@@ -52,7 +52,7 @@ public class CardStore {
      * Gets the inventory.
      * @return the inventory as a Card[].
      */
-    public StoreCard[] get_inventory() {
+    public StoreCard[] getInventory() {
         return inverntory;
     }
 }

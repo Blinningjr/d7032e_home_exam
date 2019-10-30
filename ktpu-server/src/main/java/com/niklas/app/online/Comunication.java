@@ -123,7 +123,8 @@ public class Comunication {
             extraCostString = ":\tPrice is incrised with " + extraCost + "energy.:";
         }
         String msg = "PURCHASE:Do you want to buy any of the cards from the store? (you have " 
-            + client.getMonster().getEnergy() + " energy) [#/-1]:" + extraCostString + cardStore.inverntoryToString() + "\n";
+            + client.getMonster().getEnergy() + " energy) [#/-1]:" + extraCostString + cardStore.inverntoryToString() 
+            + "[0] 2 Energy too reset store.\n";
 
         return sendMessage(client, msg);
     }

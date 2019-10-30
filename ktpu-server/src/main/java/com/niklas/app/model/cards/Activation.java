@@ -19,6 +19,7 @@ public enum Activation {
     Heal,
     Now,
     PowerUp,
+    ResetStore,
     RollDice,
     Shopping,
 }

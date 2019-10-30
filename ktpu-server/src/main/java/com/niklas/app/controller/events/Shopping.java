@@ -27,24 +27,29 @@ public class Shopping implements Event {
         Client currentPlayer = gameState.getCurrentPlayer();
         Monster currentMonster = currentPlayer.getMonster();
         CardStore cardStore = gameState.getCardStore();
-        StoreCard[] storeCards = cardStore.get_inventory();
+        StoreCard[] storeCards = cardStore.getInventory();
 
         String answer = gameState.getComunication().sendShopping(currentPlayer, cardStore, extraCost);
         int buy = Integer.parseInt(answer);
-        int cost = storeCards[buy -1].get_cost() + extraCost;
-        if(buy>0 && (currentMonster.getEnergy() >= cost)) { 
-        	try {
-        		currentMonster.setEnergy(currentPlayer.getMonster().getEnergy() -cost);
-                currentMonster.storeCards.add(cardStore.buy(buy-1));
-                checkBoughtCard();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        if (buy > 0){
+            int cost = storeCards[buy -1].get_cost() + extraCost;
+            if(currentMonster.getEnergy() >= cost) { 
+                try {
+                    currentMonster.setEnergy(currentPlayer.getMonster().getEnergy() - cost);
+                    currentMonster.storeCards.add(cardStore.buy(buy-1));
+                    checkBoughtCard();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        } else if (buy == 0) {
+            ResetStore resetStore = new ResetStore(gameState);
+            resetStore.execute();
         }
     }
 
-    public void add_cost(int addedCost) {
+    public void addCost(int addedCost) {
         extraCost += addedCost;
     }
 

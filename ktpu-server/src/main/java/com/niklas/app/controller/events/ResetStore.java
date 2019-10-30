@@ -1,62 +1,45 @@
 package com.niklas.app.controller.events;
 
 
-import java.util.ArrayList;
-
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Activation;
+import com.niklas.app.model.cards.CardStore;
 import com.niklas.app.model.cards.Duration;
 import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
-import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class RollDice implements Event{
-    private int numDice;
-    private int numRerolls;
+public class ResetStore implements Event {
     private GameState gameState;
-    private ArrayList<KTPUDice> dice;
+    private int cost;
+    private int extraCost;
 
-    public RollDice(GameState gameState) {
+    public ResetStore(GameState gameState) {
         this.gameState = gameState;
-        numDice = 6;
-        numRerolls = 2;
+        cost = 2;
+        extraCost = 0;
     }
 
     public void execute() {
-        checkCards();
-        dice = new ArrayList<KTPUDice>();
-        for (int i = 0; i < numDice; i++) {
-        	dice.add(new KTPUDice());
-        }
-        for (int i = 0; i < numRerolls; i++) {
-        	int[] reroll = gameState.getComunication().sendRerollDice(dice, gameState.getCurrentPlayer());
-        	if (reroll.length > 0 && reroll[0] > 0) {
-                for (int j : reroll) {
-                    if (j > 0 && j < 7) {
-                        dice.get(j-1).roll();
-                    }
-                }
-        	} else{
-        		return;
-        	}
+        Client currentPlayer = gameState.getCurrentPlayer();
+        int totalCost = cost + extraCost;
+        if (currentPlayer.getMonster().getEnergy() > totalCost) {
+            checkCards();
+            currentPlayer.getMonster().setEnergy(currentPlayer.getMonster().getEnergy() - totalCost);
+
+            CardStore cardStore = gameState.getCardStore();
+            for (int i = 0; i < cardStore.getInventory().length; i++) {
+                cardStore.discardCard(cardStore.buy(i));
+            }
         }
     }
 
-    public ArrayList<KTPUDice> getDice() {
-        return dice;
-    }
-
-    public void addDice(int numDice) {
-        this.numDice += numDice;
-    }
-
-    public void addRerolls(int numRerolls){
-        this.numRerolls += numRerolls;
+    public void addCost(int addedCost) {
+        extraCost += addedCost;
     }
 
     private void checkCards() {
@@ -65,7 +48,7 @@ public class RollDice implements Event{
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
-			if (effect.getActivation() == Activation.RollDice) {
+			if (effect.getActivation() == Activation.ResetStore) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
@@ -75,7 +58,7 @@ public class RollDice implements Event{
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event RollDice");
+                            + " is not implemented for event ResetStore");
                 }
 				if (storeCard.getType() == StoreCardType.discard) {
 					currentMonster.storeCards.remove(i);
@@ -86,7 +69,7 @@ public class RollDice implements Event{
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
             EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
             Effect effect = evolutionCard.getEffect();
-			if (effect.getActivation() == Activation.RollDice) {
+			if (effect.getActivation() == Activation.ResetStore) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
@@ -96,7 +79,7 @@ public class RollDice implements Event{
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event RollDice");
+                            + " is not implemented for event ResetStore");
                 }
 				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
 					currentMonster.evolutionCards.remove(i);
