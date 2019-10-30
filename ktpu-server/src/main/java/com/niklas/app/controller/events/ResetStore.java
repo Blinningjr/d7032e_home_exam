@@ -27,7 +27,7 @@ public class ResetStore implements Event {
     public void execute() {
         Client currentPlayer = gameState.getCurrentPlayer();
         int totalCost = cost + extraCost;
-        if (currentPlayer.getMonster().getEnergy() > totalCost) {
+        if (currentPlayer.getMonster().getEnergy() >= totalCost) {
             checkCards();
             currentPlayer.getMonster().setEnergy(currentPlayer.getMonster().getEnergy() - totalCost);
 

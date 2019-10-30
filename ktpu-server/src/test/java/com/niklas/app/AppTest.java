@@ -837,4 +837,83 @@ public class AppTest {
         assertEquals(expectedNumCards, monster.storeCards.size());
         assertNotEquals(oldInventory[pos-1], inventory[pos-1]);
     }
+
+    /**
+     *  13.Buying Cards (As long as long as you have the Energy, you can take any of the following actions)
+     *      Reset store –pay 2 energy
+     */
+    @Test
+    public void testResetStoreLow() {
+        Monster monster = gameState.getCurrentPlayer().getMonster();
+        StoreCard[] inventory = gameState.getCardStore().getInventory();
+        StoreCard[] oldInventory = new StoreCard[inventory.length];
+        for (int i = 0; i < oldInventory.length; i++) {
+            oldInventory[i] = inventory[i];
+        }
+        String input = 0 + "\n";
+        int energy = 1;
+        monster.setEnergy(energy);
+
+        testClient1.setStoreInput(input);
+        testClient2.setStoreInput(input);
+        testClient3.setStoreInput(input);
+
+        Shopping shopping = new Shopping(gameState);
+        shopping.execute();
+
+        assertEquals(energy, monster.getEnergy());
+        assertArrayEquals(oldInventory, inventory);
+    }
+
+    /**
+     *  13.Buying Cards (As long as long as you have the Energy, you can take any of the following actions)
+     *      Reset store –pay 2 energy
+     */
+    @Test
+    public void testResetStoreEqual() {
+        Monster monster = gameState.getCurrentPlayer().getMonster();
+        StoreCard[] inventory = gameState.getCardStore().getInventory();
+        StoreCard[] oldInventory = new StoreCard[inventory.length];
+        for (int i = 0; i < oldInventory.length; i++) {
+            oldInventory[i] = inventory[i];
+        }
+        String input = 0 + "\n";
+        monster.setEnergy(2);
+
+        testClient1.setStoreInput(input);
+        testClient2.setStoreInput(input);
+        testClient3.setStoreInput(input);
+
+        Shopping shopping = new Shopping(gameState);
+        shopping.execute();
+
+        assertEquals(0, monster.getEnergy());
+        assertNotEquals(oldInventory, inventory);
+    }
+
+    /**
+     *  13.Buying Cards (As long as long as you have the Energy, you can take any of the following actions)
+     *      Reset store –pay 2 energy
+    */
+    @Test
+    public void testResetStoreLarg() {
+        Monster monster = gameState.getCurrentPlayer().getMonster();
+        StoreCard[] inventory = gameState.getCardStore().getInventory();
+        StoreCard[] oldInventory = new StoreCard[inventory.length];
+        for (int i = 0; i < oldInventory.length; i++) {
+            oldInventory[i] = inventory[i];
+        }
+        String input = 0 + "\n";
+        monster.setEnergy(3);
+
+        testClient1.setStoreInput(input);
+        testClient2.setStoreInput(input);
+        testClient3.setStoreInput(input);
+
+        Shopping shopping = new Shopping(gameState);
+        shopping.execute();
+
+        assertEquals(1, monster.getEnergy());
+        assertNotEquals(oldInventory, inventory);
+    }
 }
