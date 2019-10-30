@@ -147,4 +147,21 @@ public class AppTest {
             }
         }
     }
+
+    /**
+     * 10. Reroll the selected dice
+     */
+    @Test
+    public void testRule11() {
+        int[] reroll0 = {};
+        helpTestRule10(reroll0);
+        int[] reroll1 = {1};
+        helpTestRule10(reroll1);
+        int[] reroll2 = {2,3};
+        helpTestRule10(reroll2);
+        int[] reroll3 = {1,6,4};
+        helpTestRule10(reroll3);
+        int[] reroll4 = {5,1,2,1};
+        helpTestRule10(reroll4);
+    }
 }
