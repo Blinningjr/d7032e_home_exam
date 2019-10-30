@@ -515,6 +515,9 @@ public class AppTest {
     public void testNoClawsUnoccupied() {
         Client client = gameState.getCurrentPlayer();
         Monster monster = client.getMonster();
+        for (Client c : gameState.getPlayers()) {
+            c.getMonster().setInTokyo(false);
+        }
         monster.setInTokyo(false);
         monster.setStars(0);
         int claws = 0;
@@ -526,5 +529,177 @@ public class AppTest {
     
         assertEquals(expectedStars, monster.getStars());
         assertEquals(expectedInTokyo, monster.getInTokyo());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each claw
+     *          ii.Outside Tokyo
+     *              1.Tokyo Unoccupied = Move into Tokyo and Gain 1 star
+     */
+    @Test
+    public void testClawsUnoccupied() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        for (Client c : gameState.getPlayers()) {
+            c.getMonster().setInTokyo(false);
+        }
+        monster.setInTokyo(false);
+        monster.setStars(0);
+        int claws = rnd.nextInt(5) + 1;
+
+        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        attack.execute();
+    
+        assertEquals(1, monster.getStars());
+        assertEquals(true, monster.getInTokyo());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each claw
+     *          ii.Outside Tokyo
+     *              2.Tokyo Occupied
+     *                  a.1 damage dealt to the monster inside Tokyo
+     *                  b.Monsters damaged may choose to leave Tokyo
+     *                  c.If there is an open spot in Tokyo –Move into Tokyo and Gain 1 star
+     */
+    @Test
+    public void testNoClawsOccupiedEnter() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        for (Client c : gameState.getPlayers()) {
+            c.getMonster().setInTokyo(false);
+        }
+
+        Monster monsterInTokyo = gameState.getPlayers().get(0).getMonster();
+        monsterInTokyo.setInTokyo(true);
+        testClient1.setLeaveTokyo(true);
+        testClient2.setLeaveTokyo(true);
+        testClient3.setLeaveTokyo(true);
+
+        monster.setInTokyo(false);
+        monster.setStars(0);
+        int claws = 0;
+        int monsterInTokyoHP = monsterInTokyo.getHp();
+
+        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        attack.execute();
+    
+        assertEquals(0, monster.getStars());
+        assertEquals(false, monster.getInTokyo());
+        assertEquals(true, monsterInTokyo.getInTokyo());
+        assertEquals(monsterInTokyoHP, monsterInTokyo.getHp());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each claw
+     *          ii.Outside Tokyo
+     *              2.Tokyo Occupied
+     *                  a.1 damage dealt to the monster inside Tokyo
+     *                  b.Monsters damaged may choose to leave Tokyo
+     *                  c.If there is an open spot in Tokyo –Move into Tokyo and Gain 1 star
+     */
+    @Test
+    public void testClawsOccupiedEnter() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        for (Client c : gameState.getPlayers()) {
+            c.getMonster().setInTokyo(false);
+        }
+
+        Monster monsterInTokyo = gameState.getPlayers().get(0).getMonster();
+        monsterInTokyo.setInTokyo(true);
+        testClient1.setLeaveTokyo(true);
+        testClient2.setLeaveTokyo(true);
+        testClient3.setLeaveTokyo(true);
+
+        monster.setInTokyo(false);
+        monster.setStars(0);
+        int claws = 2;
+        int monsterInTokyoHP = monsterInTokyo.getHp()- claws;
+
+        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        attack.execute();
+    
+        assertEquals(1, monster.getStars());
+        assertEquals(true, monster.getInTokyo());
+        assertEquals(false, monsterInTokyo.getInTokyo());
+        assertEquals(monsterInTokyoHP, monsterInTokyo.getHp());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each claw
+     *          ii.Outside Tokyo
+     *              2.Tokyo Occupied
+     *                  a.1 damage dealt to the monster inside Tokyo
+     *                  b.Monsters damaged may choose to leave Tokyo
+     *                  c.If there is an open spot in Tokyo –Move into Tokyo and Gain 1 star
+     */
+    @Test
+    public void testNoClawsOccupied() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        for (Client c : gameState.getPlayers()) {
+            c.getMonster().setInTokyo(false);
+        }
+
+        Monster monsterInTokyo = gameState.getPlayers().get(0).getMonster();
+        monsterInTokyo.setInTokyo(true);
+        testClient1.setLeaveTokyo(false);
+        testClient2.setLeaveTokyo(false);
+        testClient3.setLeaveTokyo(false);
+
+        monster.setInTokyo(false);
+        monster.setStars(0);
+        int claws = 0;
+        int monsterInTokyoHP = monsterInTokyo.getHp()- claws;
+
+        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        attack.execute();
+    
+        assertEquals(0, monster.getStars());
+        assertEquals(false, monster.getInTokyo());
+        assertEquals(true, monsterInTokyo.getInTokyo());
+        assertEquals(monsterInTokyoHP, monsterInTokyo.getHp());
+    }
+     
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each claw
+     *          ii.Outside Tokyo
+     *              2.Tokyo Occupied
+     *                  a.1 damage dealt to the monster inside Tokyo
+     *                  b.Monsters damaged may choose to leave Tokyo
+     *                  c.If there is an open spot in Tokyo –Move into Tokyo and Gain 1 star
+     */
+    @Test
+    public void testClawsOccupied() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        for (Client c : gameState.getPlayers()) {
+            c.getMonster().setInTokyo(false);
+        }
+
+        Monster monsterInTokyo = gameState.getPlayers().get(0).getMonster();
+        monsterInTokyo.setInTokyo(true);
+        testClient1.setLeaveTokyo(false);
+        testClient2.setLeaveTokyo(false);
+        testClient3.setLeaveTokyo(false);
+
+        monster.setInTokyo(false);
+        monster.setStars(0);
+        int claws = 2;
+        int monsterInTokyoHP = monsterInTokyo.getHp()- claws;
+
+        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        attack.execute();
+    
+        assertEquals(0, monster.getStars());
+        assertEquals(false, monster.getInTokyo());
+        assertEquals(true, monsterInTokyo.getInTokyo());
+        assertEquals(monsterInTokyoHP, monsterInTokyo.getHp());
     }
 }

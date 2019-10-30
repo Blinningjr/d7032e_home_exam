@@ -52,7 +52,9 @@ public class Attack implements Event {
 					}
 				}
     			if (enterTokyo) {
-    				attackingClient.getMonster().setInTokyo(true);
+                    AwardStar aw = new AwardStar(gameState, attackingClient, 1);
+                    aw.execute();
+                    attackingClient.getMonster().setInTokyo(true);
     			}
     		}
     	}

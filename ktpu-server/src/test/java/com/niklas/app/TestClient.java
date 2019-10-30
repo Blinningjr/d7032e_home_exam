@@ -11,6 +11,8 @@ public class TestClient extends Thread {
     private ArrayList<Integer> rerolled;
     private Scanner sc = new Scanner(System.in);
     private boolean flag;
+    private boolean leaveTokyo;
+    private String name;
 
     public TestClient() {
        
@@ -19,10 +21,11 @@ public class TestClient extends Thread {
     @Override
     public void run() {
         boolean bot = true;
-        String name = "";
+        name = "";
         Random rnd = ThreadLocalRandom.current();
         rerolled = new ArrayList<Integer>();
         flag = false;
+        leaveTokyo = true;
         //Server stuffs
         try {
             Socket aSocket = new Socket("localhost", 2048);
@@ -36,7 +39,12 @@ public class TestClient extends Thread {
                     outToServer.writeBytes("Bye!\n");
                 } else if(message[0].equalsIgnoreCase("ATTACKED")) {
                     if(bot) {
-                        outToServer.writeBytes("YES\n");
+                        if (leaveTokyo) {
+                            outToServer.writeBytes("YES\n");
+                        } else {
+                            outToServer.writeBytes("No\n");
+                        }
+                        
                     }
                     else {
                         outToServer.writeBytes(sc.nextLine() + "\n");
@@ -77,6 +85,14 @@ public class TestClient extends Thread {
 
     public synchronized void setFlag() {
         flag = true;
+    }
+
+    public synchronized void setLeaveTokyo(boolean leave) {
+        leaveTokyo = leave;
+    }
+
+    public synchronized String getMonterName() {
+        return name;
     }
 
 }
