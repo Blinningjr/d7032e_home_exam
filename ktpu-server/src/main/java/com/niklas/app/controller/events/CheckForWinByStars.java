@@ -36,7 +36,8 @@ public class CheckForWinByStars implements Event {
                 gameState.getComunication().sendStarsWinner(winner, clients);
                 clients.add(winner);
                 gameOver = true;
-                return;
+                gameState.getComunication().closeSocet();
+                System.exit(0);
             } 
         }
     }

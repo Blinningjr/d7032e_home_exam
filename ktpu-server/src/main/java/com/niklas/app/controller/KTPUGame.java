@@ -9,13 +9,10 @@ import com.niklas.app.controller.events.Attack;
 import com.niklas.app.controller.events.AwardEnergy;
 import com.niklas.app.controller.events.AwardStarIfCurrentPlayerInTokyo;
 import com.niklas.app.controller.events.CheckDice;
-import com.niklas.app.controller.events.CheckForWinByElimination;
-import com.niklas.app.controller.events.CheckForWinByStars;
 import com.niklas.app.controller.events.CheckNumHearts;
 import com.niklas.app.controller.events.CheckNumOfOnes;
 import com.niklas.app.controller.events.CheckNumOfThrees;
 import com.niklas.app.controller.events.CheckNumOfTwos;
-import com.niklas.app.controller.events.Heal;
 import com.niklas.app.controller.events.PowerUp;
 import com.niklas.app.controller.events.RollDice;
 import com.niklas.app.controller.events.Shopping;
@@ -75,8 +72,7 @@ public class KTPUGame {
 	          7a. Play "DISCARD" cards immediately
 	        8. Check victory conditions
 		*/
-		boolean is_game_on = true;
-    	while (is_game_on) {
+    	while (true) {
 			if (!gameState.getCurrentPlayer().getMonster().getIsDead()) {
 				// pre: Award a monster in Tokyo 1 star
 				awardStarIfInTokyo();
@@ -89,13 +85,9 @@ public class KTPUGame {
 				
 				// 7. Decide to buy things for energy
 				shopping();
-
-				// 8. Check victory conditions
-				is_game_on = checkIfGameIsNotOver();
 			}
 			gameState.nextTurn();
 		}
-		gameState.getComunication().closeSocet();
 	}
 	
 	public GameState getGameState() {
@@ -146,22 +138,4 @@ public class KTPUGame {
 			Shopping shopping = new Shopping(gameState);
 	        shopping.execute();
     }
-
-	private boolean checkIfGameIsNotOver() {
-		boolean winByStars = checkForWinByStars();
-		boolean winByElimination = checkForWinByElimination();
-		return !(winByStars || winByElimination);
-	}
-	
-	private boolean checkForWinByStars() {
-		CheckForWinByStars cfwbs = new CheckForWinByStars(gameState);
-		cfwbs.execute();
-        return cfwbs.getGameOver();
-	}
-	
-	private boolean checkForWinByElimination() {
-		CheckForWinByElimination cfwbe = new CheckForWinByElimination(gameState);
-		cfwbe.execute();
-        return cfwbe.getGameOver();
-	}
 }

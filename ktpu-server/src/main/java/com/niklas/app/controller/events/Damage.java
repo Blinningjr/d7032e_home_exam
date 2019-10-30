@@ -38,6 +38,9 @@ public class Damage implements Event {
                 clients.addAll(gameState.getPlayers());
                 clients.remove(client);
                 gameState.getComunication().sendMonsterDied(client, clients);
+
+                CheckForWinByElimination cfwbe = new CheckForWinByElimination(gameState);
+                cfwbe.execute();
             }
     	}
     }

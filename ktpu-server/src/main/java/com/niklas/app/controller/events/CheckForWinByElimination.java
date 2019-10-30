@@ -40,6 +40,8 @@ public class CheckForWinByElimination implements Event {
             clients.remove(winner);
             gameState.getComunication().sendEliminationWinner(winner, clients);
             clients.add(winner);
+            gameState.getComunication().closeSocet();
+            System.exit(0);
         }
     }
 

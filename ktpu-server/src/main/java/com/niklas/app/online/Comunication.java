@@ -125,7 +125,7 @@ public class Comunication {
         String msg = "PURCHASE:Do you want to buy any of the cards from the store? (you have " 
             + client.getMonster().getEnergy() + " energy) [#/-1]:" + extraCostString + cardStore.inverntoryToString() + "\n";
 
-        return sendMessage(client, "msg");
+        return sendMessage(client, msg);
     }
 
     public void sendStarsWinner(Client currentClient, ArrayList<Client> clients) {

@@ -692,7 +692,7 @@ public class AppTest {
         monster.setInTokyo(false);
         monster.setStars(0);
         int claws = 2;
-        int monsterInTokyoHP = monsterInTokyo.getHp()- claws;
+        int monsterInTokyoHP = monsterInTokyo.getHp() - claws;
 
         Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
         attack.execute();

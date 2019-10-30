@@ -26,6 +26,9 @@ public class AwardStar implements Event {
     public void execute() {
         checkCards();
         client.getMonster().setStars(client.getMonster().getStars() + stars);
+        
+        CheckForWinByStars cfwbs = new CheckForWinByStars(gameState);
+        cfwbs.execute();
     }
 
     public void add_stars(int stars) {
