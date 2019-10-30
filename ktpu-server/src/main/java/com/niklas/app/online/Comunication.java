@@ -60,14 +60,14 @@ public class Comunication {
             System.out.println("initComunication Done");
             return clients;
         } catch (Exception e) {
-        	throw new Error("init_server_stuff failed");
+        	throw new Error(e);
         }
     }
     
     public void closeSocet() {
     	try {
             aSocket.close();
-            System.out.println("socker closed");
+            System.out.println("socket closed");
 		} catch (IOException e) {
 			throw new Error("Socket coulden't be closed error");
 		}
@@ -85,7 +85,7 @@ public class Comunication {
         clients.remove(0);
         this.sendMessage(current_client, statusUpdate + "\n");
 
-        System.out.println(current_client.getMonster().getName() + " turn.");
+        // System.out.println(current_client.getMonster().getName() + " turn.");
     }
     
     
@@ -125,7 +125,7 @@ public class Comunication {
         String msg = "PURCHASE:Do you want to buy any of the cards from the store? (you have " 
             + client.getMonster().getEnergy() + " energy) [#/-1]:" + extraCostString + cardStore.inverntoryToString() + "\n";
 
-        return sendMessage(client, msg);
+        return sendMessage(client, "msg");
     }
 
     public void sendStarsWinner(Client currentClient, ArrayList<Client> clients) {
@@ -134,7 +134,7 @@ public class Comunication {
         for (int i = 0; i < clients.size(); i++) {
             sendMessage(clients.get(i), msg + "::You lose!\n");
         }
-        System.out.println(msg);
+        // System.out.println(msg);
     }
 
     public void sendEliminationWinner(Client currentClient, ArrayList<Client> clients) {
@@ -143,7 +143,7 @@ public class Comunication {
         for (int i = 0; i < clients.size(); i++) {
             sendMessage(clients.get(i), msg + "::You lose!\n");
         }
-        System.out.println(msg);
+        // System.out.println("Game Over");
     }
 
     public void sendMonsterDied(Client client, ArrayList<Client> clients) {
@@ -153,6 +153,6 @@ public class Comunication {
         for (int i = 0; i < clients.size(); i++) {
             sendMessage(clients.get(i), msg + "\n");
         }
-        System.out.println(msg);
+        // System.out.println(msg);
     }
 }

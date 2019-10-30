@@ -12,7 +12,7 @@ public class App
         KTPUGame game = new KTPUGame(3, 
             "./src/main/java/com/niklas/app/model/json/Monster.json", 
             "./src/main/java/com/niklas/app/model/json/StoreDeck.json");
-        game.startGame();
+        // game.startGame();
         System.exit(0);
         // ReadJson r = new ReadJson();
         // ArrayList<Monster> ms = r.read_monsters_from_json("./src/main/java/com/niklas/app/model/json/Monster.json");
