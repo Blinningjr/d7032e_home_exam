@@ -11,6 +11,7 @@ import com.niklas.app.controller.events.AwardStarIfCurrentPlayerInTokyo;
 import com.niklas.app.controller.events.CheckDice;
 import com.niklas.app.controller.events.CheckForWinByElimination;
 import com.niklas.app.controller.events.CheckForWinByStars;
+import com.niklas.app.controller.events.CheckNumHearts;
 import com.niklas.app.controller.events.CheckNumOfOnes;
 import com.niklas.app.controller.events.CheckNumOfThrees;
 import com.niklas.app.controller.events.CheckNumOfTwos;
@@ -116,9 +117,9 @@ public class KTPUGame {
 		CheckDice checkDice = new CheckDice(gameState, dice);
 		checkDice.execute();
 		
-		// 6a. Hearts = health (max 10 unless a cord increases it)
-		Heal heal = new Heal(gameState, gameState.getCurrentPlayer(), checkDice.getNumHearts());
-		heal.execute();
+		
+		CheckNumHearts cnh = new CheckNumHearts(gameState, checkDice.getNumHearts());
+		cnh.execute();
 		
 		// 6b. 3 hearts = power-up
 		PowerUp powerUp = new PowerUp(gameState, checkDice.getNumHearts());

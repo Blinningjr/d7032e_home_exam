@@ -1,0 +1,81 @@
+[
+    {
+        "monster": {
+            "name": "Kong",
+            "max_hp": "10",
+            "hp": "10",
+            "energy": "0",
+            "stars": "0",
+            "evolution_deck": [
+                {
+                    "evolution_card": {
+                        "name": "Red Dawn",
+                        "description": "All other Monsters lose 2 HEART.",
+                        "effect": {
+                            "activation": "Now",
+                            "action": "damageEveryoneElse",
+                            "added_damage": "2"
+                        },
+                        "monster_name": "Kong",
+                        "monster_type": "Mutant",
+                        "duration": "permanentEvolution",
+                        "quantity": "1"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "monster": {
+            "name": "Gigazaur",
+            "max_hp": "10",
+            "hp": "10",
+            "energy": "0",
+            "stars": "0",
+            "evolution_deck": [
+                {
+                    "evolution_card": {
+                        "name": "Radioactive Waste",
+                        "description": "Gain 2 ENERGY and 1 HEART.",
+                        "effect": {
+                            "activation": "Now",
+                            "action": "giveStarsEnergyAndHp",
+                            "added_energy": "2",
+                            "added_hp": "1"
+                        },
+                        "monster_name": "Gigazaur",
+                        "monster_type": "Mutant",
+                        "duration": "permanentEvolution",
+                        "quantity": "2"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "monster": {
+            "name": "Alienoid",
+            "max_hp": "10",
+            "hp": "10",
+            "energy": "0",
+            "stars": "0",
+            "evolution_deck": [
+                {
+                    "evolution_card": {
+                        "name": "Alien Scourge",
+                        "description": "Gain 2 STAR.",
+                        "effect": {
+                            "activation": "Now",
+                            "action": "giveStarsEnergyAndHp",
+                            "added_stars": "2"
+                        },
+                        "monster_name": "Alienoid",
+                        "monster_type": "Alien",
+                        "duration": "permanentEvolution",
+                        "quantity": "2"
+                    }
+                }
+            ]
+        }
+    }
+]

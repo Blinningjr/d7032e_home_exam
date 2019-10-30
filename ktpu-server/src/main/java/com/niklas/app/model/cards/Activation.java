@@ -10,6 +10,7 @@ public enum Activation {
     CheckDice,
     CheckForWinByElimination,
     CheckForWinByStars,
+    CheckNumHearts,
     CheckNumOfOnes,
     CheckNumOfThrees,
     CheckNumOfTwos,

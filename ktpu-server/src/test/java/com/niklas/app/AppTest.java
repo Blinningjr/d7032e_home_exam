@@ -1,35 +1,25 @@
 package com.niklas.app;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Random;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.niklas.app.controller.KTPUGame;
+import com.niklas.app.controller.events.Attack;
 import com.niklas.app.controller.events.AwardEnergy;
 import com.niklas.app.controller.events.AwardStarIfCurrentPlayerInTokyo;
+import com.niklas.app.controller.events.CheckNumHearts;
 import com.niklas.app.controller.events.CheckNumOfOnes;
 import com.niklas.app.controller.events.CheckNumOfThrees;
 import com.niklas.app.controller.events.CheckNumOfTwos;
-import com.niklas.app.controller.events.RollDice;
+import com.niklas.app.controller.events.PowerUp;
 import com.niklas.app.model.GameState;
-import com.niklas.app.model.cards.CardStore;
-import com.niklas.app.model.cards.EvolutionCard;
-import com.niklas.app.model.cards.EvolutionDeck;
-import com.niklas.app.model.cards.StoreCard;
-import com.niklas.app.model.cards.StoreDeck;
-import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
-import com.niklas.app.online.Comunication;
 
 
 public class AppTest {
@@ -40,21 +30,19 @@ public class AppTest {
     TestClient testClient2 = new TestClient();
     TestClient testClient3 = new TestClient();
     TestServer ts = new TestServer(3, 
-        		"./src/main/java/com/niklas/app/model/json/Monster.json",
-                "./src/main/java/com/niklas/app/model/json/StoreDeck.json");
+        		"./src/test/java/com/niklas/app/TestMonster.json",
+                "./src/test/java/com/niklas/app/TestStoreDeck.json");
     
     @Before
     public void before() {
         System.out.println("\n\n\nBefore Start");
     	ts.start();
-        System.out.println("1");
     	try {
     	    Thread.sleep(500);
     	}
     	catch(InterruptedException ex) {
     	    Thread.currentThread().interrupt();
         }
-        System.out.println("2");
         testClient1.start();
         testClient2.start();
         testClient3.start();
@@ -64,7 +52,6 @@ public class AppTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        System.out.println("5");
         gameState = ts.getKTPUGame().getGameState();
         System.out.println("Before End");
      }
@@ -297,13 +284,13 @@ public class AppTest {
      *      Each energy = 1 energy
      */
     @Test
-    public void testGetNoEnergy() {
+    public void testRollNoEnergy() {
         Client client = gameState.getCurrentPlayer();
-        int expectedStars = client.getMonster().getEnergy();
-        AwardEnergy aw = new AwardEnergy(gameState, client, 0);
-        aw.execute();
+        int expectedEnergy = client.getMonster().getEnergy();
+        AwardEnergy ae = new AwardEnergy(gameState, client, 0);
+        ae.execute();
 
-        assertEquals(expectedStars,client.getMonster().getEnergy());
+        assertEquals(expectedEnergy, client.getMonster().getEnergy());
     }
 
     /**
@@ -311,13 +298,233 @@ public class AppTest {
      *      Each energy = 1 energy
      */
     @Test
-    public void testGetEnergy() {
+    public void testRollEnergy() {
         int energy = rnd.nextInt(6) + 1;
         Client client = gameState.getCurrentPlayer();
-        int expectedStars = client.getMonster().getEnergy() + energy;
-        AwardEnergy aw = new AwardEnergy(gameState, client, energy);
-        aw.execute();
+        int expectedEnergy = client.getMonster().getEnergy() + energy;
+        AwardEnergy ae = new AwardEnergy(gameState, client, energy);
+        ae.execute();
 
-        assertEquals(expectedStars,client.getMonster().getEnergy());
+        assertEquals(expectedEnergy, client.getMonster().getEnergy());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each heart
+     *          i.Inside Tokyo –no extra health
+     */
+    @Test
+    public void testRollNoHeartsIntokyo() {
+        int hearts = 0;
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        monster.setInTokyo(true);
+        monster.setHp(5);
+        int expectedHp = monster.getHp() + hearts;
+        CheckNumHearts cnh = new CheckNumHearts(gameState, hearts);
+        cnh.execute();
+
+        assertEquals(expectedHp, client.getMonster().getHp());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each heart
+     *          ii.Outside Tokyo -+1 health (up to your max life, normally 10 unless altered by a card)
+     */
+    @Test
+    public void testRollNoHearts() {
+        int hearts = 0;
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        monster.setInTokyo(false);
+        monster.setHp(5);
+        int expectedHp = monster.getHp() + hearts;
+        CheckNumHearts cnh = new CheckNumHearts(gameState, hearts);
+        cnh.execute();
+
+        assertEquals(expectedHp, client.getMonster().getHp());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each heart
+     *      i.Inside Tokyo –no extra health
+     */
+    @Test
+    public void testRollHeartInTokyo() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        int hearts = rnd.nextInt(monster.getMaxHp() / 2 -1) + 1;
+        monster.setInTokyo(true);
+        monster.setHp(monster.getMaxHp() / 2 -1);
+        int expectedHp = monster.getHp();
+        CheckNumHearts cnh = new CheckNumHearts(gameState, hearts);
+        cnh.execute();
+
+        assertEquals(expectedHp, client.getMonster().getHp());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each heart
+     *      ii.Outside Tokyo -+1 health (up to your max life, normally 10 unless altered by a card)
+     */
+    @Test
+    public void testRollHearts() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        int hearts = rnd.nextInt(monster.getMaxHp() / 2 -1) + 1;
+        monster.setInTokyo(false);
+        monster.setHp(monster.getMaxHp() / 2 -1);
+        int expectedHp = monster.getHp() + hearts;
+        CheckNumHearts cnh = new CheckNumHearts(gameState, hearts);
+        cnh.execute();
+
+        assertEquals(expectedHp, client.getMonster().getHp());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each heart
+     *      ii.Outside Tokyo -+1 health (up to your max life, normally 10 unless altered by a card)
+     */
+    @Test
+    public void testRollHeartsOverHeal() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        int hearts = rnd.nextInt(6) + 3;
+        monster.setInTokyo(false);
+        monster.setHp(monster.getMaxHp() - 2);
+        int expectedHp = monster.getMaxHp();
+        CheckNumHearts cnh = new CheckNumHearts(gameState, hearts);
+        cnh.execute();
+
+        assertEquals(expectedHp, client.getMonster().getHp());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Tripple hearts = Draw an Evolution Card(todo: add support for more evolution cards).
+     */
+    @Test
+    public void testTrippleHeartsLess() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        int hearts = 2;
+
+        int expected = monster.evolutionCards.size();
+
+        PowerUp pu = new PowerUp(gameState, hearts);
+        pu.execute();
+
+        assertEquals(expected, monster.evolutionCards.size());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Tripple hearts = Draw an Evolution Card(todo: add support for more evolution cards).
+     */
+    @Test
+    public void testTrippleHeartsEqual() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        int hearts = 3;
+
+        int expected = monster.evolutionCards.size() + 1;
+
+        PowerUp pu = new PowerUp(gameState, hearts);
+        pu.execute();
+
+        assertEquals(expected, monster.evolutionCards.size());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Tripple hearts = Draw an Evolution Card(todo: add support for more evolution cards).
+     */
+    @Test
+    public void testTrippleHeartsLarg() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        int hearts = 4;
+
+        int expected = monster.evolutionCards.size() + 1;
+
+        PowerUp pu = new PowerUp(gameState, hearts);
+        pu.execute();
+
+        assertEquals(expected, monster.evolutionCards.size());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each claw
+     *          i.Inside Tokyo –1 damage dealt to each monster outside of Tokyo
+     */
+    @Test
+    public void testNoClawsInTokyo() {
+        Client client = gameState.getCurrentPlayer();
+        client.getMonster().setInTokyo(true);
+        Monster m0 = gameState.getPlayers().get(0).getMonster();
+        Monster m1 = gameState.getPlayers().get(1).getMonster();
+
+        int claws = 0;
+        int expectedHpM0 = m0.getHp() - claws;
+        int expectedHpM1 = m1.getHp() - claws;
+
+        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        attack.execute();
+    
+        assertEquals(expectedHpM0, m0.getHp());
+        assertEquals(expectedHpM1, m1.getHp());
+        assertTrue(client.getMonster().getInTokyo());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each claw
+     *          i.Inside Tokyo –1 damage dealt to each monster outside of Tokyo
+     */
+    @Test
+    public void testClawsInTokyo() {
+        Client client = gameState.getCurrentPlayer();
+        client.getMonster().setInTokyo(true);
+        Monster m0 = gameState.getPlayers().get(0).getMonster();
+        Monster m1 = gameState.getPlayers().get(1).getMonster();
+
+        int claws = rnd.nextInt(5) + 1;
+        int expectedHpM0 = m0.getHp() - claws;
+        int expectedHpM1 = m1.getHp() - claws;
+
+        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        attack.execute();
+    
+        assertEquals(expectedHpM0, m0.getHp());
+        assertEquals(expectedHpM1, m1.getHp());
+        assertTrue(client.getMonster().getInTokyo());
+    }
+
+    /**
+     * 12.Sum up the dice and assign stars, health, or damage
+     *      Each claw
+     *          ii.Outside Tokyo
+     *              1.Tokyo Unoccupied = Move into Tokyo and Gain 1 star
+     */
+    @Test
+    public void testNoClawsUnoccupied() {
+        Client client = gameState.getCurrentPlayer();
+        Monster monster = client.getMonster();
+        monster.setInTokyo(false);
+        monster.setStars(0);
+        int claws = 0;
+        int expectedStars = 0;
+        boolean expectedInTokyo = false;
+
+        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        attack.execute();
+    
+        assertEquals(expectedStars, monster.getStars());
+        assertEquals(expectedInTokyo, monster.getInTokyo());
     }
 }
