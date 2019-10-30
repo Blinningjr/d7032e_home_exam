@@ -2,9 +2,11 @@ package com.niklas.app;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.junit.After;
@@ -13,14 +15,17 @@ import org.junit.Test;
 
 import com.niklas.app.controller.events.Attack;
 import com.niklas.app.controller.events.AwardEnergy;
+import com.niklas.app.controller.events.AwardStar;
 import com.niklas.app.controller.events.AwardStarIfCurrentPlayerInTokyo;
 import com.niklas.app.controller.events.CheckNumHearts;
 import com.niklas.app.controller.events.CheckNumOfOnes;
 import com.niklas.app.controller.events.CheckNumOfThrees;
 import com.niklas.app.controller.events.CheckNumOfTwos;
+import com.niklas.app.controller.events.Damage;
 import com.niklas.app.controller.events.PowerUp;
 import com.niklas.app.controller.events.Shopping;
 import com.niklas.app.model.GameState;
+import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
@@ -894,7 +899,7 @@ public class AppTest {
     /**
      *  13.Buying Cards (As long as long as you have the Energy, you can take any of the following actions)
      *      Reset store –pay 2 energy
-    */
+     */
     @Test
     public void testResetStoreLarg() {
         Monster monster = gameState.getCurrentPlayer().getMonster();
@@ -915,5 +920,225 @@ public class AppTest {
 
         assertEquals(1, monster.getEnergy());
         assertNotEquals(oldInventory, inventory);
+    }
+
+    /**
+     *  14.A store card can be of either type “Keep” or “Discard”. “Discard” cards take effect immediately 
+     *  when purchased, and “Keep” cards may either beplayed when the owner desiresor provides an active 
+     *  power/ability.
+     */
+    @Test
+    public void testDiscardCard() {
+        Monster monster = gameState.getCurrentPlayer().getMonster();
+        Effect effect = new Effect("Now", "giveStarsEnergyAndHp");
+        int stars = 10;
+        effect.add_stars(stars);
+        StoreCard storeCard = new StoreCard("Test Card", "Test Card", effect, 1, "discard");
+        int pos = 1;
+        gameState.getCardStore().getInventory()[pos -1] = storeCard;
+        String input = pos + "\n";
+        monster.setEnergy(3);
+        monster.setStars(0);
+
+        int expectedCardsSize = monster.storeCards.size();
+
+        testClient1.setStoreInput(input);
+        testClient2.setStoreInput(input);
+        testClient3.setStoreInput(input);
+
+        Shopping shopping = new Shopping(gameState);
+        shopping.execute();
+
+        assertEquals(stars, monster.getStars());
+        assertEquals(expectedCardsSize, monster.storeCards.size());
+    }
+
+    /**
+     *  14.A store card can be of either type “Keep” or “Discard”. “Discard” cards take effect immediately 
+     *  when purchased, and “Keep” cards may either beplayed when the owner desiresor provides an active 
+     *  power/ability.
+     */
+    @Test
+    public void testKeepCard() {
+        Monster monster = gameState.getCurrentPlayer().getMonster();
+        Effect effect = new Effect("Now", "giveStarsEnergyAndHp");
+        int stars = 10;
+        effect.add_stars(stars);
+        StoreCard storeCard = new StoreCard("Test Card", "Test Card", effect, 1, "keep");
+        int pos = 1;
+        gameState.getCardStore().getInventory()[pos -1] = storeCard;
+        String input = pos + "\n";
+        monster.setEnergy(3);
+        monster.setStars(0);
+
+        int expectedCardsSize = monster.storeCards.size() + 1;
+
+        testClient1.setStoreInput(input);
+        testClient2.setStoreInput(input);
+        testClient3.setStoreInput(input);
+
+        Shopping shopping = new Shopping(gameState);
+        shopping.execute();
+
+        assertEquals(stars, monster.getStars());
+        assertEquals(expectedCardsSize, monster.storeCards.size());
+    }
+    
+    /**
+     *  15.End of turn.
+     */
+    @Test
+    public void testNextTurn() {
+        Client client = gameState.getCurrentPlayer();
+        gameState.nextTurn();
+        assertNotEquals(client, gameState.getCurrentPlayer());
+    }
+
+    /**
+     *  16.First monster to get 20 stars win the game
+     */
+    @Test
+    public void testWinByStarsLess() {
+        Client client = gameState.getCurrentPlayer();
+        client.getMonster().setStars(0);
+
+        int stars = 19;
+
+        assertTrue(gameState.getIsGameOn());
+
+        AwardStar as = new AwardStar(gameState, client, stars);
+        as.execute();
+
+        assertEquals(stars, client.getMonster().getStars());
+        assertTrue(gameState.getIsGameOn());
+    }
+
+    /**
+     *  16.First monster to get 20 stars win the game
+     */
+    @Test
+    public void testWinByStarsEqual() {
+        Client client = gameState.getCurrentPlayer();
+        client.getMonster().setStars(0);
+
+        int stars = 20;
+
+        assertTrue(gameState.getIsGameOn());
+
+        AwardStar as = new AwardStar(gameState, client, stars);
+        as.execute();
+
+        assertEquals(stars, client.getMonster().getStars());
+        assertFalse(gameState.getIsGameOn());
+    }
+
+    /**
+     *  16.First monster to get 20 stars win the game
+     */
+    @Test
+    public void testWinByStarsLarg() {
+        Client client = gameState.getCurrentPlayer();
+        client.getMonster().setStars(0);
+
+        int stars = 21;
+
+        assertTrue(gameState.getIsGameOn());
+
+        AwardStar as = new AwardStar(gameState, client, stars);
+        as.execute();
+
+        assertEquals(stars, client.getMonster().getStars());
+        assertFalse(gameState.getIsGameOn());
+    }
+
+    /**
+     *  17.The sole surviving monster wins the game (other monsters at 0 or less health)
+     */
+    @Test
+    public void testWinByEliminationLess() {
+        Client currentClient = gameState.getCurrentPlayer();
+        ArrayList<Client> clients = gameState.getPlayers();
+        
+        assertTrue(gameState.getIsGameOn());
+        
+        assertFalse(currentClient.getMonster().getIsDead());
+        for (int i = 0; i < clients.size(); i++) {
+            Client client = clients.get(i);
+            assertFalse(client.getMonster().getIsDead());
+            
+            if (i != 0) {
+                Damage damage = new Damage(gameState, client, client.getMonster().getHp());
+                damage.execute();
+            }
+        }
+
+        assertTrue(gameState.getIsGameOn());
+        assertFalse(currentClient.getMonster().getIsDead());
+        for (int i = 0; i < clients.size(); i++) {
+            Client client = clients.get(i);
+            if (i != 0) {
+                assertTrue(client.getMonster().getIsDead());
+            } else {
+                assertFalse(client.getMonster().getIsDead());
+            }
+            
+        }
+    }
+
+    /**
+     *  17.The sole surviving monster wins the game (other monsters at 0 or less health)
+     */
+    @Test
+    public void testWinByEliminationEqual() {
+        Client currentClient = gameState.getCurrentPlayer();
+        ArrayList<Client> clients = gameState.getPlayers();
+        
+        assertTrue(gameState.getIsGameOn());
+        
+        assertFalse(currentClient.getMonster().getIsDead());
+        for (int i = 0; i < clients.size(); i++) {
+            Client client = clients.get(i);
+            assertFalse(client.getMonster().getIsDead());
+            
+            Damage damage = new Damage(gameState, client, client.getMonster().getHp());
+            damage.execute();
+        }
+
+        assertFalse(gameState.getIsGameOn());
+        assertFalse(currentClient.getMonster().getIsDead());
+        for (int i = 0; i < clients.size(); i++) {
+            Client client = clients.get(i);
+            assertTrue(client.getMonster().getIsDead());
+        }
+    }
+
+    /**
+     *  17.The sole surviving monster wins the game (other monsters at 0 or less health)
+     */
+    @Test
+    public void testWinByEliminationLarg() {
+        Client currentClient = gameState.getCurrentPlayer();
+        ArrayList<Client> clients = gameState.getPlayers();
+        
+        assertTrue(gameState.getIsGameOn());
+        
+        for (int i = 0; i < clients.size(); i++) {
+            Client client = clients.get(i);
+            assertFalse(client.getMonster().getIsDead());
+            
+            Damage damage = new Damage(gameState, client, client.getMonster().getHp());
+            damage.execute();
+        }
+
+        assertFalse(currentClient.getMonster().getIsDead());
+        Damage damage = new Damage(gameState, currentClient, currentClient.getMonster().getHp());
+        damage.execute();
+
+        assertFalse(gameState.getIsGameOn());
+        assertTrue(currentClient.getMonster().getIsDead());
+        for (int i = 0; i < clients.size(); i++) {
+            Client client = clients.get(i);
+            assertTrue(client.getMonster().getIsDead());
+        }
     }
 }

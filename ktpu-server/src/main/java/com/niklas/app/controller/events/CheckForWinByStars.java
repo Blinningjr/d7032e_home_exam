@@ -17,11 +17,9 @@ import com.niklas.app.online.Client;
 public class CheckForWinByStars implements Event {
     private static final int NUM_STARS_NEEDED_TO_WIN = 20;
     private GameState gameState;
-    private boolean gameOver;
 
     public CheckForWinByStars(GameState gameState) {
         this.gameState = gameState;
-        gameOver = false;
     }
 
     public void execute() {
@@ -29,22 +27,18 @@ public class CheckForWinByStars implements Event {
         ArrayList<Client> clients = new ArrayList<Client>();
         clients.add(gameState.getCurrentPlayer());
         clients.addAll(gameState.getPlayers());
-        for (Client client : clients) {
+        for (int i = 0; i < clients.size(); i++) {
+            Client client = clients.get(i);
             if (client.getMonster().getStars() >= NUM_STARS_NEEDED_TO_WIN) {
                 Client winner = client;
                 clients.remove(winner);
                 gameState.getComunication().sendStarsWinner(winner, clients);
-                clients.add(winner);
-                gameOver = true;
-                gameState.getComunication().closeSocet();
-                System.exit(0);
+
+                gameState.endGame();
             } 
         }
     }
 
-    public boolean getGameOver() {
-        return gameOver;
-    }
 
     private void checkCards() {
         Client client = gameState.getCurrentPlayer();

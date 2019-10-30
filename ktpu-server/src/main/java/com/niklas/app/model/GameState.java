@@ -14,6 +14,7 @@ public class GameState {
     private Client currentPlayer;
     private CardStore cardStore;
     private Comunication comunication;
+    private boolean isGameOn;
     public Actions action;
 
     public GameState(ArrayList<Client> players, CardStore cardStore, Comunication comunication) {
@@ -22,6 +23,7 @@ public class GameState {
         this.comunication = comunication;
         this.cardStore = cardStore;
         action = new Actions();
+        isGameOn = true;
     }
 
     /**
@@ -30,6 +32,10 @@ public class GameState {
     public void nextTurn() {
         players.add(currentPlayer);
         currentPlayer = players.remove(0);
+    }
+
+    public void endGame() {
+        isGameOn = false;
     }
 
     public ArrayList<Client> getPlayers() {
@@ -50,5 +56,9 @@ public class GameState {
 
     public Comunication getComunication() {
         return comunication;
+    }
+
+    public boolean getIsGameOn() {
+        return isGameOn;
     }
 }

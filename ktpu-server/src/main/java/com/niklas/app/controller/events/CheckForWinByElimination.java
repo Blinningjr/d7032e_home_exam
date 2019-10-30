@@ -16,11 +16,9 @@ import com.niklas.app.online.Client;
 
 public class CheckForWinByElimination implements Event {
     private GameState gameState;
-    private boolean gameOver;
 
     public CheckForWinByElimination(GameState gameState) {
         this.gameState = gameState;
-        gameOver = false;
     }
 
     public void execute() {
@@ -29,25 +27,20 @@ public class CheckForWinByElimination implements Event {
         clients.add(gameState.getCurrentPlayer());
         clients.addAll(gameState.getPlayers());
         ArrayList<Client> aliveClients = new ArrayList<Client>();
-        for (Client client : clients) {
+        for (int i = 0; i < clients.size(); i++) {
+            Client client = clients.get(i);
             if (!client.getMonster().getIsDead()) {
                 aliveClients.add(client);
             } 
         }
         if (aliveClients.size() == 1) {
-            gameOver = true;
             Client winner = aliveClients.get(0);
             clients.remove(winner);
             gameState.getComunication().sendEliminationWinner(winner, clients);
-            clients.add(winner);
-            gameState.getComunication().closeSocet();
-            System.exit(0);
+            gameState.endGame();
         }
     }
 
-    public boolean getGameOver() {
-        return gameOver;
-    }
 
     private void checkCards() {
         Client client = gameState.getCurrentPlayer();

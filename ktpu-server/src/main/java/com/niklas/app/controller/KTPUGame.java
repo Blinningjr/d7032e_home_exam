@@ -72,7 +72,7 @@ public class KTPUGame {
 	          7a. Play "DISCARD" cards immediately
 	        8. Check victory conditions
 		*/
-    	while (true) {
+    	while (gameState.getIsGameOn()) {
 			if (!gameState.getCurrentPlayer().getMonster().getIsDead()) {
 				// pre: Award a monster in Tokyo 1 star
 				awardStarIfInTokyo();
@@ -88,6 +88,7 @@ public class KTPUGame {
 			}
 			gameState.nextTurn();
 		}
+		gameState.getComunication().closeSocet();
 	}
 	
 	public GameState getGameState() {
