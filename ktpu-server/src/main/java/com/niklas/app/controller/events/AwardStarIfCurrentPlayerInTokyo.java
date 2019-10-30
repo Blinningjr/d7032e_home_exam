@@ -23,12 +23,16 @@ public class AwardStarIfCurrentPlayerInTokyo implements Event {
 
     public void execute() {
         Client currentPlayer = gameState.getCurrentPlayer();
+        giveStarIfInTokyo(currentPlayer);
+        gameState.getComunication().sendAllStats(currentPlayer, gameState.getPlayers());
+    }
+
+    public void giveStarIfInTokyo(Client currentPlayer) {
         if (currentPlayer.getMonster().getInTokyo()) {
             checkCards();
             AwardStar awardStar = new AwardStar(gameState, currentPlayer, stars);
             awardStar.execute();
         }
-        gameState.getComunication().sendAllStats(currentPlayer, gameState.getPlayers());
     }
 
 

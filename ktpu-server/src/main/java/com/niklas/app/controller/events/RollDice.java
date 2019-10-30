@@ -29,19 +29,29 @@ public class RollDice implements Event{
 
     public void execute() {
         checkCards();
+        createDice();
+        for (int i = 0; i < numRerolls; i++) {
+        	int[] reroll = gameState.getComunication().sendRerollDice(dice, gameState.getCurrentPlayer());
+        	if (reroll.length > 0 && reroll[0] > 0) {
+                rerollDice(reroll);
+        	} else{
+        		return;
+        	}
+        }
+    }
+
+    public void createDice() {
         dice = new ArrayList<KTPUDice>();
         for (int i = 0; i < numDice; i++) {
         	dice.add(new KTPUDice());
         }
-        for (int i = 0; i < numRerolls; i++) {
-        	int[] reroll = gameState.getComunication().sendRerollDice(dice, gameState.getCurrentPlayer());
-        	if (reroll.length > 0 && reroll[0] > 0) {
-        		for (int j : reroll) {
-					dice.get(j-1).roll();
-				}
-        	} else{
-        		return;
-        	}
+    }
+
+    public void rerollDice(int[] reroll) {
+        for (int j : reroll) {
+            if (j > 0 && j < 7) {
+                dice.get(j-1).roll();
+            }
         }
     }
 
