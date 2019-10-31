@@ -67,7 +67,7 @@
                         "effect": {
                             "activation": "Now",
                             "action": "giveStarsEnergyAndHp",
-                            "added_stars": "2"
+                            "addedStars": "2"
                         },
                         "monsterName": "Alienoid",
                         "monsterType": "Alien",

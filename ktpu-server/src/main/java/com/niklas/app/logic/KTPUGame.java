@@ -29,25 +29,25 @@ public class KTPUGame {
 	 * @param storeCardFilepath is the filepath to a json file with all the store cards.
 	 */
     public KTPUGame(int totNumPlayers, String monsterFilepath, String storeCardFilepath) {
-        ReadJson json_reader = new ReadJson();
+        ReadJson jsonReader = new ReadJson();
         
-        ArrayList<Monster> monsters = json_reader.readMonstersFromJson(monsterFilepath);
+        ArrayList<Monster> monsters = jsonReader.readMonstersFromJson(monsterFilepath);
         Collections.shuffle(monsters);
-        int tot_num_monster = monsters.size();
+        int totNumMonster = monsters.size();
 
-        if (totNumPlayers > tot_num_monster) {
+        if (totNumPlayers > totNumMonster) {
             throw new Error(String.format("There is %2d more players then ther are monsters.", 
-                totNumPlayers - tot_num_monster));
+                totNumPlayers - totNumMonster));
         }
         
-        for (int i = 0; i < tot_num_monster - totNumPlayers; i++) {
+        for (int i = 0; i < totNumMonster - totNumPlayers; i++) {
             monsters.remove(0);
         }
 
 		Comunication comunication = new Comunication();
         ArrayList<Player> players = comunication.initComunication(monsters);
 		Collections.shuffle(players);
-		CardStore cardStore = new CardStore(json_reader.readStoreDeckFromJson(storeCardFilepath));
+		CardStore cardStore = new CardStore(jsonReader.readStoreDeckFromJson(storeCardFilepath));
 		
 		gameState = new GameState(players, cardStore, comunication);
     }
