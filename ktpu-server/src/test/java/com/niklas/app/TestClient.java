@@ -7,13 +7,13 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.Scanner;
 
 public class TestClient extends Thread {
-
-    private ArrayList<Integer> rerolled;
     private Scanner sc = new Scanner(System.in);
     private boolean flag;
     private boolean leaveTokyo;
     private String name;
     private String storeInput;
+    private String rerollInput;
+    private int numRerolls;
 
     public TestClient() {
        
@@ -24,10 +24,11 @@ public class TestClient extends Thread {
         boolean bot = true;
         name = "";
         Random rnd = ThreadLocalRandom.current();
-        rerolled = new ArrayList<Integer>();
         flag = false;
         leaveTokyo = true;
         storeInput = "-1\n";
+        numRerolls = 0;
+        rerollInput = "0\n";
         //Server stuffs
         try {
             Socket aSocket = new Socket("localhost", 2048);
@@ -53,11 +54,8 @@ public class TestClient extends Thread {
                     }
                 } else if(message[0].equalsIgnoreCase("ROLLED")) {
                     if(bot) {
-                        rnd = ThreadLocalRandom.current();
-                        int num1 = rnd.nextInt(6) + 1; 
-                        rerolled.add(num1);
-                        String reroll = num1+ "\n";                  
-                        outToServer.writeBytes(reroll);// Some randomness at least
+                        outToServer.writeBytes(rerollInput);// Some randomness at least
+                        numRerolls +=1;
                     } else {
                         outToServer.writeBytes(sc.nextLine() + "\n");
                     }
@@ -81,9 +79,11 @@ public class TestClient extends Thread {
         } catch(Exception e) {}
     }
 
-    public synchronized ArrayList<Integer> getReRolled() {
-        return rerolled;
+    public synchronized int getNumRerolls() {
+        return numRerolls;
     }
+
+
 
     public synchronized void setFlag() {
         flag = true;
@@ -99,5 +99,9 @@ public class TestClient extends Thread {
 
     public synchronized void setStoreInput(String input) {
         storeInput = input;
+    }
+
+    public synchronized void setRerollInput(String input) {
+        rerollInput = input;
     }
 }

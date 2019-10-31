@@ -14,18 +14,18 @@ interface Dice {
      * Returns value of dice as a string.
      * @return value of dice as a string.
      */
-    public String value_as_string();
+    public String valueAsString();
 
 
     /**
      * Get value.
      * @return value of dice.
      */
-    public int get_value();
+    public int getValue();
 
 
     /**
      * Set the value of dice
      */
-    public void set_value(int number) throws Exception;
+    public void setValue(int number) throws Exception;
 }

@@ -20,7 +20,7 @@ public final class KTPUDice extends DiceSix {
      * @return value of dice as a string.
      */
     @Override
-    public String value_as_string() {
+    public String valueAsString() {
         return (value==ONE?"ONE":value==TWO?"TWO":value==THREE?"THREE":value==HEART?"HEART":value==ENERGY?"ENERGY":"CLAWS");
     }
 }

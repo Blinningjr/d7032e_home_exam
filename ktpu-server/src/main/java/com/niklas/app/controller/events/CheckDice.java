@@ -35,7 +35,7 @@ public class CheckDice implements Event {
     public void execute() {
         checkCards();
         for (KTPUDice ktpuDice : dice) {
-			switch (ktpuDice.get_value()) {
+			switch (ktpuDice.getValue()) {
 			case KTPUDice.ONE:
                 numOnes += 1;
 				break;
@@ -55,7 +55,7 @@ public class CheckDice implements Event {
 				numEnergy += 1;
 				break;
 			default:
-				throw new Error("Dice value:" + ktpuDice.get_value() + " is not implemented for KTPUDice");
+				throw new Error("Dice value:" + ktpuDice.getValue() + " is not implemented for KTPUDice");
 			}
         }
         gameState.getComunication().sendRolledDice(dice, gameState.getCurrentPlayer());

@@ -26,7 +26,7 @@ public class DiceSix implements Dice {
      * Returns value of dice as a string.
      * @return value of dice as a string.
      */
-    public String value_as_string() {
+    public String valueAsString() {
         return String.valueOf(value);
     }
 
@@ -35,7 +35,7 @@ public class DiceSix implements Dice {
      * Get value.
      * @return value of dice.
      */
-    public int get_value() {
+    public int getValue() {
         return value;
     }
 
@@ -43,7 +43,7 @@ public class DiceSix implements Dice {
     /**
      * Set the value of dice
      */
-    public void set_value(int value) throws Exception {
+    public void setValue(int value) throws Exception {
         if (value < 1 || value > 6) {
             throw new Exception();
         } else {

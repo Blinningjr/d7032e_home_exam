@@ -92,7 +92,7 @@ public class Comunication {
     public int[] sendRerollDice(ArrayList<KTPUDice> dice, Client client) {
         String rolledDice = "ROLLED:You rolled:\t[1]\t[2]\t[3]\t[4]\t[5]\t[6]:";
         for(int allDice=0; allDice<dice.size(); allDice++) {
-        	rolledDice+="\t" + dice.get(allDice).value_as_string();
+        	rolledDice+="\t" + dice.get(allDice).valueAsString();
         }
         rolledDice += ":Choose which dice to reroll, separate with comma and in decending order (e.g. 5,4,1   0 to skip)\n";
         String[] reroll = sendMessage(client, rolledDice).split(",");
@@ -106,7 +106,7 @@ public class Comunication {
     public String sendRolledDice(ArrayList<KTPUDice> dice, Client client) {
         String rolledDice = "ROLLED:You rolled:\t[1]\t[2]\t[3]\t[4]\t[5]\t[6]:";
         for(int allDice=0; allDice<dice.size(); allDice++) {
-        	rolledDice+="\t" + dice.get(allDice).value_as_string();
+        	rolledDice+="\t" + dice.get(allDice).valueAsString();
         }
         rolledDice += ":Press [ENTER]\n";
         return sendMessage(client, rolledDice);

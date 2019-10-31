@@ -23,22 +23,25 @@ import com.niklas.app.controller.events.CheckNumOfThrees;
 import com.niklas.app.controller.events.CheckNumOfTwos;
 import com.niklas.app.controller.events.Damage;
 import com.niklas.app.controller.events.PowerUp;
+import com.niklas.app.controller.events.RollDice;
 import com.niklas.app.controller.events.Shopping;
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.StoreCard;
+import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
 public class AppTest {
     private GameState gameState;
-    Random rnd = new Random();
+    private Random rnd = new Random();
+    private final static int NUMPLAYERS = 3;
     
-    TestClient testClient1 = new TestClient();
-    TestClient testClient2 = new TestClient();
-    TestClient testClient3 = new TestClient();
-    TestServer ts = new TestServer(3, 
+    private TestClient testClient1 = new TestClient();
+    private TestClient testClient2 = new TestClient();
+    private TestClient testClient3 = new TestClient();
+    private TestServer ts = new TestServer(NUMPLAYERS, 
         		"./src/test/java/com/niklas/app/TestMonster.json",
                 "./src/test/java/com/niklas/app/TestStoreDeck.json");
     
@@ -65,8 +68,8 @@ public class AppTest {
         System.out.println("Before End");
      }
 
-     @After
-     public void after() {
+    @After
+    public void after() {
         System.out.println("after Start");
         testClient1.setFlag();
         testClient2.setFlag();
@@ -76,14 +79,81 @@ public class AppTest {
             testClient1.join();
             testClient2.join();
             testClient3.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         gameState.getComunication().closeSocet();
         System.out.println("after End");
-     }
+    }
+
+    /**
+     * 1.Each player is assigned a monster.
+     */
+    @Test
+    public void testAllPlayersGotMonsters() {
+        ArrayList<Client> players = new ArrayList<Client>();
+        players.add(gameState.getCurrentPlayer());
+        players.addAll(gameState.getPlayers());
+
+        assertEquals(NUMPLAYERS, players.size());
+        
+        for (int i = 0; i < NUMPLAYERS; i++) {
+            assertNotEquals(players.get(i).getMonster(), null);
+        }
+    }
+
+    /**
+     * 2.Set Victory Points to 0.
+     */
+    @Test
+    public void testZeroStars() {
+        ArrayList<Client> players = new ArrayList<Client>();
+        players.add(gameState.getCurrentPlayer());
+        players.addAll(gameState.getPlayers());
+        
+        for (int i = 0; i < NUMPLAYERS; i++) {
+            assertEquals(0, players.get(i).getMonster().getStars());
+        }
+    }
+
+    /**
+     * 3.Set Life to 10.
+     */
+    @Test
+    public void testLifeEqualsTen() {
+        ArrayList<Client> players = new ArrayList<Client>();
+        players.add(gameState.getCurrentPlayer());
+        players.addAll(gameState.getPlayers());
+        
+        for (int i = 0; i < NUMPLAYERS; i++) {
+            assertEquals(10, players.get(i).getMonster().getHp());
+        }
+    }
+
+    /**
+     *  4.Shuffle the store cards (contained in the deck)(todo: add support for more store cards)
+     *      •Start with 3 cards face up (available for purchase).
+     */
+    @Test
+    public void testStoreInventory() {
+        StoreCard[] storeCards = gameState.getCardStore().getInventory();
+        assertEquals(3, storeCards.length);
+        for (int i = 0; i < storeCards.length; i++) {
+            assertNotEquals(storeCards[i], null);
+        }
+    }
+
+    /** 
+     *  5.Shuffle the evolution cards for the respective monsters (todo: add support for more evolution cards) 
+     *  Can't test with only one card and because the result is random.
+     */
      
+    /**
+     * 6.Randomise which monster starts the game.
+     * Can't test because the result is random.
+     */
+
 	/**
 	 * 7.If your monster is inside of Tokyo –Gain 1 star
 	 */
@@ -111,65 +181,129 @@ public class AppTest {
         assertEquals(expectedStars, currentMonster.getStars());
     }
     
-    // /**
-    //  * 8.Roll your 6 dice
-    //  * 9. Select which of your 6 dice to reroll
-    //  * 10. Reroll the selected dice
-    //  * 11.Repeat step 9 and 10once
-    //  */
-    // @Test
-    // public void testRule8() {
-    // 	RollDice rollDice = new RollDice(gameState);
-    //     ArrayList<KTPUDice> dice1 = new ArrayList<KTPUDice>();
-    //     ArrayList<KTPUDice> dice2 = new ArrayList<KTPUDice>();
-    //     rollDice.execute();
-    //     dice1.addAll(rollDice.getDice());
-    //     rollDice.createDice();
-    //     dice2.addAll(rollDice.getDice());
+    /**
+     * 8.Roll your 6 dice
+     */
+    @Test
+    public void testRollSixDice() {
+        String input = "0\n";
+        testClient1.setRerollInput(input);
+        testClient2.setRerollInput(input);
+        testClient3.setRerollInput(input);
 
-    //     for (int i = 0; i < 100; i++) {
-    //         if (dice1.equals(dice2)) {
-    //             dice2.clear();
-    //             rollDice.createDice();
-    //             dice2.addAll(rollDice.getDice());
-    //         }
-    //     }
+        RollDice rollDice = new RollDice(gameState);
+        rollDice.execute();
+        ArrayList<KTPUDice> dice = rollDice.getDice();
 
-    //     assertEquals(6, dice1.size());
-    //     assertEquals(6, dice2.size());
-    //     assertNotEquals(dice1, dice2);
-    // }
+        assertEquals(6, dice.size());
+        for (int i = 0; i < dice.size(); i++) {
+            assertTrue(dice.get(i).getValue() == 1 ||
+                dice.get(i).getValue() == 2 ||
+                dice.get(i).getValue() == 3 ||
+                dice.get(i).getValue() == 4 ||
+                dice.get(i).getValue() == 5 ||
+                dice.get(i).getValue() == 6);
+        }
+    }
 
+    /**
+     * 9. Select which of your 6 dice to reroll.
+     * 10. Reroll the selected dice
+     */
+    @Test
+    public void testRerollDice() {
+        String input = "1\n";
+        testClient1.setRerollInput(input);
+        testClient2.setRerollInput(input);
+        testClient3.setRerollInput(input);
 
-    // private void helpTestRule10(int[] reroll) {
-    //     RollDice rollDice = new RollDice(gameState);
-    //     int[] dice1 = new int[6];
-    //     int[] dice2 = new int[6];
+        RollDice rollDice = new RollDice(gameState);
+        rollDice.execute();
 
-    //     rollDice.createDice();
-    //     for (int i = 0; i < 6; i++) {
-    //         dice1[i] = rollDice.getDice().get(i).get_value();
-    //     }
-    //     rollDice.rerollDice(reroll);
-    //     for (int i = 0; i < 6; i++) {
-    //         dice2[i] = rollDice.getDice().get(i).get_value();
-    //     }
+        input = "2\n";
+        testClient1.setRerollInput(input);
+        testClient2.setRerollInput(input);
+        testClient3.setRerollInput(input);
 
-    //     for (int i = 0; i < 6; i++) {
-    //         boolean inRerol = false;
-    //         for (int j = 0; j < reroll.length; j++) {
-    //             if (i+1 == reroll[j]) {
-    //                 inRerol = true;
-    //                 j = reroll.length;
-    //             }
-    //         }
-    //         if (inRerol) {
-    //             assertNotEquals(dice1[i], dice2[i]);
-    //         } else {
-    //             assertEquals(dice1[i], dice2[i]);
-    //         }
-    //     }
-    // }
+        rollDice = new RollDice(gameState);
+        rollDice.execute();
+
+        input = "3\n";
+        testClient1.setRerollInput(input);
+        testClient2.setRerollInput(input);
+        testClient3.setRerollInput(input);
+
+        rollDice = new RollDice(gameState);
+        rollDice.execute();
+
+        input = "4\n";
+        testClient1.setRerollInput(input);
+        testClient2.setRerollInput(input);
+        testClient3.setRerollInput(input);
+
+        rollDice = new RollDice(gameState);
+        rollDice.execute();
+
+        input = "5\n";
+        testClient1.setRerollInput(input);
+        testClient2.setRerollInput(input);
+        testClient3.setRerollInput(input);
+
+        rollDice = new RollDice(gameState);
+        rollDice.execute();
+
+        input = "6\n";
+        testClient1.setRerollInput(input);
+        testClient2.setRerollInput(input);
+        testClient3.setRerollInput(input);
+
+        rollDice = new RollDice(gameState);
+        rollDice.execute();
+
+        input = "1,2,3,4,5,6\n";
+        testClient1.setRerollInput(input);
+        testClient2.setRerollInput(input);
+        testClient3.setRerollInput(input);
+
+        rollDice = new RollDice(gameState);
+        rollDice.execute();
+
+        input = "5,2,4,1\n";
+        testClient1.setRerollInput(input);
+        testClient2.setRerollInput(input);
+        testClient3.setRerollInput(input);
+
+        rollDice = new RollDice(gameState);
+        rollDice.execute();
+    }
+
+    /**
+     * 11.Repeat step 9 and 10once
+     */
+    @Test
+    public void testNumRerolls() {
+        String input = "3\n";
+        testClient1.setRerollInput(input);
+        testClient2.setRerollInput(input);
+        testClient3.setRerollInput(input);
+        
+        RollDice rollDice = new RollDice(gameState);
+        rollDice.execute();
+
+        gameState.nextTurn();
+
+        rollDice = new RollDice(gameState);
+        rollDice.execute();
+
+        gameState.nextTurn();
+
+        rollDice = new RollDice(gameState);
+        rollDice.execute();
+
+        assertEquals(2, testClient1.getNumRerolls());
+        assertEquals(2, testClient2.getNumRerolls());
+        assertEquals(2, testClient3.getNumRerolls());
+    }
 
     /**
      * 12.Sum up the dice and assign stars, health, or damage
