@@ -1,4 +1,4 @@
-package com.niklas.app.controller.events;
+package com.niklas.app.logic.events;
 
 
 public interface Event {

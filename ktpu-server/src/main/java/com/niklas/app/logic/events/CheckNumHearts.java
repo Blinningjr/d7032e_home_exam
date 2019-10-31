@@ -1,7 +1,4 @@
-package com.niklas.app.controller.events;
-
-
-import java.util.ArrayList;
+package com.niklas.app.logic.events;
 
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Activation;
@@ -14,53 +11,48 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class Damage implements Event {
+public class CheckNumHearts implements Event {
     private GameState gameState;
-    private Client client;
-    private int damage;
 
-    public Damage(GameState gameState, Client client, int damage) {
+    private int healing;
+
+    public CheckNumHearts(GameState gameState, int numHearts) {
         this.gameState = gameState;
-        this.client = client;
-        this.damage = damage;
+        healing = numHearts;
     }
 
     public void execute() {
-        checkCards();
-        Monster monster = client.getMonster();
-        if (damage > 0 && !monster.getIsDead()) {
-            monster.setHp(monster.getHp() - damage);
-            if (monster.getHp() < 1) {
-                monster.setIsDead(true);
-                monster.setInTokyo(false);
-                ArrayList<Client> clients = new ArrayList<Client>();
-                clients.add(gameState.getCurrentPlayer());
-                clients.addAll(gameState.getPlayers());
-                clients.remove(client);
-                gameState.getComunication().sendMonsterDied(client, clients);
+        Client currentClient = gameState.getCurrentPlayer();
+        if (!currentClient.getMonster().getInTokyo()) {
+            checkCards();
+            Heal heal = new Heal(gameState, currentClient, healing);
+            heal.execute();
+        }
+    }
 
-                CheckForWinByElimination cfwbe = new CheckForWinByElimination(gameState);
-                cfwbe.execute();
-            }
-    	}
+    public void addHealing(int healing) {
+        if (healing >= 0) {
+            this.healing += healing;
+        }
     }
 
     private void checkCards() {
+    	Client client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
-			if (effect.getActivation() == Activation.Damage) {
+			if (effect.getActivation() == Activation.CheckNumHearts) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event Damage");
+                            + " is not implemented for event CheckNumHearts");
                 }
 				if (storeCard.getType() == StoreCardType.discard) {
 					currentMonster.storeCards.remove(i);
@@ -71,17 +63,17 @@ public class Damage implements Event {
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
             EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
             Effect effect = evolutionCard.getEffect();
-			if (effect.getActivation() == Activation.Damage) {
+			if (effect.getActivation() == Activation.CheckNumHearts) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event Damage");
+                            + " is not implemented for event CheckNumHearts");
                 }
 				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
 					currentMonster.evolutionCards.remove(i);

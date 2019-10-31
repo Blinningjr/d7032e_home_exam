@@ -1,4 +1,4 @@
-package com.niklas.app.controller.events;
+package com.niklas.app.logic.events;
 
 
 import com.niklas.app.model.GameState;
@@ -12,53 +12,38 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class Defend implements Event {
+public class AwardEnergy implements Event {
     private GameState gameState;
-    private Client attackingClient;
-    private Client defendingClient;
-    private int damage;
-    private int armor;
-
-    public Defend(GameState gameState, Client attackingClient, Client defendingClient, int damage) {
+    private Client client;
+    private int numEnergy;
+    
+    public AwardEnergy(GameState gameState, Client client, int numEnergy) {
         this.gameState = gameState;
-        this.attackingClient = attackingClient;
-        this.defendingClient = defendingClient;
-        this.damage = damage;
-
-        armor = 0;
+        this.client = client;
+        this.numEnergy = numEnergy;
     }
 
     public void execute() {
         checkCards();
-        Damage d = new Damage(gameState, defendingClient, damage - armor);
-        d.execute();
-    }
-
-    public void addArmor(int addedArmor) {
-        if (addedArmor > 0) {
-            armor += addedArmor;
-        } 
+        client.getMonster().setEnergy(client.getMonster().getEnergy() + numEnergy);
     }
 
     private void checkCards() {
-        Monster currentMonster = defendingClient.getMonster();
+        Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
-			if (effect.getActivation() == Activation.Defend) {
+			if (effect.getActivation() == Activation.AwardEnergy) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, defendingClient, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
-                        break;
-                    case addArmor:
-                        gameState.action.addarmor(this, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event Defend");
+                            + " is not implemented for event AwardEnergy");
                 }
 				if (storeCard.getType() == StoreCardType.discard) {
 					currentMonster.storeCards.remove(i);
@@ -69,20 +54,17 @@ public class Defend implements Event {
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
             EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
             Effect effect = evolutionCard.getEffect();
-			if (effect.getActivation() == Activation.Defend) {
+			if (effect.getActivation() == Activation.AwardEnergy) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, defendingClient, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
-                        break;
-                    case addArmor:
-                        gameState.action.addarmor(this, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event Defend");
+                            + " is not implemented for event AwardEnergy");
                 }
 				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
 					currentMonster.evolutionCards.remove(i);

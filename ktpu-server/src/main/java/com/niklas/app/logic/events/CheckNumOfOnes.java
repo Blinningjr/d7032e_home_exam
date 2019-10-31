@@ -1,4 +1,4 @@
-package com.niklas.app.controller.events;
+package com.niklas.app.logic.events;
 
 
 import com.niklas.app.model.GameState;
@@ -12,32 +12,26 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class AwardStarIfCurrentPlayerInTokyo implements Event {
+public class CheckNumOfOnes implements Event {
     private GameState gameState;
-    private int stars;
 
-    public AwardStarIfCurrentPlayerInTokyo(GameState gameState) {
-    	this.gameState = gameState;
-        stars = 1;
+    private int numOnes;
+    private int numOnesNeeded;
+    private int starsAdded;
+
+    public CheckNumOfOnes(GameState gameState, int numOnes) {
+        this.gameState = gameState;
+        this.numOnes = numOnes;
+        numOnesNeeded = 3;
+        starsAdded = 1;
     }
 
     public void execute() {
-        Client currentPlayer = gameState.getCurrentPlayer();
-        giveStarIfInTokyo(currentPlayer);
-        gameState.getComunication().sendAllStats(currentPlayer, gameState.getPlayers());
-    }
-
-    public void giveStarIfInTokyo(Client currentPlayer) {
-        if (currentPlayer.getMonster().getInTokyo()) {
+        Client client = gameState.getCurrentPlayer();
+        if (numOnes >= numOnesNeeded) {
             checkCards();
-            AwardStar awardStar = new AwardStar(gameState, currentPlayer, stars);
-            awardStar.execute();
-        }
-    }
-
-
-    public void addStars(int stars) {
-        this.stars += stars;
+    		client.getMonster().setStars(client.getMonster().getStars() + starsAdded + numOnes - numOnesNeeded);
+    	}
     }
 
     private void checkCards() {
@@ -46,17 +40,17 @@ public class AwardStarIfCurrentPlayerInTokyo implements Event {
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
-			if (effect.getActivation() == Activation.AwardStarIfCurrentPlayerInTokyo) {
+			if (effect.getActivation() == Activation.CheckNumOfOnes) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event AwardStarIfCurrentPlayerInTokyo");
+                            + " is not implemented for event CheckNumOfOnes");
                 }
 				if (storeCard.getType() == StoreCardType.discard) {
 					currentMonster.storeCards.remove(i);
@@ -67,17 +61,17 @@ public class AwardStarIfCurrentPlayerInTokyo implements Event {
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
             EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
             Effect effect = evolutionCard.getEffect();
-			if (effect.getActivation() == Activation.AwardStarIfCurrentPlayerInTokyo) {
+			if (effect.getActivation() == Activation.CheckNumOfOnes) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event AwardStarIfCurrentPlayerInTokyo");
+                            + " is not implemented for event CheckNumOfOnes");
                 }
 				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
 					currentMonster.evolutionCards.remove(i);

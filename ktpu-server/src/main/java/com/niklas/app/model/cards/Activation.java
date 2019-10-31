@@ -1,7 +1,6 @@
 package com.niklas.app.model.cards;
 
 
-
 public enum Activation {
     Attack,
     AwardEnergy,

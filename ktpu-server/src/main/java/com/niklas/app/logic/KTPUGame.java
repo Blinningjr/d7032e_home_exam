@@ -1,21 +1,21 @@
-package com.niklas.app.controller;
+package com.niklas.app.logic;
 
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 import com.niklas.app.model.cards.CardStore;
-import com.niklas.app.controller.events.Attack;
-import com.niklas.app.controller.events.AwardEnergy;
-import com.niklas.app.controller.events.AwardStarIfCurrentPlayerInTokyo;
-import com.niklas.app.controller.events.CheckDice;
-import com.niklas.app.controller.events.CheckNumHearts;
-import com.niklas.app.controller.events.CheckNumOfOnes;
-import com.niklas.app.controller.events.CheckNumOfThrees;
-import com.niklas.app.controller.events.CheckNumOfTwos;
-import com.niklas.app.controller.events.PowerUp;
-import com.niklas.app.controller.events.RollDice;
-import com.niklas.app.controller.events.Shopping;
+import com.niklas.app.logic.events.Attack;
+import com.niklas.app.logic.events.AwardEnergy;
+import com.niklas.app.logic.events.AwardStarIfCurrentPlayerInTokyo;
+import com.niklas.app.logic.events.CheckDice;
+import com.niklas.app.logic.events.CheckNumHearts;
+import com.niklas.app.logic.events.CheckNumOfOnes;
+import com.niklas.app.logic.events.CheckNumOfThrees;
+import com.niklas.app.logic.events.CheckNumOfTwos;
+import com.niklas.app.logic.events.PowerUp;
+import com.niklas.app.logic.events.RollDice;
+import com.niklas.app.logic.events.Shopping;
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.json.ReadJson;

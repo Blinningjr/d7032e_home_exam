@@ -1,4 +1,4 @@
-package com.niklas.app.controller.events;
+package com.niklas.app.logic.events;
 
 import java.util.ArrayList;
 
@@ -82,7 +82,7 @@ public class Attack implements Event {
                         gameState.action.giveStarsEnergyAndHp(gameState, attackingClient, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, attackingClient, effect);
                         break;
                     case addDamage:
                         gameState.action.addDamage(this, effect);
@@ -106,7 +106,7 @@ public class Attack implements Event {
                         gameState.action.giveStarsEnergyAndHp(gameState, attackingClient, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, attackingClient, effect);
                         break;
                     case addDamage:
                         gameState.action.addDamage(this, effect);

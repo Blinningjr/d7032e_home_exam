@@ -1,7 +1,4 @@
-package com.niklas.app.controller.events;
-
-
-import java.util.ArrayList;
+package com.niklas.app.logic.events;
 
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Activation;
@@ -10,72 +7,66 @@ import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
-import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class RollDice implements Event{
-    private int numDice;
-    private int numRerolls;
+public class Heal implements Event {
     private GameState gameState;
-    private ArrayList<KTPUDice> dice;
+    private Client client; 
 
-    public RollDice(GameState gameState) {
+    private int addedMaxHp;
+    private int healing;
+
+    public Heal(GameState gameState, Client client, int numHearts) {
         this.gameState = gameState;
-        numDice = 6;
-        numRerolls = 2;
+        this.client = client;
+        healing = numHearts;
+
+        addedMaxHp = 0;
     }
 
     public void execute() {
-        checkCards();
-        dice = new ArrayList<KTPUDice>();
-        for (int i = 0; i < numDice; i++) {
-        	dice.add(new KTPUDice());
+    	checkCards();
+        Monster monster = client.getMonster();
+        int maxHp = monster.getMaxHp() + addedMaxHp;
+        int newHp = monster.getHp() + healing;
+        if (newHp > maxHp) {
+            newHp = maxHp;
         }
-        for (int i = 0; i < numRerolls; i++) {
-        	int[] reroll = gameState.getComunication().sendRerollDice(dice, gameState.getCurrentPlayer());
-        	if (reroll.length > 0 && reroll[0] > 0) {
-                for (int j : reroll) {
-                    if (j > 0 && j < 7) {
-                        dice.get(j-1).roll();
-                    }
-                }
-        	} else{
-        		return;
-        	}
+        if (!monster.getIsDead()) {
+            monster.setHp(newHp);
         }
     }
 
-    public ArrayList<KTPUDice> getDice() {
-        return dice;
+    public void addHealing(int healing) {
+        if (healing >= 0) {
+            this.healing += healing;
+        }
     }
 
-    public void addDice(int numDice) {
-        this.numDice += numDice;
-    }
-
-    public void addRerolls(int numRerolls){
-        this.numRerolls += numRerolls;
+    public void addMaxHp(int addedMaxHp) {
+        if (addedMaxHp >= 0) {
+            this.addedMaxHp += addedMaxHp;
+        }
     }
 
     private void checkCards() {
-        Client client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
-			if (effect.getActivation() == Activation.RollDice) {
+			if (effect.getActivation() == Activation.Heal) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event RollDice");
+                            + " is not implemented for event Heal");
                 }
 				if (storeCard.getType() == StoreCardType.discard) {
 					currentMonster.storeCards.remove(i);
@@ -86,17 +77,17 @@ public class RollDice implements Event{
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
             EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
             Effect effect = evolutionCard.getEffect();
-			if (effect.getActivation() == Activation.RollDice) {
+			if (effect.getActivation() == Activation.Heal) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event RollDice");
+                            + " is not implemented for event Heal");
                 }
 				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
 					currentMonster.evolutionCards.remove(i);

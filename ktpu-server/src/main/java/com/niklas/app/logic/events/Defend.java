@@ -1,7 +1,5 @@
-package com.niklas.app.controller.events;
+package com.niklas.app.logic.events;
 
-
-import java.util.ArrayList;
 
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Activation;
@@ -14,51 +12,53 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class CheckForWinByElimination implements Event {
+public class Defend implements Event {
     private GameState gameState;
+    private Client attackingClient;
+    private Client defendingClient;
+    private int damage;
+    private int armor;
 
-    public CheckForWinByElimination(GameState gameState) {
+    public Defend(GameState gameState, Client attackingClient, Client defendingClient, int damage) {
         this.gameState = gameState;
+        this.attackingClient = attackingClient;
+        this.defendingClient = defendingClient;
+        this.damage = damage;
+
+        armor = 0;
     }
 
     public void execute() {
         checkCards();
-        ArrayList<Client> clients = new ArrayList<Client>();
-        clients.add(gameState.getCurrentPlayer());
-        clients.addAll(gameState.getPlayers());
-        ArrayList<Client> aliveClients = new ArrayList<Client>();
-        for (int i = 0; i < clients.size(); i++) {
-            Client client = clients.get(i);
-            if (!client.getMonster().getIsDead()) {
-                aliveClients.add(client);
-            } 
-        }
-        if (aliveClients.size() == 1) {
-            Client winner = aliveClients.get(0);
-            clients.remove(winner);
-            gameState.getComunication().sendEliminationWinner(winner, clients);
-            gameState.endGame();
-        }
+        Damage d = new Damage(gameState, defendingClient, damage - armor);
+        d.execute();
     }
 
+    public void addArmor(int addedArmor) {
+        if (addedArmor > 0) {
+            armor += addedArmor;
+        } 
+    }
 
     private void checkCards() {
-        Client client = gameState.getCurrentPlayer();
-        Monster currentMonster = client.getMonster();
+        Monster currentMonster = defendingClient.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
-			if (effect.getActivation() == Activation.CheckForWinByElimination) {
+			if (effect.getActivation() == Activation.Defend) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, defendingClient, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, defendingClient, effect);
+                        break;
+                    case addArmor:
+                        gameState.action.addarmor(this, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event CheckForWinByElimination");
+                            + " is not implemented for event Defend");
                 }
 				if (storeCard.getType() == StoreCardType.discard) {
 					currentMonster.storeCards.remove(i);
@@ -69,17 +69,20 @@ public class CheckForWinByElimination implements Event {
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
             EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
             Effect effect = evolutionCard.getEffect();
-			if (effect.getActivation() == Activation.CheckForWinByElimination) {
+			if (effect.getActivation() == Activation.Defend) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, defendingClient, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, defendingClient, effect);
+                        break;
+                    case addArmor:
+                        gameState.action.addarmor(this, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event CheckForWinByElimination");
+                            + " is not implemented for event Defend");
                 }
 				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
 					currentMonster.evolutionCards.remove(i);

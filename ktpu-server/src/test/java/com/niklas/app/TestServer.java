@@ -1,6 +1,6 @@
 package com.niklas.app;
 
-import com.niklas.app.controller.KTPUGame;
+import com.niklas.app.logic.KTPUGame;
 
 public class TestServer extends Thread {
     private KTPUGame tKpuGame;

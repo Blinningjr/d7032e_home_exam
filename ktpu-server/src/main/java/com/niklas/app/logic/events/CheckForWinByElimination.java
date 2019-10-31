@@ -1,9 +1,10 @@
-package com.niklas.app.controller.events;
+package com.niklas.app.logic.events;
 
+
+import java.util.ArrayList;
 
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Activation;
-import com.niklas.app.model.cards.CardStore;
 import com.niklas.app.model.cards.Duration;
 import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.EvolutionCard;
@@ -13,34 +14,33 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class ResetStore implements Event {
+public class CheckForWinByElimination implements Event {
     private GameState gameState;
-    private int cost;
-    private int extraCost;
 
-    public ResetStore(GameState gameState) {
+    public CheckForWinByElimination(GameState gameState) {
         this.gameState = gameState;
-        cost = 2;
-        extraCost = 0;
     }
 
     public void execute() {
-        Client currentPlayer = gameState.getCurrentPlayer();
-        int totalCost = cost + extraCost;
-        if (currentPlayer.getMonster().getEnergy() >= totalCost) {
-            checkCards();
-            currentPlayer.getMonster().setEnergy(currentPlayer.getMonster().getEnergy() - totalCost);
-
-            CardStore cardStore = gameState.getCardStore();
-            for (int i = 0; i < cardStore.getInventory().length; i++) {
-                cardStore.discardCard(cardStore.buy(i));
-            }
+        checkCards();
+        ArrayList<Client> clients = new ArrayList<Client>();
+        clients.add(gameState.getCurrentPlayer());
+        clients.addAll(gameState.getPlayers());
+        ArrayList<Client> aliveClients = new ArrayList<Client>();
+        for (int i = 0; i < clients.size(); i++) {
+            Client client = clients.get(i);
+            if (!client.getMonster().getIsDead()) {
+                aliveClients.add(client);
+            } 
+        }
+        if (aliveClients.size() == 1) {
+            Client winner = aliveClients.get(0);
+            clients.remove(winner);
+            gameState.getComunication().sendEliminationWinner(winner, clients);
+            gameState.endGame();
         }
     }
 
-    public void addCost(int addedCost) {
-        extraCost += addedCost;
-    }
 
     private void checkCards() {
         Client client = gameState.getCurrentPlayer();
@@ -48,17 +48,17 @@ public class ResetStore implements Event {
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
-			if (effect.getActivation() == Activation.ResetStore) {
+			if (effect.getActivation() == Activation.CheckForWinByElimination) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event ResetStore");
+                            + " is not implemented for event CheckForWinByElimination");
                 }
 				if (storeCard.getType() == StoreCardType.discard) {
 					currentMonster.storeCards.remove(i);
@@ -69,17 +69,17 @@ public class ResetStore implements Event {
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
             EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
             Effect effect = evolutionCard.getEffect();
-			if (effect.getActivation() == Activation.ResetStore) {
+			if (effect.getActivation() == Activation.CheckForWinByElimination) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event ResetStore");
+                            + " is not implemented for event CheckForWinByElimination");
                 }
 				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
 					currentMonster.evolutionCards.remove(i);

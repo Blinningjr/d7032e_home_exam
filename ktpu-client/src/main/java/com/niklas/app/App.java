@@ -44,7 +44,7 @@ public class App {
                     }
                 } else if(message[0].equalsIgnoreCase("PURCHASE")) {
                     if(bot)
-                        outToServer.writeBytes("-1\n");
+                        outToServer.writeBytes( (rnd.nextInt(3) + 1) + "\n");
                     else
                         outToServer.writeBytes(sc.nextLine() + "\n");
                 } else {

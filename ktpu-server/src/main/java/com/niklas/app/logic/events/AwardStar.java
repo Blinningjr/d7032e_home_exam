@@ -1,4 +1,5 @@
-package com.niklas.app.controller.events;
+package com.niklas.app.logic.events;
+
 
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Activation;
@@ -11,44 +12,27 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class Heal implements Event {
+public class AwardStar implements Event {
     private GameState gameState;
-    private Client client; 
+    private Client client;
+    private int stars;
 
-    private int addedMaxHp;
-    private int healing;
-
-    public Heal(GameState gameState, Client client, int numHearts) {
+    public AwardStar(GameState gameState, Client client, int stars) {
         this.gameState = gameState;
         this.client = client;
-        healing = numHearts;
-
-        addedMaxHp = 0;
+        this.stars = stars;
     }
 
     public void execute() {
-    	checkCards();
-        Monster monster = client.getMonster();
-        int maxHp = monster.getMaxHp() + addedMaxHp;
-        int newHp = monster.getHp() + healing;
-        if (newHp > maxHp) {
-            newHp = maxHp;
-        }
-        if (!monster.getIsDead()) {
-            monster.setHp(newHp);
-        }
+        checkCards();
+        client.getMonster().setStars(client.getMonster().getStars() + stars);
+        
+        CheckForWinByStars cfwbs = new CheckForWinByStars(gameState);
+        cfwbs.execute();
     }
 
-    public void addHealing(int healing) {
-        if (healing >= 0) {
-            this.healing += healing;
-        }
-    }
-
-    public void addMaxHp(int addedMaxHp) {
-        if (addedMaxHp >= 0) {
-            this.addedMaxHp += addedMaxHp;
-        }
+    public void add_stars(int stars) {
+        this.stars += stars;
     }
 
     private void checkCards() {
@@ -56,17 +40,17 @@ public class Heal implements Event {
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
-			if (effect.getActivation() == Activation.Heal) {
+			if (effect.getActivation() == Activation.AwardStar) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event Heal");
+                            + " is not implemented for event AwardStar");
                 }
 				if (storeCard.getType() == StoreCardType.discard) {
 					currentMonster.storeCards.remove(i);
@@ -77,17 +61,17 @@ public class Heal implements Event {
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
             EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
             Effect effect = evolutionCard.getEffect();
-			if (effect.getActivation() == Activation.Heal) {
+			if (effect.getActivation() == Activation.AwardStar) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event Heal");
+                            + " is not implemented for event AwardStar");
                 }
 				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
 					currentMonster.evolutionCards.remove(i);

@@ -3,7 +3,7 @@ package com.niklas.app.model;
 
 import java.util.ArrayList;
 
-import com.niklas.app.controller.actions.Actions;
+import com.niklas.app.logic.actions.Actions;
 import com.niklas.app.model.cards.CardStore;
 import com.niklas.app.online.Client;
 import com.niklas.app.online.Comunication;

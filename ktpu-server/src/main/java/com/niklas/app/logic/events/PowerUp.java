@@ -1,4 +1,4 @@
-package com.niklas.app.controller.events;
+package com.niklas.app.logic.events;
 
 
 import com.niklas.app.model.GameState;
@@ -38,17 +38,18 @@ public class PowerUp implements Event {
     }
 
     private void checkNewCard() {
-        Monster currentMonster = gameState.getCurrentPlayer().getMonster();
+        Client client = gameState.getCurrentPlayer();
+        Monster currentMonster = client.getMonster();
         EvolutionCard evolutionCard = currentMonster.evolutionCards.get(currentMonster.evolutionCards.size() - 1);
         Effect effect = evolutionCard.getEffect();
         if (effect.getActivation() == Activation.Now) {
             switch (effect.getAction()) {
                 case giveStarsEnergyAndHp:
                     gameState.action.giveStarsEnergyAndHp(gameState,
-                        gameState.getCurrentPlayer(), effect);
+                    client, effect);
                     break;
                 case damageEveryoneElse:
-                    gameState.action.damageEveryoneElse(gameState, effect);
+                    gameState.action.damageEveryoneElse(gameState, client, effect);
                     break;
                 default:
                     throw new Error("action=" + effect.getAction() 
@@ -73,7 +74,7 @@ public class PowerUp implements Event {
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
@@ -94,7 +95,7 @@ public class PowerUp implements Event {
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 

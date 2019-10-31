@@ -1,4 +1,4 @@
-package com.niklas.app.controller.events;
+package com.niklas.app.logic.events;
 
 
 import java.util.ArrayList;
@@ -10,35 +10,54 @@ import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
+import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class CheckForWinByStars implements Event {
-    private static final int NUM_STARS_NEEDED_TO_WIN = 20;
+public class RollDice implements Event{
+    private int numDice;
+    private int numRerolls;
     private GameState gameState;
+    private ArrayList<KTPUDice> dice;
 
-    public CheckForWinByStars(GameState gameState) {
+    public RollDice(GameState gameState) {
         this.gameState = gameState;
+        numDice = 6;
+        numRerolls = 2;
     }
 
     public void execute() {
         checkCards();
-        ArrayList<Client> clients = new ArrayList<Client>();
-        clients.add(gameState.getCurrentPlayer());
-        clients.addAll(gameState.getPlayers());
-        for (int i = 0; i < clients.size(); i++) {
-            Client client = clients.get(i);
-            if (client.getMonster().getStars() >= NUM_STARS_NEEDED_TO_WIN) {
-                Client winner = client;
-                clients.remove(winner);
-                gameState.getComunication().sendStarsWinner(winner, clients);
-
-                gameState.endGame();
-            } 
+        dice = new ArrayList<KTPUDice>();
+        for (int i = 0; i < numDice; i++) {
+        	dice.add(new KTPUDice());
+        }
+        for (int i = 0; i < numRerolls; i++) {
+        	int[] reroll = gameState.getComunication().sendRerollDice(dice, gameState.getCurrentPlayer());
+        	if (reroll.length > 0 && reroll[0] > 0) {
+                for (int j : reroll) {
+                    if (j > 0 && j < 7) {
+                        dice.get(j-1).roll();
+                    }
+                }
+        	} else{
+        		return;
+        	}
         }
     }
 
+    public ArrayList<KTPUDice> getDice() {
+        return dice;
+    }
+
+    public void addDice(int numDice) {
+        this.numDice += numDice;
+    }
+
+    public void addRerolls(int numRerolls){
+        this.numRerolls += numRerolls;
+    }
 
     private void checkCards() {
         Client client = gameState.getCurrentPlayer();
@@ -46,17 +65,17 @@ public class CheckForWinByStars implements Event {
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
-			if (effect.getActivation() == Activation.CheckForWinByStars) {
+			if (effect.getActivation() == Activation.RollDice) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event CheckForWinByStars");
+                            + " is not implemented for event RollDice");
                 }
 				if (storeCard.getType() == StoreCardType.discard) {
 					currentMonster.storeCards.remove(i);
@@ -67,17 +86,17 @@ public class CheckForWinByStars implements Event {
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
             EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
             Effect effect = evolutionCard.getEffect();
-			if (effect.getActivation() == Activation.CheckForWinByStars) {
+			if (effect.getActivation() == Activation.RollDice) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event CheckForWinByStars");
+                            + " is not implemented for event RollDice");
                 }
 				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
 					currentMonster.evolutionCards.remove(i);

@@ -1,4 +1,4 @@
-package com.niklas.app.controller.events;
+package com.niklas.app.logic.events;
 
 
 import com.niklas.app.model.GameState;
@@ -65,7 +65,7 @@ public class Shopping implements Event {
                         currentPlayer, effect);
                     break;
                 case damageEveryoneElse:
-                    gameState.action.damageEveryoneElse(gameState, effect);
+                    gameState.action.damageEveryoneElse(gameState, currentPlayer, effect);
                     break;
                 default:
                     throw new Error("action=" + effect.getAction() 
@@ -90,7 +90,7 @@ public class Shopping implements Event {
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     case addCost:
                         gameState.action.addCost(this, effect);
@@ -114,7 +114,7 @@ public class Shopping implements Event {
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, effect);
+                        gameState.action.damageEveryoneElse(gameState, client, effect);
                         break;
                     case addCost:
                         gameState.action.addCost(this, effect);
