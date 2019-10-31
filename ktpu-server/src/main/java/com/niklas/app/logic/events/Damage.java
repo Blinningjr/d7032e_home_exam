@@ -38,25 +38,30 @@ public class Damage extends Event {
 
     /**
      * Starts the Damage event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Deals damage to the clients monster and starts event CheckForWinByElimination.
      */
     public void execute() {
-        checkCards();
-        Monster monster = client.getMonster();
-        if (damage > 0 && !monster.getIsDead()) {
-            monster.setHp(monster.getHp() - damage);
-            if (monster.getHp() < 1) {
-                monster.setIsDead(true);
-                monster.setInTokyo(false);
-                ArrayList<Client> clients = new ArrayList<Client>();
-                clients.add(gameState.getCurrentPlayer());
-                clients.addAll(gameState.getPlayers());
-                clients.remove(client);
-                gameState.getComunication().sendMonsterDied(client, clients);
+        if (gameState.getIsGameOn()) {
+            checkCards();
+            Monster monster = client.getMonster();
+            if (damage > 0 && !monster.getIsDead()) {
+                monster.setHp(monster.getHp() - damage);
+                if (monster.getHp() < 1) {
+                    monster.setIsDead(true);
+                    monster.setInTokyo(false);
+                    ArrayList<Client> clients = new ArrayList<Client>();
+                    clients.add(gameState.getCurrentPlayer());
+                    clients.addAll(gameState.getPlayers());
+                    clients.remove(client);
+                    gameState.getComunication().sendMonsterDied(client, clients);
 
-                CheckForWinByElimination cfwbe = new CheckForWinByElimination(gameState);
-                cfwbe.execute();
+                    CheckForWinByElimination cfwbe = new CheckForWinByElimination(gameState);
+                    cfwbe.execute();
+                }
             }
-    	}
+        }
     }
 
 

@@ -49,6 +49,19 @@ public class Attack extends Event {
 
     /**
      * Starts the Attack event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Folows rule 12 by starting Defend event if monster attacks and starting AwardStar event if monster enters tokyo.
+     * 
+     * Rule 12.
+     *          Each claw
+     *              i.Inside Tokyo –1 damage dealt to each monster outside of Tokyo
+     *              ii.Outside Tokyo
+     *                  1.Tokyo Unoccupied = Move into Tokyo and Gain 1 star
+     *                  2.Tokyo Occupied
+     *                      a.1 damage dealt to the monster inside Tokyo
+     *                      b.Monsters damaged may choose to leave Tokyo
+     *                      c.If there is an open spot in Tokyo –Move into Tokyo and Gain 1 star
      */
     public void execute() {
         if (gameState.getIsGameOn()) {

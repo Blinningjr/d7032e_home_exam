@@ -32,15 +32,20 @@ public class AwardStarIfCurrentPlayerInTokyo extends Event {
 
     /**
      * Starts the AwardStarIfCurrentPlayerInTokyo event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Add stars to the clients monsters stars if the monster is in tokyo by starting event AwardStar.
      */
     public void execute() {
-        Client currentPlayer = gameState.getCurrentPlayer();
-        if (currentPlayer.getMonster().getInTokyo()) {
-            checkCards();
-            AwardStar awardStar = new AwardStar(gameState, currentPlayer, stars);
-            awardStar.execute();
+        if (gameState.getIsGameOn()) {
+            Client currentPlayer = gameState.getCurrentPlayer();
+            if (currentPlayer.getMonster().getInTokyo()) {
+                checkCards();
+                AwardStar awardStar = new AwardStar(gameState, currentPlayer, stars);
+                awardStar.execute();
+            }
+            gameState.getComunication().sendAllStats(currentPlayer, gameState.getPlayers());
         }
-        gameState.getComunication().sendAllStats(currentPlayer, gameState.getPlayers());
     }
 
 

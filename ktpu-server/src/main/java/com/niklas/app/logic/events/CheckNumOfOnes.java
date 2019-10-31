@@ -37,13 +37,22 @@ public class CheckNumOfOnes extends Event {
 
     /**
      * Starts the CheckNumOfOnes event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Follows rule 12 and gives stars by starting event AwardStar.
+     * 
+     * Rule: 12.
+     *          Tripple 1’s = 1 StarEach additional 1 equals +1 star
      */
     public void execute() {
-        Client client = gameState.getCurrentPlayer();
-        if (numOnes >= numOnesNeeded) {
-            checkCards();
-    		client.getMonster().setStars(client.getMonster().getStars() + starsAdded + numOnes - numOnesNeeded);
-    	}
+        if (gameState.getIsGameOn()) {
+            Client client = gameState.getCurrentPlayer();
+            if (numOnes >= numOnesNeeded) {
+                checkCards();
+                AwardStar aw = new AwardStar(gameState, client, starsAdded + numOnes - numOnesNeeded);
+                aw.execute();
+            }
+        }
     }
 
 

@@ -36,10 +36,15 @@ public class AwardEnergy extends Event {
 
     /**
      * Starts the AwardEnergy event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Add numEnergy to the clients monsters energy.
      */
     public void execute() {
-        checkCards();
-        client.getMonster().setEnergy(client.getMonster().getEnergy() + numEnergy);
+        if (gameState.getIsGameOn()) {
+            checkCards();
+            client.getMonster().setEnergy(client.getMonster().getEnergy() + numEnergy);
+        }
     }
 
 

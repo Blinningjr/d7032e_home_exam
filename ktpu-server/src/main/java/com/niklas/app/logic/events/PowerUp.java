@@ -35,14 +35,22 @@ public class PowerUp extends Event {
 
     /**
      * Starts the PowerUp event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Follows rule 12 and the drawn EvolutionCard is added to the monster if it is a keep or activated and discareded if it is a discard.
+     * 
+     * Rule: 12.
+     *          Tripple hearts = Draw an Evolution Card(todo: add support for more evolution cards).
      */
     public void execute(){
-        Monster monster = gameState.getCurrentPlayer().getMonster();
-        if (numHearts >= heartsNeeded) {
-            checkCards();
-            EvolutionCard evolutionCard = monster.drawEvolutionCard();
-            monster.evolutionCards.add(evolutionCard);
-            checkNewCard();
+        if (gameState.getIsGameOn()) {
+            Monster monster = gameState.getCurrentPlayer().getMonster();
+            if (numHearts >= heartsNeeded) {
+                checkCards();
+                EvolutionCard evolutionCard = monster.drawEvolutionCard();
+                monster.evolutionCards.add(evolutionCard);
+                checkNewCard();
+            }
         }
     }
 

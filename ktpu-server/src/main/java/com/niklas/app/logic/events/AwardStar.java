@@ -36,13 +36,18 @@ public class AwardStar extends Event {
 
     /**
      * Starts the AwardStar event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Add stars to the clients monsters stars and start event CheckForWinByStars.
      */
     public void execute() {
-        checkCards();
-        client.getMonster().setStars(client.getMonster().getStars() + stars);
-        
-        CheckForWinByStars cfwbs = new CheckForWinByStars(gameState);
-        cfwbs.execute();
+        if (gameState.getIsGameOn()) {
+            checkCards();
+            client.getMonster().setStars(client.getMonster().getStars() + stars);
+            
+            CheckForWinByStars cfwbs = new CheckForWinByStars(gameState);
+            cfwbs.execute();
+        }
     }
 
 

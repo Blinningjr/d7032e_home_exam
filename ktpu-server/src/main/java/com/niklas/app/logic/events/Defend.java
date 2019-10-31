@@ -42,11 +42,16 @@ public class Defend extends Event {
 
     /**
      * Starts the Defend event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Starts damage event with damage - armor.
      */
     public void execute() {
-        checkCards();
-        Damage d = new Damage(gameState, defendingClient, damage - armor);
-        d.execute();
+        if (gameState.getIsGameOn()) {
+            checkCards();
+            Damage d = new Damage(gameState, defendingClient, damage - armor);
+            d.execute();
+        }
     }
 
 

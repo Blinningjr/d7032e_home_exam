@@ -43,58 +43,70 @@ public class CheckDice extends Event {
 
     /**
      * Starts the CheckDice event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Checks the result of the dice and starts events:
+     *              HealingNotInTokyo
+     *              PowerUp
+	 *	            CheckNumOfOnes
+     *              CheckNumOfTwos
+     *              CheckNumOfThrees
+     *              Attack
+     *              AwardEnergy
      */
     public void execute() {
-        checkCards();
-        for (KTPUDice ktpuDice : dice) {
-			switch (ktpuDice.getValue()) {
-			case KTPUDice.ONE:
-                numOnes += 1;
-				break;
-			case KTPUDice.TWO:
-                numTwos += 1;
-				break;
-			case KTPUDice.THREE:
-                numThrees += 1;
-				break;
-			case KTPUDice.HEART:
-				numHearts += 1;
-				break;
-			case KTPUDice.CLAWS:
-				numClaws += 1;
-				break;
-			case KTPUDice.ENERGY:
-				numEnergy += 1;
-				break;
-			default:
-				throw new Error("Dice value:" + ktpuDice.getValue() + " is not implemented for KTPUDice");
-			}
-        }
-        gameState.getComunication().sendRolledDice(dice, gameState.getCurrentPlayer());
+        if (gameState.getIsGameOn()) {
+            checkCards();
+            for (KTPUDice ktpuDice : dice) {
+                switch (ktpuDice.getValue()) {
+                case KTPUDice.ONE:
+                    numOnes += 1;
+                    break;
+                case KTPUDice.TWO:
+                    numTwos += 1;
+                    break;
+                case KTPUDice.THREE:
+                    numThrees += 1;
+                    break;
+                case KTPUDice.HEART:
+                    numHearts += 1;
+                    break;
+                case KTPUDice.CLAWS:
+                    numClaws += 1;
+                    break;
+                case KTPUDice.ENERGY:
+                    numEnergy += 1;
+                    break;
+                default:
+                    throw new Error("Dice value:" + ktpuDice.getValue() + " is not implemented for KTPUDice");
+                }
+            }
+            gameState.getComunication().sendRolledDice(dice, gameState.getCurrentPlayer());
 
-        HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, numHearts);
-		cnh.execute();
-	
-		PowerUp powerUp = new PowerUp(gameState, numHearts);
-		powerUp.execute();
-    	
-		// 6c. 3 of a number = victory points
-		CheckNumOfOnes cnoo = new CheckNumOfOnes(gameState, numOnes);
-        cnoo.execute();
+            HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, numHearts);
+            cnh.execute();
         
-    	CheckNumOfTwos cnoTwos = new CheckNumOfTwos(gameState, numTwos);
-        cnoTwos.execute();
-        
-    	CheckNumOfThrees cnoThrees= new CheckNumOfThrees(gameState, numThrees);
-		cnoThrees.execute();
-    	
-		// 6d. claws = attack (if in Tokyo attack everyone, else attack monster in Tokyo)
-		Attack attack = new Attack(gameState, gameState.getCurrentPlayer(), numClaws);
-		attack.execute();
-    	
-		// 6f. energy = energy tokens
-		AwardEnergy awardEnergy = new AwardEnergy(gameState, gameState.getCurrentPlayer(), numEnergy);
-		awardEnergy.execute();
+            PowerUp powerUp = new PowerUp(gameState, numHearts);
+            powerUp.execute();
+            
+            // 6c. 3 of a number = victory points
+            CheckNumOfOnes cnoo = new CheckNumOfOnes(gameState, numOnes);
+            cnoo.execute();
+            
+            CheckNumOfTwos cnoTwos = new CheckNumOfTwos(gameState, numTwos);
+            cnoTwos.execute();
+            
+            CheckNumOfThrees cnoThrees= new CheckNumOfThrees(gameState, numThrees);
+            cnoThrees.execute();
+            
+            // 6d. claws = attack (if in Tokyo attack everyone, else attack monster in Tokyo)
+            Attack attack = new Attack(gameState, gameState.getCurrentPlayer(), numClaws);
+            attack.execute();
+            
+            // 6f. energy = energy tokens
+            AwardEnergy awardEnergy = new AwardEnergy(gameState, gameState.getCurrentPlayer(), numEnergy);
+            awardEnergy.execute();
+        }
     }
 
 

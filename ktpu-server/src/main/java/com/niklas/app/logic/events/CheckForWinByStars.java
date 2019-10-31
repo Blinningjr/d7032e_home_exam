@@ -34,21 +34,28 @@ public class CheckForWinByStars extends Event {
 
     /**
      * Starts the CheckForWinByStars event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          First monster that is finds with 20 or more stars wins and the game is over.
+     * 
+     * Rule: 16.First monster to get 20 stars win the game
      */
     public void execute() {
-        checkCards();
-        ArrayList<Client> clients = new ArrayList<Client>();
-        clients.add(gameState.getCurrentPlayer());
-        clients.addAll(gameState.getPlayers());
-        for (int i = 0; i < clients.size(); i++) {
-            Client client = clients.get(i);
-            if (client.getMonster().getStars() >= NUM_STARS_NEEDED_TO_WIN) {
-                Client winner = client;
-                clients.remove(winner);
-                gameState.getComunication().sendStarsWinner(winner, clients);
+        if (gameState.getIsGameOn()) {
+            checkCards();
+            ArrayList<Client> clients = new ArrayList<Client>();
+            clients.add(gameState.getCurrentPlayer());
+            clients.addAll(gameState.getPlayers());
+            for (int i = 0; i < clients.size(); i++) {
+                Client client = clients.get(i);
+                if (client.getMonster().getStars() >= NUM_STARS_NEEDED_TO_WIN) {
+                    Client winner = client;
+                    clients.remove(winner);
+                    gameState.getComunication().sendStarsWinner(winner, clients);
 
-                gameState.endGame();
-            } 
+                    gameState.endGame();
+                } 
+            }
         }
     }
 

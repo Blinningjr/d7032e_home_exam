@@ -39,17 +39,22 @@ public class Heal extends Event {
 
     /**
      * Starts the Heal event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Adds healing to clients monsters hp upto monsters maxHp + addedMaxHp if it is alive.
      */
     public void execute() {
-    	checkCards();
-        Monster monster = client.getMonster();
-        int maxHp = monster.getMaxHp() + addedMaxHp;
-        int newHp = monster.getHp() + healing;
-        if (newHp > maxHp) {
-            newHp = maxHp;
-        }
-        if (!monster.getIsDead()) {
-            monster.setHp(newHp);
+        if (gameState.getIsGameOn()) {
+            checkCards();
+            Monster monster = client.getMonster();
+            int maxHp = monster.getMaxHp() + addedMaxHp;
+            int newHp = monster.getHp() + healing;
+            if (newHp > maxHp) {
+                newHp = maxHp;
+            }
+            if (!monster.getIsDead()) {
+                monster.setHp(newHp);
+            }
         }
     }
 

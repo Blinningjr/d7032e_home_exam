@@ -1274,7 +1274,7 @@ public class AppTest {
         damage.execute();
 
         assertFalse(gameState.getIsGameOn());
-        assertTrue(currentClient.getMonster().getIsDead());
+        assertFalse(currentClient.getMonster().getIsDead());
         for (int i = 0; i < clients.size(); i++) {
             Client client = clients.get(i);
             assertTrue(client.getMonster().getIsDead());

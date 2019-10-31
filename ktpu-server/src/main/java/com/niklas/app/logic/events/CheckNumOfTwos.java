@@ -37,13 +37,22 @@ public class CheckNumOfTwos extends Event {
 
     /**
      * Starts the CheckNumOfTwos event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Follows rule 12 and gives stars by starting event AwardStar.
+     * 
+     * Rule: 12.
+     *          Tripple 2’s = 2 StarsEach additional 2 equals +1 star
      */
     public void execute() {
-        Client client = gameState.getCurrentPlayer();
-        if (numTwos >= numTwosNeeded) {
-            checkCards();
-    		client.getMonster().setStars(client.getMonster().getStars() + starsAdded + numTwos - numTwosNeeded);
-    	}
+        if (gameState.getIsGameOn()) {
+            Client client = gameState.getCurrentPlayer();
+            if (numTwos >= numTwosNeeded) {
+                checkCards();
+                AwardStar aw = new AwardStar(gameState, client, starsAdded + numTwos - numTwosNeeded);
+                aw.execute();
+            }
+        }
     }
 
 

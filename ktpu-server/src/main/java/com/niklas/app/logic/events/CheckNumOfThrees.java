@@ -37,13 +37,22 @@ public class CheckNumOfThrees extends Event {
 
     /**
      * Starts the CheckNumOfThrees event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Follows rule 12 and gives stars by starting event AwardStar.
+     * 
+     * Rule: 12.
+     *          Tripple 3’s = 3 StarsEach additional 3 equals +1 star
      */
     public void execute() {
-        Client client = gameState.getCurrentPlayer();
-        if (numThrees >= numThreesNeeded) {
-            checkCards();
-    		client.getMonster().setStars(client.getMonster().getStars() + starsAdded + numThrees - numThreesNeeded);
-    	}
+        if (gameState.getIsGameOn()) {
+            Client client = gameState.getCurrentPlayer();
+            if (numThrees >= numThreesNeeded) {
+                checkCards();
+                AwardStar aw = new AwardStar(gameState, client, starsAdded + numThrees - numThreesNeeded);
+                aw.execute();
+            }
+        }
     }
 
 

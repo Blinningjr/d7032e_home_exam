@@ -34,13 +34,23 @@ public class HealingNotInTokyo extends Event {
 
     /**
      * Starts the HealingNotInTokyo event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Follows rule 12 by starting event Heal if monster outside tokyo.
+     * 
+     * Rule: 12.
+     *          Each heart
+     *              i.Inside Tokyo –no extra health
+     *              ii.Outside Tokyo -+1 health (up to your max life, normally 10 unless altered by a card)
      */
     public void execute() {
-        Client currentClient = gameState.getCurrentPlayer();
-        if (!currentClient.getMonster().getInTokyo()) {
-            checkCards();
-            Heal heal = new Heal(gameState, currentClient, numHearts + extraHealing);
-            heal.execute();
+        if (gameState.getIsGameOn()) {
+            Client currentClient = gameState.getCurrentPlayer();
+            if (!currentClient.getMonster().getInTokyo()) {
+                checkCards();
+                Heal heal = new Heal(gameState, currentClient, numHearts + extraHealing);
+                heal.execute();
+            }
         }
     }
 

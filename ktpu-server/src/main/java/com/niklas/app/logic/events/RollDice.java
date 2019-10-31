@@ -36,19 +36,27 @@ public class RollDice extends Event{
 
     /**
      * Starts the RollDice event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Follows rule 8 exept for when cards effect the amount of dice.
+     *          Starts event RerollDice and CheckDice,
+     * 
+     * Rule: 8.Roll your 6 dice
      */
     public void execute() {
-        checkCards();
-        dice = new ArrayList<KTPUDice>();
-        for (int i = 0; i < numDice; i++) {
-        	dice.add(new KTPUDice());
-        }
-        
-        RerollDice rerollDice = new RerollDice(gameState, dice);
-        rerollDice.execute();
+        if (gameState.getIsGameOn()) {
+            checkCards();
+            dice = new ArrayList<KTPUDice>();
+            for (int i = 0; i < numDice; i++) {
+                dice.add(new KTPUDice());
+            }
+            
+            RerollDice rerollDice = new RerollDice(gameState, dice);
+            rerollDice.execute();
 
-        CheckDice checkDice = new CheckDice(gameState, dice);
-		checkDice.execute();
+            CheckDice checkDice = new CheckDice(gameState, dice);
+            checkDice.execute();
+        }
     }
 
 

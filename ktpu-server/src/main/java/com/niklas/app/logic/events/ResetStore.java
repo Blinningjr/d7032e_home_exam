@@ -35,17 +35,25 @@ public class ResetStore extends Event {
 
     /**
      * Starts the ResetStore event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Follows rule 13.
+     * 
+     * Rule: 13.Buying Cards (As long as long as you have the Energy, you can take any of the following actions)
+     *          Reset store –pay 2 energy
      */
     public void execute() {
-        Client currentPlayer = gameState.getCurrentPlayer();
-        int totalCost = cost + extraCost;
-        if (currentPlayer.getMonster().getEnergy() >= totalCost) {
-            checkCards();
-            currentPlayer.getMonster().setEnergy(currentPlayer.getMonster().getEnergy() - totalCost);
+        if (gameState.getIsGameOn()) {
+            Client currentPlayer = gameState.getCurrentPlayer();
+            int totalCost = cost + extraCost;
+            if (currentPlayer.getMonster().getEnergy() >= totalCost) {
+                checkCards();
+                currentPlayer.getMonster().setEnergy(currentPlayer.getMonster().getEnergy() - totalCost);
 
-            CardStore cardStore = gameState.getCardStore();
-            for (int i = 0; i < cardStore.getInventory().length; i++) {
-                cardStore.discardCard(cardStore.buy(i));
+                CardStore cardStore = gameState.getCardStore();
+                for (int i = 0; i < cardStore.getInventory().length; i++) {
+                    cardStore.discardCard(cardStore.buy(i));
+                }
             }
         }
     }

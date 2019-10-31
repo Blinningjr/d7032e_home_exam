@@ -33,31 +33,39 @@ public class Shopping extends Event {
 
     /**
      * Starts the Shopping event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          Follows rule 13 and activates and discards the card if it is a discard card or adds it to the player if it is a keep.
+     * 
+     * Rule: 13.Buying Cards (As long as long as you have the Energy, you can take any of the following actions)
+     *          Purchase a card = Pay energy equal to the card cost(replace purchased cards with new from the deck)
      */
     public void execute() {
-        checkCards();
-        Client currentPlayer = gameState.getCurrentPlayer();
-        Monster currentMonster = currentPlayer.getMonster();
-        CardStore cardStore = gameState.getCardStore();
-        StoreCard[] storeCards = cardStore.getInventory();
+        if (gameState.getIsGameOn()) {
+            checkCards();
+            Client currentPlayer = gameState.getCurrentPlayer();
+            Monster currentMonster = currentPlayer.getMonster();
+            CardStore cardStore = gameState.getCardStore();
+            StoreCard[] storeCards = cardStore.getInventory();
 
-        String answer = gameState.getComunication().sendShopping(currentPlayer, cardStore, extraCost);
-        int buy = Integer.parseInt(answer);
-        if (buy > 0){
-            int cost = storeCards[buy -1].getCost() + extraCost;
-            if(currentMonster.getEnergy() >= cost) { 
-                try {
-                    currentMonster.setEnergy(currentPlayer.getMonster().getEnergy() - cost);
-                    currentMonster.storeCards.add(cardStore.buy(buy-1));
-                    checkBoughtCard();
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+            String answer = gameState.getComunication().sendShopping(currentPlayer, cardStore, extraCost);
+            int buy = Integer.parseInt(answer);
+            if (buy > 0){
+                int cost = storeCards[buy -1].getCost() + extraCost;
+                if(currentMonster.getEnergy() >= cost) { 
+                    try {
+                        currentMonster.setEnergy(currentPlayer.getMonster().getEnergy() - cost);
+                        currentMonster.storeCards.add(cardStore.buy(buy-1));
+                        checkBoughtCard();
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
+            } else if (buy == 0) {
+                ResetStore resetStore = new ResetStore(gameState);
+                resetStore.execute();
             }
-        } else if (buy == 0) {
-            ResetStore resetStore = new ResetStore(gameState);
-            resetStore.execute();
         }
     }
 
@@ -72,8 +80,7 @@ public class Shopping extends Event {
 
 
     /**
-     * Checks all the current clients cards for cards that should activate when they are bought
-     * and executes the cards effect.
+     * Checks if the current clients new card should activate when they are bought and be discarded.
      */
     private void checkBoughtCard() {
         Client currentPlayer = gameState.getCurrentPlayer();

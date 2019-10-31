@@ -32,24 +32,31 @@ public class CheckForWinByElimination extends Event {
 
     /**
      * Starts the CheckForWinByElimination event and handels the logic for it.
+     * 
+     * Implementation: Checks cards for activation and activates it, if it should.
+     *          If there is only one monster alive that monster wins by elimination and game is over.
+     * 
+     * Rule: 17.The sole surviving monster wins the game (other monsters at 0 or less health)
      */
     public void execute() {
-        checkCards();
-        ArrayList<Client> clients = new ArrayList<Client>();
-        clients.add(gameState.getCurrentPlayer());
-        clients.addAll(gameState.getPlayers());
-        ArrayList<Client> aliveClients = new ArrayList<Client>();
-        for (int i = 0; i < clients.size(); i++) {
-            Client client = clients.get(i);
-            if (!client.getMonster().getIsDead()) {
-                aliveClients.add(client);
-            } 
-        }
-        if (aliveClients.size() == 1) {
-            Client winner = aliveClients.get(0);
-            clients.remove(winner);
-            gameState.getComunication().sendEliminationWinner(winner, clients);
-            gameState.endGame();
+        if (gameState.getIsGameOn()) {
+            checkCards();
+            ArrayList<Client> clients = new ArrayList<Client>();
+            clients.add(gameState.getCurrentPlayer());
+            clients.addAll(gameState.getPlayers());
+            ArrayList<Client> aliveClients = new ArrayList<Client>();
+            for (int i = 0; i < clients.size(); i++) {
+                Client client = clients.get(i);
+                if (!client.getMonster().getIsDead()) {
+                    aliveClients.add(client);
+                } 
+            }
+            if (aliveClients.size() == 1) {
+                Client winner = aliveClients.get(0);
+                clients.remove(winner);
+                gameState.getComunication().sendEliminationWinner(winner, clients);
+                gameState.endGame();
+            }
         }
     }
 
