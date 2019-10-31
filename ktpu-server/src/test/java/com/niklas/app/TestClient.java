@@ -1,9 +1,7 @@
 package com.niklas.app;
 
-import java.util.*;
 import java.io.*;
 import java.net.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.Scanner;
 
 public class TestClient extends Thread {
@@ -23,7 +21,6 @@ public class TestClient extends Thread {
     public void run() {
         boolean bot = true;
         name = "";
-        Random rnd = ThreadLocalRandom.current();
         flag = false;
         leaveTokyo = true;
         storeInput = "-1\n";
@@ -76,6 +73,7 @@ public class TestClient extends Thread {
                 }
             }
             outToServer.writeBytes("OK\n");
+            aSocket.close();
         } catch(Exception e) {}
     }
 

@@ -47,7 +47,6 @@ public class AppTest {
     
     @Before
     public void before() {
-        System.out.println("\n\n\nBefore Start");
     	ts.start();
     	try {
     	    Thread.sleep(500);
@@ -65,12 +64,10 @@ public class AppTest {
 			e.printStackTrace();
 		}
         gameState = ts.getKTPUGame().getGameState();
-        System.out.println("Before End");
      }
 
     @After
     public void after() {
-        System.out.println("after Start");
         testClient1.setFlag();
         testClient2.setFlag();
         testClient3.setFlag();
@@ -84,7 +81,6 @@ public class AppTest {
             e.printStackTrace();
         }
         gameState.getComunication().closeSocet();
-        System.out.println("after End");
     }
 
     /**
