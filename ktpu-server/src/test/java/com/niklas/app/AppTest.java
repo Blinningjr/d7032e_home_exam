@@ -1,5 +1,6 @@
 package com.niklas.app;
 
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,9 +32,12 @@ import com.niklas.app.model.cards.Effect;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.monsters.Monster;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 
 
+/**
+ * Test the 18 rules of KTPU.
+ */
 public class AppTest {
     private GameState gameState;
     private Random rnd = new Random();
@@ -89,7 +93,7 @@ public class AppTest {
      */
     @Test
     public void testAllPlayersGotMonsters() {
-        ArrayList<Client> players = new ArrayList<Client>();
+        ArrayList<Player> players = new ArrayList<Player>();
         players.add(gameState.getCurrentPlayer());
         players.addAll(gameState.getPlayers());
 
@@ -105,7 +109,7 @@ public class AppTest {
      */
     @Test
     public void testZeroStars() {
-        ArrayList<Client> players = new ArrayList<Client>();
+        ArrayList<Player> players = new ArrayList<Player>();
         players.add(gameState.getCurrentPlayer());
         players.addAll(gameState.getPlayers());
         
@@ -119,7 +123,7 @@ public class AppTest {
      */
     @Test
     public void testLifeEqualsTen() {
-        ArrayList<Client> players = new ArrayList<Client>();
+        ArrayList<Player> players = new ArrayList<Player>();
         players.add(gameState.getCurrentPlayer());
         players.addAll(gameState.getPlayers());
         
@@ -433,12 +437,12 @@ public class AppTest {
      */
     @Test
     public void testRollNoEnergy() {
-        Client client = gameState.getCurrentPlayer();
-        int expectedEnergy = client.getMonster().getEnergy();
-        AwardEnergy ae = new AwardEnergy(gameState, client, 0);
+        Player player = gameState.getCurrentPlayer();
+        int expectedEnergy = player.getMonster().getEnergy();
+        AwardEnergy ae = new AwardEnergy(gameState, player, 0);
         ae.execute();
 
-        assertEquals(expectedEnergy, client.getMonster().getEnergy());
+        assertEquals(expectedEnergy, player.getMonster().getEnergy());
     }
 
     /**
@@ -448,12 +452,12 @@ public class AppTest {
     @Test
     public void testRollEnergy() {
         int energy = rnd.nextInt(6) + 1;
-        Client client = gameState.getCurrentPlayer();
-        int expectedEnergy = client.getMonster().getEnergy() + energy;
-        AwardEnergy ae = new AwardEnergy(gameState, client, energy);
+        Player player = gameState.getCurrentPlayer();
+        int expectedEnergy = player.getMonster().getEnergy() + energy;
+        AwardEnergy ae = new AwardEnergy(gameState, player, energy);
         ae.execute();
 
-        assertEquals(expectedEnergy, client.getMonster().getEnergy());
+        assertEquals(expectedEnergy, player.getMonster().getEnergy());
     }
 
     /**
@@ -464,15 +468,15 @@ public class AppTest {
     @Test
     public void testRollNoHeartsIntokyo() {
         int hearts = 0;
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
         monster.setInTokyo(true);
         monster.setHp(5);
         int expectedHp = monster.getHp() + hearts;
         HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, hearts);
         cnh.execute();
 
-        assertEquals(expectedHp, client.getMonster().getHp());
+        assertEquals(expectedHp, player.getMonster().getHp());
     }
 
     /**
@@ -483,15 +487,15 @@ public class AppTest {
     @Test
     public void testRollNoHearts() {
         int hearts = 0;
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
         monster.setInTokyo(false);
         monster.setHp(5);
         int expectedHp = monster.getHp() + hearts;
         HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, hearts);
         cnh.execute();
 
-        assertEquals(expectedHp, client.getMonster().getHp());
+        assertEquals(expectedHp, player.getMonster().getHp());
     }
 
     /**
@@ -501,8 +505,8 @@ public class AppTest {
      */
     @Test
     public void testRollHeartInTokyo() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
         int hearts = rnd.nextInt(monster.getMaxHp() / 2 -1) + 1;
         monster.setInTokyo(true);
         monster.setHp(monster.getMaxHp() / 2 -1);
@@ -510,7 +514,7 @@ public class AppTest {
         HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, hearts);
         cnh.execute();
 
-        assertEquals(expectedHp, client.getMonster().getHp());
+        assertEquals(expectedHp, player.getMonster().getHp());
     }
 
     /**
@@ -520,8 +524,8 @@ public class AppTest {
      */
     @Test
     public void testRollHearts() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
         int hearts = rnd.nextInt(monster.getMaxHp() / 2 -1) + 1;
         monster.setInTokyo(false);
         monster.setHp(monster.getMaxHp() / 2 -1);
@@ -529,7 +533,7 @@ public class AppTest {
         HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, hearts);
         cnh.execute();
 
-        assertEquals(expectedHp, client.getMonster().getHp());
+        assertEquals(expectedHp, player.getMonster().getHp());
     }
 
     /**
@@ -539,8 +543,8 @@ public class AppTest {
      */
     @Test
     public void testRollHeartsOverHeal() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
         int hearts = rnd.nextInt(6) + 3;
         monster.setInTokyo(false);
         monster.setHp(monster.getMaxHp() - 2);
@@ -548,7 +552,7 @@ public class AppTest {
         HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, hearts);
         cnh.execute();
 
-        assertEquals(expectedHp, client.getMonster().getHp());
+        assertEquals(expectedHp, player.getMonster().getHp());
     }
 
     /**
@@ -557,8 +561,8 @@ public class AppTest {
      */
     @Test
     public void testTrippleHeartsLess() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
         int hearts = 2;
 
         int expected = monster.evolutionCards.size();
@@ -575,8 +579,8 @@ public class AppTest {
      */
     @Test
     public void testTrippleHeartsEqual() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
         int hearts = 3;
 
         int expected = monster.evolutionCards.size() + 1;
@@ -593,8 +597,8 @@ public class AppTest {
      */
     @Test
     public void testTrippleHeartsLarg() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
         int hearts = 4;
 
         int expected = monster.evolutionCards.size() + 1;
@@ -612,8 +616,8 @@ public class AppTest {
      */
     @Test
     public void testNoClawsInTokyo() {
-        Client client = gameState.getCurrentPlayer();
-        client.getMonster().setInTokyo(true);
+        Player player = gameState.getCurrentPlayer();
+        player.getMonster().setInTokyo(true);
         Monster m0 = gameState.getPlayers().get(0).getMonster();
         Monster m1 = gameState.getPlayers().get(1).getMonster();
 
@@ -621,12 +625,12 @@ public class AppTest {
         int expectedHpM0 = m0.getHp() - claws;
         int expectedHpM1 = m1.getHp() - claws;
 
-        Attack attack = new Attack(gameState, client, claws);
+        Attack attack = new Attack(gameState, player, claws);
         attack.execute();
     
         assertEquals(expectedHpM0, m0.getHp());
         assertEquals(expectedHpM1, m1.getHp());
-        assertTrue(client.getMonster().getInTokyo());
+        assertTrue(player.getMonster().getInTokyo());
     }
 
     /**
@@ -636,8 +640,8 @@ public class AppTest {
      */
     @Test
     public void testClawsInTokyo() {
-        Client client = gameState.getCurrentPlayer();
-        client.getMonster().setInTokyo(true);
+        Player player = gameState.getCurrentPlayer();
+        player.getMonster().setInTokyo(true);
         Monster m0 = gameState.getPlayers().get(0).getMonster();
         Monster m1 = gameState.getPlayers().get(1).getMonster();
 
@@ -645,12 +649,12 @@ public class AppTest {
         int expectedHpM0 = m0.getHp() - claws;
         int expectedHpM1 = m1.getHp() - claws;
 
-        Attack attack = new Attack(gameState, client, claws);
+        Attack attack = new Attack(gameState, player, claws);
         attack.execute();
     
         assertEquals(expectedHpM0, m0.getHp());
         assertEquals(expectedHpM1, m1.getHp());
-        assertTrue(client.getMonster().getInTokyo());
+        assertTrue(player.getMonster().getInTokyo());
     }
 
     /**
@@ -661,9 +665,9 @@ public class AppTest {
      */
     @Test
     public void testNoClawsUnoccupied() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
-        for (Client c : gameState.getPlayers()) {
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
+        for (Player c : gameState.getPlayers()) {
             c.getMonster().setInTokyo(false);
         }
         monster.setInTokyo(false);
@@ -672,7 +676,7 @@ public class AppTest {
         int expectedStars = 0;
         boolean expectedInTokyo = false;
 
-        Attack attack = new Attack(gameState, client, claws);
+        Attack attack = new Attack(gameState, player, claws);
         attack.execute();
     
         assertEquals(expectedStars, monster.getStars());
@@ -687,16 +691,16 @@ public class AppTest {
      */
     @Test
     public void testClawsUnoccupied() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
-        for (Client c : gameState.getPlayers()) {
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
+        for (Player c : gameState.getPlayers()) {
             c.getMonster().setInTokyo(false);
         }
         monster.setInTokyo(false);
         monster.setStars(0);
         int claws = rnd.nextInt(5) + 1;
 
-        Attack attack = new Attack(gameState, client, claws);
+        Attack attack = new Attack(gameState, player, claws);
         attack.execute();
     
         assertEquals(1, monster.getStars());
@@ -714,9 +718,9 @@ public class AppTest {
      */
     @Test
     public void testNoClawsOccupiedEnter() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
-        for (Client c : gameState.getPlayers()) {
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
+        for (Player c : gameState.getPlayers()) {
             c.getMonster().setInTokyo(false);
         }
 
@@ -731,7 +735,7 @@ public class AppTest {
         int claws = 0;
         int monsterInTokyoHP = monsterInTokyo.getHp();
 
-        Attack attack = new Attack(gameState, client, claws);
+        Attack attack = new Attack(gameState, player, claws);
         attack.execute();
     
         assertEquals(0, monster.getStars());
@@ -751,9 +755,9 @@ public class AppTest {
      */
     @Test
     public void testClawsOccupiedEnter() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
-        for (Client c : gameState.getPlayers()) {
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
+        for (Player c : gameState.getPlayers()) {
             c.getMonster().setInTokyo(false);
         }
 
@@ -768,7 +772,7 @@ public class AppTest {
         int claws = 2;
         int monsterInTokyoHP = monsterInTokyo.getHp()- claws;
 
-        Attack attack = new Attack(gameState, client, claws);
+        Attack attack = new Attack(gameState, player, claws);
         attack.execute();
     
         assertEquals(1, monster.getStars());
@@ -788,9 +792,9 @@ public class AppTest {
      */
     @Test
     public void testNoClawsOccupied() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
-        for (Client c : gameState.getPlayers()) {
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
+        for (Player c : gameState.getPlayers()) {
             c.getMonster().setInTokyo(false);
         }
 
@@ -805,7 +809,7 @@ public class AppTest {
         int claws = 0;
         int monsterInTokyoHP = monsterInTokyo.getHp()- claws;
 
-        Attack attack = new Attack(gameState, client, claws);
+        Attack attack = new Attack(gameState, player, claws);
         attack.execute();
     
         assertEquals(0, monster.getStars());
@@ -825,9 +829,9 @@ public class AppTest {
      */
     @Test
     public void testClawsOccupied() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
-        for (Client c : gameState.getPlayers()) {
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
+        for (Player c : gameState.getPlayers()) {
             c.getMonster().setInTokyo(false);
         }
 
@@ -842,7 +846,7 @@ public class AppTest {
         int claws = 2;
         int monsterInTokyoHP = monsterInTokyo.getHp() - claws;
 
-        Attack attack = new Attack(gameState, client, claws);
+        Attack attack = new Attack(gameState, player, claws);
         attack.execute();
     
         assertEquals(0, monster.getStars());
@@ -857,8 +861,8 @@ public class AppTest {
      */
     @Test
     public void testNoPurchase() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
         StoreCard[] inventory = gameState.getCardStore().getInventory();
         StoreCard[] oldInventory = new StoreCard[inventory.length];
         for (int i = 0; i < oldInventory.length; i++) {
@@ -889,8 +893,8 @@ public class AppTest {
      */
     @Test
     public void testPurchaseLow() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
         StoreCard[] inventory = gameState.getCardStore().getInventory();
         StoreCard[] oldInventory = new StoreCard[inventory.length];
         for (int i = 0; i < oldInventory.length; i++) {
@@ -922,8 +926,8 @@ public class AppTest {
      */
     @Test
     public void testPurchaseEqual() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
         StoreCard[] inventory = gameState.getCardStore().getInventory();
         StoreCard[] oldInventory = new StoreCard[inventory.length];
         for (int i = 0; i < oldInventory.length; i++) {
@@ -955,8 +959,8 @@ public class AppTest {
      */
     @Test
     public void testPurchaseLarg() {
-        Client client = gameState.getCurrentPlayer();
-        Monster monster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster monster = player.getMonster();
         StoreCard[] inventory = gameState.getCardStore().getInventory();
         StoreCard[] oldInventory = new StoreCard[inventory.length];
         for (int i = 0; i < oldInventory.length; i++) {
@@ -1071,7 +1075,7 @@ public class AppTest {
         Monster monster = gameState.getCurrentPlayer().getMonster();
         Effect effect = new Effect("Now", "giveStarsEnergyAndHp");
         int stars = 10;
-        effect.add_stars(stars);
+        effect.addStars(stars);
         StoreCard storeCard = new StoreCard("Test Card", "Test Card", effect, 1, "discard");
         int pos = 1;
         gameState.getCardStore().getInventory()[pos -1] = storeCard;
@@ -1102,7 +1106,7 @@ public class AppTest {
         Monster monster = gameState.getCurrentPlayer().getMonster();
         Effect effect = new Effect("Now", "giveStarsEnergyAndHp");
         int stars = 10;
-        effect.add_stars(stars);
+        effect.addStars(stars);
         StoreCard storeCard = new StoreCard("Test Card", "Test Card", effect, 1, "keep");
         int pos = 1;
         gameState.getCardStore().getInventory()[pos -1] = storeCard;
@@ -1128,9 +1132,9 @@ public class AppTest {
      */
     @Test
     public void testNextTurn() {
-        Client client = gameState.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         gameState.nextTurn();
-        assertNotEquals(client, gameState.getCurrentPlayer());
+        assertNotEquals(player, gameState.getCurrentPlayer());
     }
 
     /**
@@ -1138,17 +1142,17 @@ public class AppTest {
      */
     @Test
     public void testWinByStarsLess() {
-        Client client = gameState.getCurrentPlayer();
-        client.getMonster().setStars(0);
+        Player player = gameState.getCurrentPlayer();
+        player.getMonster().setStars(0);
 
         int stars = 19;
 
         assertTrue(gameState.getIsGameOn());
 
-        AwardStar as = new AwardStar(gameState, client, stars);
+        AwardStar as = new AwardStar(gameState, player, stars);
         as.execute();
 
-        assertEquals(stars, client.getMonster().getStars());
+        assertEquals(stars, player.getMonster().getStars());
         assertTrue(gameState.getIsGameOn());
     }
 
@@ -1157,17 +1161,17 @@ public class AppTest {
      */
     @Test
     public void testWinByStarsEqual() {
-        Client client = gameState.getCurrentPlayer();
-        client.getMonster().setStars(0);
+        Player player = gameState.getCurrentPlayer();
+        player.getMonster().setStars(0);
 
         int stars = 20;
 
         assertTrue(gameState.getIsGameOn());
 
-        AwardStar as = new AwardStar(gameState, client, stars);
+        AwardStar as = new AwardStar(gameState, player, stars);
         as.execute();
 
-        assertEquals(stars, client.getMonster().getStars());
+        assertEquals(stars, player.getMonster().getStars());
         assertFalse(gameState.getIsGameOn());
     }
 
@@ -1176,17 +1180,17 @@ public class AppTest {
      */
     @Test
     public void testWinByStarsLarg() {
-        Client client = gameState.getCurrentPlayer();
-        client.getMonster().setStars(0);
+        Player player = gameState.getCurrentPlayer();
+        player.getMonster().setStars(0);
 
         int stars = 21;
 
         assertTrue(gameState.getIsGameOn());
 
-        AwardStar as = new AwardStar(gameState, client, stars);
+        AwardStar as = new AwardStar(gameState, player, stars);
         as.execute();
 
-        assertEquals(stars, client.getMonster().getStars());
+        assertEquals(stars, player.getMonster().getStars());
         assertFalse(gameState.getIsGameOn());
     }
 
@@ -1195,30 +1199,30 @@ public class AppTest {
      */
     @Test
     public void testWinByEliminationLess() {
-        Client currentClient = gameState.getCurrentPlayer();
-        ArrayList<Client> clients = gameState.getPlayers();
+        Player currentPlayer = gameState.getCurrentPlayer();
+        ArrayList<Player> players = gameState.getPlayers();
         
         assertTrue(gameState.getIsGameOn());
         
-        assertFalse(currentClient.getMonster().getIsDead());
-        for (int i = 0; i < clients.size(); i++) {
-            Client client = clients.get(i);
-            assertFalse(client.getMonster().getIsDead());
+        assertFalse(currentPlayer.getMonster().getIsDead());
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            assertFalse(player.getMonster().getIsDead());
             
             if (i != 0) {
-                Damage damage = new Damage(gameState, client, client.getMonster().getHp());
+                Damage damage = new Damage(gameState, player, player.getMonster().getHp());
                 damage.execute();
             }
         }
 
         assertTrue(gameState.getIsGameOn());
-        assertFalse(currentClient.getMonster().getIsDead());
-        for (int i = 0; i < clients.size(); i++) {
-            Client client = clients.get(i);
+        assertFalse(currentPlayer.getMonster().getIsDead());
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
             if (i != 0) {
-                assertTrue(client.getMonster().getIsDead());
+                assertTrue(player.getMonster().getIsDead());
             } else {
-                assertFalse(client.getMonster().getIsDead());
+                assertFalse(player.getMonster().getIsDead());
             }
             
         }
@@ -1229,25 +1233,25 @@ public class AppTest {
      */
     @Test
     public void testWinByEliminationEqual() {
-        Client currentClient = gameState.getCurrentPlayer();
-        ArrayList<Client> clients = gameState.getPlayers();
+        Player currentPlayer = gameState.getCurrentPlayer();
+        ArrayList<Player> players = gameState.getPlayers();
         
         assertTrue(gameState.getIsGameOn());
         
-        assertFalse(currentClient.getMonster().getIsDead());
-        for (int i = 0; i < clients.size(); i++) {
-            Client client = clients.get(i);
-            assertFalse(client.getMonster().getIsDead());
+        assertFalse(currentPlayer.getMonster().getIsDead());
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            assertFalse(player.getMonster().getIsDead());
             
-            Damage damage = new Damage(gameState, client, client.getMonster().getHp());
+            Damage damage = new Damage(gameState, player, player.getMonster().getHp());
             damage.execute();
         }
 
         assertFalse(gameState.getIsGameOn());
-        assertFalse(currentClient.getMonster().getIsDead());
-        for (int i = 0; i < clients.size(); i++) {
-            Client client = clients.get(i);
-            assertTrue(client.getMonster().getIsDead());
+        assertFalse(currentPlayer.getMonster().getIsDead());
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            assertTrue(player.getMonster().getIsDead());
         }
     }
 
@@ -1256,28 +1260,28 @@ public class AppTest {
      */
     @Test
     public void testWinByEliminationLarg() {
-        Client currentClient = gameState.getCurrentPlayer();
-        ArrayList<Client> clients = gameState.getPlayers();
+        Player currentPlayer = gameState.getCurrentPlayer();
+        ArrayList<Player> players = gameState.getPlayers();
         
         assertTrue(gameState.getIsGameOn());
         
-        for (int i = 0; i < clients.size(); i++) {
-            Client client = clients.get(i);
-            assertFalse(client.getMonster().getIsDead());
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            assertFalse(player.getMonster().getIsDead());
             
-            Damage damage = new Damage(gameState, client, client.getMonster().getHp());
+            Damage damage = new Damage(gameState, player, player.getMonster().getHp());
             damage.execute();
         }
 
-        assertFalse(currentClient.getMonster().getIsDead());
-        Damage damage = new Damage(gameState, currentClient, currentClient.getMonster().getHp());
+        assertFalse(currentPlayer.getMonster().getIsDead());
+        Damage damage = new Damage(gameState, currentPlayer, currentPlayer.getMonster().getHp());
         damage.execute();
 
         assertFalse(gameState.getIsGameOn());
-        assertFalse(currentClient.getMonster().getIsDead());
-        for (int i = 0; i < clients.size(); i++) {
-            Client client = clients.get(i);
-            assertTrue(client.getMonster().getIsDead());
+        assertFalse(currentPlayer.getMonster().getIsDead());
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            assertTrue(player.getMonster().getIsDead());
         }
     }
 }

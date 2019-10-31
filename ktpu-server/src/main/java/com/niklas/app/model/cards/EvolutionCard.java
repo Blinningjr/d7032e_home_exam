@@ -1,11 +1,12 @@
 package com.niklas.app.model.cards;
 
+
 /**
- * Defines attributes and funtionalety of EvolutionCard.
+ * Stores all the information about the evolution card.
  */
 public class EvolutionCard extends Card {
     private final String monsterName;
-    private final String monster_type;
+    private final String monsterType;
     private final Duration duration;
 
 
@@ -14,16 +15,16 @@ public class EvolutionCard extends Card {
      * @param name is the name of the card.
      * @param description is the description of the card.
      * @param effect is the effect the card has on the game.
-     * @param monster_name is the name of the monster that the card is for.
-     * @param monster_type is the monsters type.
+     * @param monsterName is the name of the monster that the card is for.
+     * @param monsterType is the monsters type.
      * @param duration is what kind of evolution it is.
      */
-    public EvolutionCard(String name, String description, Effect effect, String monster_name, String monster_type,
+    public EvolutionCard(String name, String description, Effect effect, String monsterName, String monsterType,
                         String duration) {
         super(name, description, effect);
         
-        this.monsterName = monster_name;
-        this.monster_type = monster_type;
+        this.monsterName = monsterName;
+        this.monsterType = monsterType;
         switch (duration) {
             case "permanentEvolution":
                 this.duration = Duration.permanentEvolution;
@@ -37,8 +38,13 @@ public class EvolutionCard extends Card {
     }
 
 
-    public String to_string() {
-        return "[" + super.getName() + ", Monster type= " + monster_type + ", Duration= " + duration + ", Description= " + get_description() + "]";
+    /**
+     * Gets the evolution card as a string.
+     * @return the evolution card as a string.
+     */
+    @Override
+    public String toString() {
+        return "[" + super.getName() + ", Monster type= " + monsterType + ", Duration= " + duration + ", Description= " + getDescription() + "]";
     }
 
 
@@ -55,8 +61,8 @@ public class EvolutionCard extends Card {
      * Gets the type of the monster that the card is for.
      * @return the type of the monster that the card is for as a String
      */
-    public String get_monster_type() {
-        return monster_type;
+    public String getMonsterType() {
+        return monsterType;
     }
 
 

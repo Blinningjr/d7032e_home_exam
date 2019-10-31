@@ -9,7 +9,7 @@ import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.monsters.Monster;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 
 
 /**
@@ -17,7 +17,7 @@ import com.niklas.app.online.Client;
  */
 public class Heal extends Event {
     private GameState gameState;
-    private Client client; 
+    private Player player; 
     private int addedMaxHp;
     private int healing;
 
@@ -25,12 +25,12 @@ public class Heal extends Event {
     /**
      * Creates a Heal event with the given parameters.
      * @param gameState is the games state which has all the information about the current game.
-     * @param client is the client which monster will be healed.
+     * @param player is the player which monster will be healed.
      * @param numHearts is the number of hearts rolled(hearts = number of hp healed).
      */
-    public Heal(GameState gameState, Client client, int numHearts) {
+    public Heal(GameState gameState, Player player, int numHearts) {
         this.gameState = gameState;
-        this.client = client;
+        this.player = player;
         healing = numHearts;
 
         addedMaxHp = 0;
@@ -41,12 +41,12 @@ public class Heal extends Event {
      * Starts the Heal event and handels the logic for it.
      * 
      * Implementation: Checks cards for activation and activates it, if it should.
-     *          Adds healing to clients monsters hp upto monsters maxHp + addedMaxHp if it is alive.
+     *          Adds healing to players monsters hp upto monsters maxHp + addedMaxHp if it is alive.
      */
     public void execute() {
         if (gameState.getIsGameOn()) {
             checkCards();
-            Monster monster = client.getMonster();
+            Monster monster = player.getMonster();
             int maxHp = monster.getMaxHp() + addedMaxHp;
             int newHp = monster.getHp() + healing;
             if (newHp > maxHp) {
@@ -82,21 +82,21 @@ public class Heal extends Event {
 
 
     /**
-     * Checks all the current clients cards for cards that should activate at this event
+     * Checks all the current players cards for cards that should activate at this event
      * and executes the cards effect.
      */
     protected void checkCards() {
-        Monster currentMonster = client.getMonster();
+        Monster currentMonster = player.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.Heal) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
@@ -114,10 +114,10 @@ public class Heal extends Event {
 			if (effect.getActivation() == Activation.Heal) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 

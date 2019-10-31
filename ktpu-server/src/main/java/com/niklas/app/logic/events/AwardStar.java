@@ -9,7 +9,7 @@ import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.monsters.Monster;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 
 
 /**
@@ -17,19 +17,19 @@ import com.niklas.app.online.Client;
  */
 public class AwardStar extends Event {
     private GameState gameState;
-    private Client client;
+    private Player player;
     private int stars;
 
 
     /**
      * Creates a AwardStar event with the given parameters.
      * @param gameState is the games state which has all the information about the current game.
-     * @param client is the client Which mosnter will recive the starts
+     * @param player is the player Which mosnter will recive the starts
      * @param stars is the number of star added to the monster.
      */
-    public AwardStar(GameState gameState, Client client, int stars) {
+    public AwardStar(GameState gameState, Player player, int stars) {
         this.gameState = gameState;
-        this.client = client;
+        this.player = player;
         this.stars = stars;
     }
 
@@ -38,12 +38,12 @@ public class AwardStar extends Event {
      * Starts the AwardStar event and handels the logic for it.
      * 
      * Implementation: Checks cards for activation and activates it, if it should.
-     *          Add stars to the clients monsters stars and start event CheckForWinByStars.
+     *          Add stars to the players monsters stars and start event CheckForWinByStars.
      */
     public void execute() {
         if (gameState.getIsGameOn()) {
             checkCards();
-            client.getMonster().setStars(client.getMonster().getStars() + stars);
+            player.getMonster().setStars(player.getMonster().getStars() + stars);
             
             CheckForWinByStars cfwbs = new CheckForWinByStars(gameState);
             cfwbs.execute();
@@ -61,21 +61,21 @@ public class AwardStar extends Event {
 
 
     /**
-     * Checks all the clients cards for cards that should activate at this event
+     * Checks all the players cards for cards that should activate at this event
      * and executes the cards effect.
      */
     protected void checkCards() {
-        Monster currentMonster = client.getMonster();
+        Monster currentMonster = player.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.AwardStar) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
@@ -93,10 +93,10 @@ public class AwardStar extends Event {
 			if (effect.getActivation() == Activation.AwardStar) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 

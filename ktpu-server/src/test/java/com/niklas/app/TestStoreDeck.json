@@ -1,6 +1,6 @@
 [
     {
-        "store_card": {
+        "storeCard": {
             "name": "test1",
             "description": "test",
             "effect": {
@@ -13,7 +13,7 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "test2",
             "description": "test",
             "effect": {
@@ -26,7 +26,7 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "test3",
             "description": "test",
             "effect": {
@@ -39,7 +39,7 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "test4",
             "description": "test",
             "effect": {
@@ -52,7 +52,7 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "test5",
             "description": "test",
             "effect": {
@@ -65,7 +65,7 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "test6",
             "description": "test",
             "effect": {
@@ -78,7 +78,7 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "test7",
             "description": "test",
             "effect": {
@@ -91,7 +91,7 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "test8",
             "description": "test",
             "effect": {
@@ -104,7 +104,7 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "test9",
             "description": "test",
             "effect": {
@@ -117,7 +117,7 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "test10",
             "description": "test",
             "effect": {

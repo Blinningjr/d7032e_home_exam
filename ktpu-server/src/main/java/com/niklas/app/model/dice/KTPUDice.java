@@ -1,7 +1,8 @@
 package com.niklas.app.model.dice;
 
+
 /**
- * A King Tokyo PowerUp dice with six sides.
+ * A King Tokyo PowerUp dice.
  */
 public final class KTPUDice extends DiceSix {
     public static final int ONE = 1;
@@ -11,13 +12,17 @@ public final class KTPUDice extends DiceSix {
     public static final int ENERGY = 5;
     public static final int CLAWS = 6;
     
+
+    /**
+     * Creates a KTPUDice and rolls it.
+     */
     public KTPUDice() {
     	super();
     }
 
     /**
-     * Returns value of dice as a string.
-     * @return value of dice as a string.
+     * Returns value the dice as a string.
+     * @return value the dice as a string.
      */
     @Override
     public String valueAsString() {

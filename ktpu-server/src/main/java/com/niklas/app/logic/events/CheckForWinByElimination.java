@@ -11,7 +11,7 @@ import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.monsters.Monster;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 
 
 /**
@@ -41,20 +41,20 @@ public class CheckForWinByElimination extends Event {
     public void execute() {
         if (gameState.getIsGameOn()) {
             checkCards();
-            ArrayList<Client> clients = new ArrayList<Client>();
-            clients.add(gameState.getCurrentPlayer());
-            clients.addAll(gameState.getPlayers());
-            ArrayList<Client> aliveClients = new ArrayList<Client>();
-            for (int i = 0; i < clients.size(); i++) {
-                Client client = clients.get(i);
-                if (!client.getMonster().getIsDead()) {
-                    aliveClients.add(client);
+            ArrayList<Player> players = new ArrayList<Player>();
+            players.add(gameState.getCurrentPlayer());
+            players.addAll(gameState.getPlayers());
+            ArrayList<Player> alivePlayers = new ArrayList<Player>();
+            for (int i = 0; i < players.size(); i++) {
+                Player player = players.get(i);
+                if (!player.getMonster().getIsDead()) {
+                    alivePlayers.add(player);
                 } 
             }
-            if (aliveClients.size() == 1) {
-                Client winner = aliveClients.get(0);
-                clients.remove(winner);
-                gameState.getComunication().sendEliminationWinner(winner, clients);
+            if (alivePlayers.size() == 1) {
+                Player winner = alivePlayers.get(0);
+                players.remove(winner);
+                gameState.getComunication().sendEliminationWinner(winner, players);
                 gameState.endGame();
             }
         }
@@ -62,22 +62,22 @@ public class CheckForWinByElimination extends Event {
 
 
     /**
-     * Checks all the current clients cards for cards that should activate at this event
+     * Checks all the current players cards for cards that should activate at this event
      * and executes the cards effect.
      */
     protected void checkCards() {
-        Client client = gameState.getCurrentPlayer();
-        Monster currentMonster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster currentMonster = player.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.CheckForWinByElimination) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
@@ -95,10 +95,10 @@ public class CheckForWinByElimination extends Event {
 			if (effect.getActivation() == Activation.CheckForWinByElimination) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 

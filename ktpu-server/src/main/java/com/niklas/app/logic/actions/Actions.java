@@ -12,7 +12,7 @@ import com.niklas.app.logic.events.Heal;
 import com.niklas.app.logic.events.Shopping;
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Effect;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 
 
 /**
@@ -29,25 +29,25 @@ public class Actions {
 
 
 	/**
-	 * Adds stars, energy and hp to the clients monster.
+	 * Adds stars, energy and hp to the players monster.
 	 * @param gameState is the game state that holds all the information about the current game.
-	 * @param client is the client which monster will recive the stars, energy and hp.
+	 * @param player is the player which monster will recive the stars, energy and hp.
 	 * @param effect has the num of stars, energy and hp that will be added.
 	 */
-	public void giveStarsEnergyAndHp(GameState gameState, Client client, Effect effect) {
-		int stars = effect.get_added_stars();
-		int energy = effect.get_added_energy();
-		int hp = effect.get_added_hp();
+	public void giveStarsEnergyAndHp(GameState gameState, Player player, Effect effect) {
+		int stars = effect.getAddedStars();
+		int energy = effect.getAddedEnergy();
+		int hp = effect.getAddedHp();
 		if (stars > 0) {
-			AwardStar awardStar = new AwardStar(gameState, client, stars);
+			AwardStar awardStar = new AwardStar(gameState, player, stars);
 			awardStar.execute();
 		}
 		if (energy > 0) {
-			AwardEnergy awardEnergy = new AwardEnergy(gameState, client, energy);
+			AwardEnergy awardEnergy = new AwardEnergy(gameState, player, energy);
 			awardEnergy.execute();
 		}
 		if (hp > 0) {
-			Heal heal = new Heal(gameState, client, 0);
+			Heal heal = new Heal(gameState, player, 0);
 			heal.addHealing(hp);
 			heal.execute();
 		}
@@ -57,17 +57,17 @@ public class Actions {
 	/**
 	 * Deals damage to every monster execpt the damageDealers monster.
 	 * @param gameState is the game state that holds all the information about the current game.
-	 * @param damageDealer is the client which monster will not be damaged.
+	 * @param damageDealer is the player which monster will not be damaged.
 	 * @param effect has the num of damage that will be dealt to the other monsters.
 	 */
-	public void damageEveryoneElse(GameState gameState, Client damageDealer, Effect effect) {
-		ArrayList<Client> clients = new ArrayList<Client>();
+	public void damageEveryoneElse(GameState gameState, Player damageDealer, Effect effect) {
+		ArrayList<Player> clients = new ArrayList<Player>();
 		clients.addAll(gameState.getPlayers());
 		clients.add(gameState.getCurrentPlayer());
 		clients.remove(damageDealer);
 
-		for (Client client : clients) {
-			Damage d = new Damage(gameState, client, effect.get_added_damage());
+		for (Player client : clients) {
+			Damage d = new Damage(gameState, client, effect.getAddedDamage());
 			d.execute();
 		}
 	}
@@ -79,9 +79,9 @@ public class Actions {
 	 * @param effect has the num of armor that will be added.
 	 */
 	public void addarmor(Defend defend, Effect effect) {
-		int armor = effect.get_armor();
+		int armor = effect.getArmor();
 		if (armor > 0) {
-			defend.addArmor(effect.get_armor());
+			defend.addArmor(effect.getArmor());
 		}
 	}
 
@@ -92,7 +92,7 @@ public class Actions {
 	 * @param effect has the extra cost that will be added to the cards(Can be negative for reduced cost).
 	 */
 	public void addCost(Shopping shopping, Effect effect) {
-		shopping.addCost(effect.get_added_cost());
+		shopping.addCost(effect.getAddedCost());
 	}
 
 
@@ -102,7 +102,7 @@ public class Actions {
 	 * @param effect has the extra damage that will be added.
 	 */
 	public void addDamage(Attack attack, Effect effect) {
-		int addedDamage = effect.get_added_damage();
+		int addedDamage = effect.getAddedDamage();
 		if (addedDamage > 0) {
 			attack.addBonusDamage(addedDamage);
 		}

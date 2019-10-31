@@ -12,7 +12,7 @@ import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.monsters.Monster;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 
 
 /**
@@ -84,22 +84,22 @@ public class RerollDice extends Event{
 
 
     /**
-     * Checks all the current clients cards for cards that should activate at this event
+     * Checks all the current players cards for cards that should activate at this event
      * and executes the cards effect.
      */
     protected void checkCards() {
-        Client client = gameState.getCurrentPlayer();
-        Monster currentMonster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster currentMonster = player.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.RerollDice) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
@@ -117,10 +117,10 @@ public class RerollDice extends Event{
 			if (effect.getActivation() == Activation.RerollDice) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 

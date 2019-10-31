@@ -9,7 +9,7 @@ import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.monsters.Monster;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 
 
 /**
@@ -17,8 +17,8 @@ import com.niklas.app.online.Client;
  */
 public class Defend extends Event {
     private GameState gameState;
-    private Client attackingClient;
-    private Client defendingClient;
+    private Player attackingPlayer;
+    private Player defendingPlayer;
     private int damage;
     private int armor;
 
@@ -26,14 +26,14 @@ public class Defend extends Event {
     /**
      * Creates a Defend event with the given parameters.
      * @param gameState is the games state which has all the information about the current game.
-     * @param attackingClient is the client of the monster attacking.
-     * @param defendingClient is the client of the monster deffending.
+     * @param attackingPlayer is the player of the monster attacking.
+     * @param defendingPlayer is the player of the monster deffending.
      * @param damage is the damage of the attack.
      */
-    public Defend(GameState gameState, Client attackingClient, Client defendingClient, int damage) {
+    public Defend(GameState gameState, Player attackingPlayer, Player defendingPlayer, int damage) {
         this.gameState = gameState;
-        this.attackingClient = attackingClient;
-        this.defendingClient = defendingClient;
+        this.attackingPlayer = attackingPlayer;
+        this.defendingPlayer = defendingPlayer;
         this.damage = damage;
 
         armor = 0;
@@ -49,7 +49,7 @@ public class Defend extends Event {
     public void execute() {
         if (gameState.getIsGameOn()) {
             checkCards();
-            Damage d = new Damage(gameState, defendingClient, damage - armor);
+            Damage d = new Damage(gameState, defendingPlayer, damage - armor);
             d.execute();
         }
     }
@@ -67,21 +67,21 @@ public class Defend extends Event {
 
 
     /**
-     * Checks all the defending clients cards for cards that should activate at this event
+     * Checks all the defending players cards for cards that should activate at this event
      * and executes the cards effect.
      */
     protected void checkCards() {
-        Monster currentMonster = defendingClient.getMonster();
+        Monster currentMonster = defendingPlayer.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.Defend) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, defendingClient, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, defendingPlayer, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, defendingClient, effect);
+                        gameState.action.damageEveryoneElse(gameState, defendingPlayer, effect);
                         break;
                     case addArmor:
                         gameState.action.addarmor(this, effect);
@@ -102,10 +102,10 @@ public class Defend extends Event {
 			if (effect.getActivation() == Activation.Defend) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, defendingClient, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, defendingPlayer, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, defendingClient, effect);
+                        gameState.action.damageEveryoneElse(gameState, defendingPlayer, effect);
                         break;
                     case addArmor:
                         gameState.action.addarmor(this, effect);

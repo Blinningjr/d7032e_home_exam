@@ -1,7 +1,8 @@
 package com.niklas.app.model.cards;
 
+
 /**
- * Defines core attributes and funtionalety of a card.
+ * Stores all the infromation about a card.
  */
 public abstract class Card {
     private final String name;
@@ -22,7 +23,12 @@ public abstract class Card {
     }
 
 
-    public String to_string() {
+    /**
+     * Gets the card as a String.
+     * @return the card as a String.
+     */
+    @Override
+    public String toString() {
         return "[" + name  + ", Description= " + description + "]";
     }
 
@@ -40,7 +46,7 @@ public abstract class Card {
      * Gets the description of the card.
      * @return the descropton of the card as a String.
      */
-    public String get_description() {
+    public String getDescription() {
         return description;
     }
 

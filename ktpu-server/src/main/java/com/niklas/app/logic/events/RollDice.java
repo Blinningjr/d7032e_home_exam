@@ -12,7 +12,7 @@ import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.monsters.Monster;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 
 
 /**
@@ -83,7 +83,7 @@ public class RollDice extends Event{
      * and executes the cards effect.
      */
     protected void checkCards() {
-        Client client = gameState.getCurrentPlayer();
+        Player client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);

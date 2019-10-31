@@ -1,14 +1,19 @@
 package com.niklas.app.model.dice;
 
+
 import java.util.Random;
 
+
 /**
- * A normal dice with six sides.
+ * A dice with six sides.
  */
 public class DiceSix implements Dice {
     protected int value;
     protected static final Random ran = new Random();;
 
+    /**
+     * Creates a six sided dice and rolles it.
+     */
     public DiceSix() {
         roll();
     }

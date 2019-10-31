@@ -9,7 +9,7 @@ import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.monsters.Monster;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 
 
 /**
@@ -56,22 +56,22 @@ public class PowerUp extends Event {
 
 
     /**
-     * Checks if the current clients new evolution card should activate instantly
+     * Checks if the current players new evolution card should activate instantly
      * and executes the cards effect.
      */
     private void checkNewCard() {
-        Client client = gameState.getCurrentPlayer();
-        Monster currentMonster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster currentMonster = player.getMonster();
         EvolutionCard evolutionCard = currentMonster.evolutionCards.get(currentMonster.evolutionCards.size() - 1);
         Effect effect = evolutionCard.getEffect();
         if (effect.getActivation() == Activation.Now) {
             switch (effect.getAction()) {
                 case giveStarsEnergyAndHp:
                     gameState.action.giveStarsEnergyAndHp(gameState,
-                    client, effect);
+                    player, effect);
                     break;
                 case damageEveryoneElse:
-                    gameState.action.damageEveryoneElse(gameState, client, effect);
+                    gameState.action.damageEveryoneElse(gameState, player, effect);
                     break;
                 default:
                     throw new Error("action=" + effect.getAction() 
@@ -86,22 +86,22 @@ public class PowerUp extends Event {
 
 
     /**
-     * Checks all the current clients cards for cards that should activate at this event
+     * Checks all the current players cards for cards that should activate at this event
      * and executes the cards effect.
      */
     protected void checkCards() {
-        Client client = gameState.getCurrentPlayer();
-        Monster currentMonster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster currentMonster = player.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.PowerUp) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
@@ -119,10 +119,10 @@ public class PowerUp extends Event {
 			if (effect.getActivation() == Activation.PowerUp) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 

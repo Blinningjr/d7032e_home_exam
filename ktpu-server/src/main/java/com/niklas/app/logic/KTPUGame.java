@@ -11,7 +11,7 @@ import com.niklas.app.logic.events.Shopping;
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.json.ReadJson;
 import com.niklas.app.model.monsters.Monster;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 import com.niklas.app.online.Comunication;
 
 
@@ -31,7 +31,7 @@ public class KTPUGame {
     public KTPUGame(int totNumPlayers, String monsterFilepath, String storeCardFilepath) {
         ReadJson json_reader = new ReadJson();
         
-        ArrayList<Monster> monsters = json_reader.read_monsters_from_json(monsterFilepath);
+        ArrayList<Monster> monsters = json_reader.readMonstersFromJson(monsterFilepath);
         Collections.shuffle(monsters);
         int tot_num_monster = monsters.size();
 
@@ -45,9 +45,9 @@ public class KTPUGame {
         }
 
 		Comunication comunication = new Comunication();
-        ArrayList<Client> players = comunication.initComunication(monsters);
+        ArrayList<Player> players = comunication.initComunication(monsters);
 		Collections.shuffle(players);
-		CardStore cardStore = new CardStore(json_reader.read_store_deck_from_json(storeCardFilepath));
+		CardStore cardStore = new CardStore(json_reader.readStoreDeckFromJson(storeCardFilepath));
 		
 		gameState = new GameState(players, cardStore, comunication);
     }
@@ -72,7 +72,7 @@ public class KTPUGame {
 
 			gameState.nextTurn();
 		}
-		
+
 		gameState.getComunication().closeSocet();
 	}
 	

@@ -1,20 +1,26 @@
 package com.niklas.app.model.cards;
 
 
+/**
+ * Stores information about the cards effect.
+ */
 public class Effect {
-    
-  private Activation activation;
-  private Action action;
-	
-	private int added_damage = 0;
-	private int armor = 0;
-	private int added_cost = 0;
-	private int added_stars = 0;
-	private int added_max_hp = 0;
-	private int added_hp = 0;
-  private int added_energy = 0;
-  // private int extra_dice = 0;
+    private Activation activation;
+    private Action action;
+    private int addedDamage = 0;
+    private int armor = 0;
+    private int addedCost = 0;
+    private int addedStars = 0;
+    private int addedMaxHp = 0;
+    private int addedHp = 0;
+    private int addedEnergy = 0;
   
+
+    /**
+     * Creates a effect object.
+     * @param activation is when the effect should be activated.
+     * @param action is what action the effect will use.
+     */
     public Effect(String activation, String action) {
       switch (activation) {
         case "Attack":
@@ -103,68 +109,147 @@ public class Effect {
       }
     }
     
-    public void add_damage(int damage) {
-		  added_damage += damage;
+
+    /**
+     * Adds to the damage that the effect will inflict.
+     * @param damage the damage added.
+     */
+    public void addDamage(int damage) {
+		  addedDamage += damage;
     }
     
-    public void add_armor(int armor) {
+
+    /**
+     * Adds armor too the effects action 
+     * @param armor the armor added.
+     */
+    public void addArmor(int armor) {
 		  this.armor += armor;
     }
     
-    public void add_cost(int cost) {
-    	added_cost += cost;
+
+    /**
+     * Adds cost to the effects action.
+     * @param cost the added cost.
+     */
+    public void addCost(int cost) {
+    	addedCost += cost;
     }
     
-    public void add_stars(int stars) {
-		this.added_stars += stars;
+
+    /**
+     * Adds stars too the effects action.
+     * @param stars the added stars
+     */
+    public void addStars(int stars) {
+		this.addedStars += stars;
     }
     
-    public void add_to_max_hp(int max_hp) {
-		  added_max_hp += max_hp;
+
+    /**
+     * Adds max hp too the effects action.
+     * @param maxHp the added max hp.
+     */
+    public void addToMaxHp(int maxHp) {
+		  addedMaxHp += maxHp;
     }
     
-    public void add_hp(int hp) {
-		  added_hp += hp;
+
+    /**
+     * Adds hp too the effects action.
+     * @param hp the added hp.
+     */
+    public void addHp(int hp) {
+		  addedHp += hp;
     }
     
-    public void add_energy(int energy) {
-    	added_energy += energy;
+
+    /**
+     * Adds energy too the effects action.
+     * @param energy
+     */
+    public void addEnergy(int energy) {
+    	addedEnergy += energy;
     }
     
     
+    /**
+     * Gets the effects activation.
+     * @return the effects activation.
+     */
     public Activation getActivation() {
     	return activation;
     }
 
+
+    /**
+     * Gets the effects action.
+     * @return the effects action.
+     */
     public Action getAction() {
     	return action;
     }
     
-    public int get_added_damage() {
-    	return added_damage;
+
+    /**
+     * Gets the effects added damage.
+     * @return the effects added damage.
+     */
+    public int getAddedDamage() {
+    	return addedDamage;
     }
     
-    public int get_armor() {
+
+    /**
+     * Gets the effects armor.
+     * @return the effects armor.
+     */
+    public int getArmor() {
     	return armor;
     }
     
-    public int get_added_cost() {
-    	return added_cost;
+
+    /**
+     * Gets the effects added Cost.
+     * @return the effects cots.
+     */
+    public int getAddedCost() {
+    	return addedCost;
     }
     
-    public int get_added_stars() {
-    	return added_stars;
+
+    /**
+     * Gets the effects added stars
+     * @return the effects added stars.
+     */
+    public int getAddedStars() {
+    	return addedStars;
     }
     
-    public int get_added_max_hp() {
-    	return added_max_hp;
+
+    /**
+     * Gets the efffects addedMaxHp.
+     * @return the effects addedMaxHp.
+     */
+    public int getAddedMaxHp() {
+    	return addedMaxHp;
     }
     
-    public int get_added_hp() {
-    	return added_hp;
+
+    /**
+     * Gets the effects added hp.
+     * @return the effects added hp.
+     */
+    public int getAddedHp() {
+    	return addedHp;
     }
     
-    public int get_added_energy() {
-    	return added_energy;
+
+    /**
+     * Gets the effects added energy.
+     * @return the effects added energy.
+     */
+    public int getAddedEnergy() {
+    	return addedEnergy;
     }
 }

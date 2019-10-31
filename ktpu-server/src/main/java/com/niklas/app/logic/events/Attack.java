@@ -11,7 +11,7 @@ import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.monsters.Monster;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 
 
 /**
@@ -19,8 +19,8 @@ import com.niklas.app.online.Client;
  */
 public class Attack extends Event {
     private GameState gameState;
-    private Client attackingClient;
-    private ArrayList<Client> clients;
+    private Player attackingPlayer;
+    private ArrayList<Player> players;
     private int numClaws;
     private int bonusDamage;
 
@@ -28,20 +28,20 @@ public class Attack extends Event {
     /**
      * Creates a Attack event with the given parameters.
      * @param gameState is the games state which has all the information about the current game.
-     * @param attackingClient is the client for the monster that is attacking.
+     * @param attackingPlayer is the player for the monster that is attacking.
      * @param numClaws is the number of claws the monster has rolled(numClaws = damage).
      */
-    public Attack(GameState gameState, Client attackingClient, int numClaws) {
+    public Attack(GameState gameState, Player attackingPlayer, int numClaws) {
         this.gameState = gameState;
-        this.attackingClient = attackingClient;
+        this.attackingPlayer = attackingPlayer;
         this.numClaws = numClaws;
 
-        ArrayList<Client> theRestOfTheClients = new ArrayList<Client>();
-        theRestOfTheClients.add(gameState.getCurrentPlayer());
-        theRestOfTheClients.addAll(gameState.getPlayers());
-        theRestOfTheClients.remove(attackingClient);
+        ArrayList<Player> theRestOfThePlayers = new ArrayList<Player>();
+        theRestOfThePlayers.add(gameState.getCurrentPlayer());
+        theRestOfThePlayers.addAll(gameState.getPlayers());
+        theRestOfThePlayers.remove(attackingPlayer);
 
-        clients = theRestOfTheClients;
+        players = theRestOfThePlayers;
 
         bonusDamage = 0;
     }
@@ -68,19 +68,19 @@ public class Attack extends Event {
             checkCards();
             if (numClaws + bonusDamage > 0) {
                 boolean enterTokyo = true;
-                if (attackingClient.getMonster().getInTokyo()) {
-                    for (Client client : clients) {
-                        attack(client, numClaws + bonusDamage);
+                if (attackingPlayer.getMonster().getInTokyo()) {
+                    for (Player player : players) {
+                        attack(player, numClaws + bonusDamage);
                     }
                 } else {
-                    for (Client client : clients) {
-                        if (client.getMonster().getInTokyo()) {
-                            attack(client,numClaws);
-                            if (client.getMonster().getInTokyo()) {
+                    for (Player player : players) {
+                        if (player.getMonster().getInTokyo()) {
+                            attack(player,numClaws);
+                            if (player.getMonster().getInTokyo()) {
                                 // 6e. If you were outside, then the monster inside tokyo may decide to leave Tokyo
-                                String answer = gameState.getComunication().sendLeaveTokyo(client);
+                                String answer = gameState.getComunication().sendLeaveTokyo(player);
                                 if(answer.equalsIgnoreCase("YES")) {
-                                    client.getMonster().setInTokyo(false);
+                                    player.getMonster().setInTokyo(false);
                                 } else {
                                     enterTokyo = false;
                                 }
@@ -88,9 +88,9 @@ public class Attack extends Event {
                         }
                     }
                     if (enterTokyo) {
-                        AwardStar aw = new AwardStar(gameState, attackingClient, 1);
+                        AwardStar aw = new AwardStar(gameState, attackingPlayer, 1);
                         aw.execute();
-                        attackingClient.getMonster().setInTokyo(true);
+                        attackingPlayer.getMonster().setInTokyo(true);
                     }
                 }
             }
@@ -99,12 +99,12 @@ public class Attack extends Event {
 
 
     /**
-     * Attacks a specific clients monster.
-     * @param defendingClient the client which monster will be attackt.
+     * Attacks a specific players monster.
+     * @param defendingplayer the player which monster will be attackt.
      * @param damage the damage of the attack.
      */
-    private void attack(Client defendingClient, int damage) {
-        Defend defend = new Defend(gameState, attackingClient, defendingClient, damage);
+    private void attack(Player defendingplayer, int damage) {
+        Defend defend = new Defend(gameState, attackingPlayer, defendingplayer, damage);
         defend.execute();
     }
 
@@ -121,21 +121,21 @@ public class Attack extends Event {
 
 
     /**
-     * Checks all the attacking clients cards for cards that should activate at this event
+     * Checks all the attacking players cards for cards that should activate at this event
      * and executes the cards effect.
      */
     protected void checkCards() {
-        Monster currentMonster = attackingClient.getMonster();
+        Monster currentMonster = attackingPlayer.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.Attack) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, attackingClient, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, attackingPlayer, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, attackingClient, effect);
+                        gameState.action.damageEveryoneElse(gameState, attackingPlayer, effect);
                         break;
                     case addDamage:
                         gameState.action.addDamage(this, effect);
@@ -156,10 +156,10 @@ public class Attack extends Event {
 			if (effect.getActivation() == Activation.Attack) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, attackingClient, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, attackingPlayer, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, attackingClient, effect);
+                        gameState.action.damageEveryoneElse(gameState, attackingPlayer, effect);
                         break;
                     case addDamage:
                         gameState.action.addDamage(this, effect);

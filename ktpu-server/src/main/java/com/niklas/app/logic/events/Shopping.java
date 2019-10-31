@@ -10,7 +10,7 @@ import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.monsters.Monster;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 
 
 /**
@@ -43,7 +43,7 @@ public class Shopping extends Event {
     public void execute() {
         if (gameState.getIsGameOn()) {
             checkCards();
-            Client currentPlayer = gameState.getCurrentPlayer();
+            Player currentPlayer = gameState.getCurrentPlayer();
             Monster currentMonster = currentPlayer.getMonster();
             CardStore cardStore = gameState.getCardStore();
             StoreCard[] storeCards = cardStore.getInventory();
@@ -80,10 +80,10 @@ public class Shopping extends Event {
 
 
     /**
-     * Checks if the current clients new card should activate when they are bought and be discarded.
+     * Checks if the current players new card should activate when they are bought and be discarded.
      */
     private void checkBoughtCard() {
-        Client currentPlayer = gameState.getCurrentPlayer();
+        Player currentPlayer = gameState.getCurrentPlayer();
         Monster currentMonster = currentPlayer.getMonster();
         StoreCard storeCard = currentMonster.storeCards.get(currentMonster.storeCards.size() - 1);
         Effect effect = storeCard.getEffect();
@@ -109,22 +109,22 @@ public class Shopping extends Event {
 
 
     /**
-     * Checks all the current clients cards for cards that should activate at this event
+     * Checks all the current players cards for cards that should activate at this event
      * and executes the cards effect.
      */
     protected void checkCards() {
-        Client client = gameState.getCurrentPlayer();
-        Monster currentMonster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster currentMonster = player.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.Shopping) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     case addCost:
                         gameState.action.addCost(this, effect);
@@ -145,10 +145,10 @@ public class Shopping extends Event {
 			if (effect.getActivation() == Activation.Shopping) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     case addCost:
                         gameState.action.addCost(this, effect);

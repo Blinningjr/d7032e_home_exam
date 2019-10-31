@@ -9,7 +9,7 @@ import com.niklas.app.model.cards.EvolutionCard;
 import com.niklas.app.model.cards.StoreCard;
 import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.monsters.Monster;
-import com.niklas.app.online.Client;
+import com.niklas.app.online.Player;
 
 
 /**
@@ -17,19 +17,19 @@ import com.niklas.app.online.Client;
  */
 public class AwardEnergy extends Event {
     private GameState gameState;
-    private Client client;
+    private Player player;
     private int numEnergy;
     
 
     /**
      * Creates a AwardEnergy event with the given parameters.
      * @param gameState is the games state which has all the information about the current game.
-     * @param client is the client Which mosnter will recive the energy
+     * @param player is the player Which mosnter will recive the energy
      * @param numEnergy is the number of energy added to the monster.
      */
-    public AwardEnergy(GameState gameState, Client client, int numEnergy) {
+    public AwardEnergy(GameState gameState, Player player, int numEnergy) {
         this.gameState = gameState;
-        this.client = client;
+        this.player = player;
         this.numEnergy = numEnergy;
     }
 
@@ -38,32 +38,32 @@ public class AwardEnergy extends Event {
      * Starts the AwardEnergy event and handels the logic for it.
      * 
      * Implementation: Checks cards for activation and activates it, if it should.
-     *          Add numEnergy to the clients monsters energy.
+     *          Add numEnergy to the players monsters energy.
      */
     public void execute() {
         if (gameState.getIsGameOn()) {
             checkCards();
-            client.getMonster().setEnergy(client.getMonster().getEnergy() + numEnergy);
+            player.getMonster().setEnergy(player.getMonster().getEnergy() + numEnergy);
         }
     }
 
 
     /**
-     * Checks all the clients cards for cards that should activate at this event
+     * Checks all the players cards for cards that should activate at this event
      * and executes the cards effect.
      */
     protected void checkCards() {
-        Monster currentMonster = client.getMonster();
+        Monster currentMonster = player.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.AwardEnergy) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
@@ -81,10 +81,10 @@ public class AwardEnergy extends Event {
 			if (effect.getActivation() == Activation.AwardEnergy) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 

@@ -1,12 +1,12 @@
 [
     {
-        "store_card": {
+        "storeCard": {
             "name": "Acid Attack",
             "description": "Deal 1 extra damage each turn (even when you don't otherwise attack).",
             "effect": {
                 "activation": "Attack",
                 "action": "addDamage",
-                "added_damage": "1"
+                "addedDamage": "1"
             },
             "cost": "6",
             "type": "keep",
@@ -14,13 +14,13 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "Alien Metabolism",
             "description": "Buying cards costs you 1 less [Energy].",
             "effect": {
                 "activation": "Shopping",
                 "action": "addCost",
-                "added_cost": "-1"
+                "addedCost": "-1"
             },
             "cost": "3",
             "type": "keep",
@@ -28,13 +28,13 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "Alpha Monster",
             "description": "Gain 1[Star] when you attack.",
             "effect": {
                 "activation": "Attack",
                 "action": "giveStarsEnergyAndHp",
-                "added_stars": "1"
+                "addedStars": "1"
             },
             "cost": "5",
             "type": "keep",
@@ -42,13 +42,13 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "Apartment Building",
             "description": "\"+ 3[Star]\"",
             "effect": {
                 "activation": "Now",
                 "action": "giveStarsEnergyAndHp",
-                "added_stars": "3"
+                "addedStars": "3"
             },
             "cost": "5",
             "type": "discard",
@@ -56,7 +56,7 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "Armor Plating",
             "description": "Ignore damage of 1.",
             "effect": {
@@ -70,13 +70,13 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "Commuter Train",
             "description": "\"+ 2[Star]\"",
             "effect": {
                 "activation": "Now",
                 "action": "giveStarsEnergyAndHp",
-                "added_stars": "2"
+                "addedStars": "2"
             },
             "cost": "4",
             "type": "discard",
@@ -84,13 +84,13 @@
         }
     },
     {
-        "store_card": {
+        "storeCard": {
             "name": "Corner Store",
             "description": "\"+ 1[Star]\"",
             "effect": {
                 "activation": "Now",
                 "action": "giveStarsEnergyAndHp",
-                "added_stars": "1"
+                "addedStars": "1"
             },
             "cost": "3",
             "type": "discard",

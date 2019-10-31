@@ -1,7 +1,7 @@
 package com.niklas.app.model.cards;
 
 /**
- * Defines attributes and funtionalety of StoreCard.
+ * Stores all the infromation about the store card.
  */
 public class StoreCard extends Card {
     private final int cost;
@@ -34,8 +34,13 @@ public class StoreCard extends Card {
     }
 
 
-    public String to_string() {
-        return "[" + super.getName() + ", Cost= " + cost + ", Type= " + type + ", Description= " + super.get_description() + "]";
+    /**
+     * Gets the store card as a String.
+     * @return the card as a Sting
+     */
+    @Override
+    public String toString() {
+        return "[" + super.getName() + ", Cost= " + cost + ", Type= " + type + ", Description= " + super.getDescription() + "]";
     }
 
 

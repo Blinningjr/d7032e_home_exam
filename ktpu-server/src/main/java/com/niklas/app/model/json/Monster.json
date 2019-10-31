@@ -2,22 +2,22 @@
     {
         "monster": {
             "name": "Kong",
-            "max_hp": "10",
+            "maxHp": "10",
             "hp": "10",
             "energy": "0",
             "stars": "0",
-            "evolution_deck": [
+            "evolutionDeck": [
                 {
-                    "evolution_card": {
+                    "evolutionCard": {
                         "name": "Red Dawn",
                         "description": "All other Monsters lose 2 HEART.",
                         "effect": {
                             "activation": "Now",
                             "action": "damageEveryoneElse",
-                            "added_damage": "2"
+                            "addedDamage": "2"
                         },
-                        "monster_name": "Kong",
-                        "monster_type": "Mutant",
+                        "monsterName": "Kong",
+                        "monsterType": "Mutant",
                         "duration": "temporaryEvolution",
                         "quantity": "1"
                     }
@@ -28,23 +28,23 @@
     {
         "monster": {
             "name": "Gigazaur",
-            "max_hp": "10",
+            "maxHp": "10",
             "hp": "10",
             "energy": "0",
             "stars": "0",
-            "evolution_deck": [
+            "evolutionDeck": [
                 {
-                    "evolution_card": {
+                    "evolutionCard": {
                         "name": "Radioactive Waste",
                         "description": "Gain 2 ENERGY and 1 HEART.",
                         "effect": {
                             "activation": "Now",
                             "action": "giveStarsEnergyAndHp",
-                            "added_energy": "2",
-                            "added_hp": "1"
+                            "addedEnergy": "2",
+                            "addedHp": "1"
                         },
-                        "monster_name": "Gigazaur",
-                        "monster_type": "Mutant",
+                        "monsterName": "Gigazaur",
+                        "monsterType": "Mutant",
                         "duration": "temporaryEvolution",
                         "quantity": "2"
                     }
@@ -55,22 +55,22 @@
     {
         "monster": {
             "name": "Alienoid",
-            "max_hp": "10",
+            "maxHp": "10",
             "hp": "10",
             "energy": "0",
             "stars": "0",
-            "evolution_deck": [
+            "evolutionDeck": [
                 {
-                    "evolution_card": {
+                    "evolutionCard": {
                         "name": "Alien Scourge",
                         "description": "Gain 2 STAR.",
                         "effect": {
                             "activation": "Now",
                             "action": "giveStarsEnergyAndHp",
-                            "added_stars": "2"
+                            "addedStars": "2"
                         },
-                        "monster_name": "Alienoid",
-                        "monster_type": "Alien",
+                        "monsterName": "Alienoid",
+                        "monsterType": "Alien",
                         "duration": "temporaryEvolution",
                         "quantity": "2"
                     }

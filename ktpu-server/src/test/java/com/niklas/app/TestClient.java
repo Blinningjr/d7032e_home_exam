@@ -1,9 +1,14 @@
 package com.niklas.app;
 
+
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
+
+/**
+ * Is a KTPU test client so that test can be run.
+ */
 public class TestClient extends Thread {
     private Scanner sc = new Scanner(System.in);
     private boolean flag;
@@ -13,10 +18,17 @@ public class TestClient extends Thread {
     private String rerollInput;
     private int numRerolls;
 
+
+    /**
+     * Creats a test client.
+     */
     public TestClient() {
        
     }
 
+    /**
+     * Starts the thread and starts the client.
+     */
     @Override
     public void run() {
         boolean bot = true;
@@ -77,28 +89,55 @@ public class TestClient extends Thread {
         } catch(Exception e) {}
     }
 
+
+    /**
+     * Gets the number of time this client has been askt to reroll and has rerolled.
+     * @return the numver of rerolls.
+     */
     public synchronized int getNumRerolls() {
         return numRerolls;
     }
 
 
-
+    /**
+     * Sets a flag to make the client stop.
+     */
     public synchronized void setFlag() {
         flag = true;
     }
 
+
+    /**
+     * Sets if the client should leave if it is in tokyo.
+     * @param leave is where the client should leav tokyo.
+     */
     public synchronized void setLeaveTokyo(boolean leave) {
         leaveTokyo = leave;
     }
 
+
+    /**
+     * Gets the name of the monster the clietn has.
+     * @return returns the monster name.
+     */
     public synchronized String getMonterName() {
         return name;
     }
 
+
+    /**
+     * Sets the response the client will send if it is at the store.
+     * @param input is the response.
+     */
     public synchronized void setStoreInput(String input) {
         storeInput = input;
     }
 
+
+    /**
+     * Sets the respons the client will send when ask to reroll.
+     * @param input is the response.
+     */
     public synchronized void setRerollInput(String input) {
         rerollInput = input;
     }
