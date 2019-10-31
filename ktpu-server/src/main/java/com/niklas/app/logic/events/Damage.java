@@ -66,7 +66,7 @@ public class Damage extends Event {
 
 
     /**
-     * Checks all the clients cards for cards that should activate at this event
+     * Checks all the players cards for cards that should activate at this event
      * and executes the cards effect.
      */
     protected void checkCards() {

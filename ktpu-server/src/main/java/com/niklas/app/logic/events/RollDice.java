@@ -79,22 +79,22 @@ public class RollDice extends Event{
 
 
     /**
-     * Checks all the current clients cards for cards that should activate at this event
+     * Checks all the current players cards for cards that should activate at this event
      * and executes the cards effect.
      */
     protected void checkCards() {
-        Player client = gameState.getCurrentPlayer();
-        Monster currentMonster = client.getMonster();
+        Player player = gameState.getCurrentPlayer();
+        Monster currentMonster = player.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
 			if (effect.getActivation() == Activation.RollDice) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
@@ -112,10 +112,10 @@ public class RollDice extends Event{
 			if (effect.getActivation() == Activation.RollDice) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
-                        gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
+                        gameState.action.giveStarsEnergyAndHp(gameState, player, effect);
                         break;
                     case damageEveryoneElse:
-                        gameState.action.damageEveryoneElse(gameState, client, effect);
+                        gameState.action.damageEveryoneElse(gameState, player, effect);
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 

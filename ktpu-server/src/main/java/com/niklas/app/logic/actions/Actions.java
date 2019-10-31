@@ -61,13 +61,13 @@ public class Actions {
 	 * @param effect has the num of damage that will be dealt to the other monsters.
 	 */
 	public void damageEveryoneElse(GameState gameState, Player damageDealer, Effect effect) {
-		ArrayList<Player> clients = new ArrayList<Player>();
-		clients.addAll(gameState.getPlayers());
-		clients.add(gameState.getCurrentPlayer());
-		clients.remove(damageDealer);
+		ArrayList<Player> players = new ArrayList<Player>();
+		players.addAll(gameState.getPlayers());
+		players.add(gameState.getCurrentPlayer());
+		players.remove(damageDealer);
 
-		for (Player client : clients) {
-			Damage d = new Damage(gameState, client, effect.getAddedDamage());
+		for (Player player : players) {
+			Damage d = new Damage(gameState, player, effect.getAddedDamage());
 			d.execute();
 		}
 	}
