@@ -76,7 +76,7 @@ public class AppTest {
         testClient1.setFlag();
         testClient2.setFlag();
         testClient3.setFlag();
-        gameState.getComunication().sendStarsWinner(gameState.getCurrentPlayer(), gameState.getPlayers());
+        gameState.getCommunication().sendStarsWinner(gameState.getCurrentPlayer(), gameState.getPlayers());
         try {
             testClient1.join();
             testClient2.join();
@@ -85,7 +85,7 @@ public class AppTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        gameState.getComunication().closeSocet();
+        gameState.getCommunication().closeSocet();
     }
 
     /**

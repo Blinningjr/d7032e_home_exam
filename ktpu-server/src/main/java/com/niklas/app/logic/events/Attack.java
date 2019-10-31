@@ -78,7 +78,7 @@ public class Attack extends Event {
                             attack(player,numClaws);
                             if (player.getMonster().getInTokyo()) {
                                 // 6e. If you were outside, then the monster inside tokyo may decide to leave Tokyo
-                                String answer = gameState.getComunication().sendLeaveTokyo(player);
+                                String answer = gameState.getCommunication().sendLeaveTokyo(player);
                                 if(answer.equalsIgnoreCase("YES")) {
                                     player.getMonster().setInTokyo(false);
                                 } else {

@@ -50,7 +50,7 @@ public class RerollDice extends Event{
         if (gameState.getIsGameOn()) {
             checkCards();
             for (int i = 0; i < numRerolls; i++) {
-                int[] reroll = gameState.getComunication().sendRerollDice(dice, gameState.getCurrentPlayer());
+                int[] reroll = gameState.getCommunication().sendRerollDice(dice, gameState.getCurrentPlayer());
                 if (reroll.length > 0 && reroll[0] > 0) {
                     for (int j : reroll) {
                         if (j > 0 && j < 7) {

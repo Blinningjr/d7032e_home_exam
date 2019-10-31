@@ -81,7 +81,7 @@ public class CheckDice extends Event {
                     throw new Error("Dice value:" + ktpuDice.getValue() + " is not implemented for KTPUDice");
                 }
             }
-            gameState.getComunication().sendRolledDice(dice, gameState.getCurrentPlayer());
+            gameState.getCommunication().sendRolledDice(dice, gameState.getCurrentPlayer());
 
             HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, numHearts);
             cnh.execute();

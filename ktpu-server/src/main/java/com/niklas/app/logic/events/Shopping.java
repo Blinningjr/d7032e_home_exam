@@ -48,7 +48,7 @@ public class Shopping extends Event {
             CardStore cardStore = gameState.getCardStore();
             StoreCard[] storeCards = cardStore.getInventory();
 
-            String answer = gameState.getComunication().sendShopping(currentPlayer, cardStore, extraCost);
+            String answer = gameState.getCommunication().sendShopping(currentPlayer, cardStore, extraCost);
             int buy = Integer.parseInt(answer);
             if (buy > 0){
                 int cost = storeCards[buy -1].getCost() + extraCost;

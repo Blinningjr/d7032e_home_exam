@@ -44,7 +44,7 @@ public class AwardStarIfCurrentPlayerInTokyo extends Event {
                 AwardStar awardStar = new AwardStar(gameState, currentPlayer, stars);
                 awardStar.execute();
             }
-            gameState.getComunication().sendAllStats(currentPlayer, gameState.getPlayers());
+            gameState.getCommunication().sendAllStats(currentPlayer, gameState.getPlayers());
         }
     }
 

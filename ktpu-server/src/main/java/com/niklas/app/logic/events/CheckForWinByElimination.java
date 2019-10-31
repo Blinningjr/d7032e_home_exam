@@ -54,7 +54,7 @@ public class CheckForWinByElimination extends Event {
             if (alivePlayers.size() == 1) {
                 Player winner = alivePlayers.get(0);
                 players.remove(winner);
-                gameState.getComunication().sendEliminationWinner(winner, players);
+                gameState.getCommunication().sendEliminationWinner(winner, players);
                 gameState.endGame();
             }
         }

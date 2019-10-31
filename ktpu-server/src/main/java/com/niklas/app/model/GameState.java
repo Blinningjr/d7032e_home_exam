@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import com.niklas.app.logic.actions.Actions;
 import com.niklas.app.model.cards.CardStore;
 import com.niklas.app.online.Player;
-import com.niklas.app.online.Comunication;
+import com.niklas.app.online.Communication;
 
 
 /**
@@ -16,7 +16,7 @@ public class GameState {
     private ArrayList<Player> players;
     private Player currentPlayer;
     private CardStore cardStore;
-    private Comunication comunication;
+    private Communication communication;
     private boolean isGameOn;
     public Actions action;
 
@@ -25,12 +25,12 @@ public class GameState {
      * Creates a game state with the given parameters.
      * @param players is a list of all the players in this game.
      * @param cardStore is the card store for this game.
-     * @param comunication is the comunications object for this game.
+     * @param communication is the communication object for this game.
      */
-    public GameState(ArrayList<Player> players, CardStore cardStore, Comunication comunication) {
+    public GameState(ArrayList<Player> players, CardStore cardStore, Communication communication) {
         this.players = players;
         this.currentPlayer = players.remove(0);
-        this.comunication = comunication;
+        this.communication = communication;
         this.cardStore = cardStore;
         action = new Actions();
         isGameOn = true;
@@ -81,11 +81,11 @@ public class GameState {
 
 
     /**
-     * Gets the comunication object.
-     * @return the comunication object.
+     * Gets the communication object.
+     * @return the communication object.
      */
-    public Comunication getComunication() {
-        return comunication;
+    public Communication getCommunication() {
+        return communication;
     }
 
 

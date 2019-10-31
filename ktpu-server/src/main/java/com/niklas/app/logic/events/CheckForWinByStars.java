@@ -51,7 +51,7 @@ public class CheckForWinByStars extends Event {
                 if (player.getMonster().getStars() >= NUM_STARS_NEEDED_TO_WIN) {
                     Player winner = player;
                     players.remove(winner);
-                    gameState.getComunication().sendStarsWinner(winner, players);
+                    gameState.getCommunication().sendStarsWinner(winner, players);
 
                     gameState.endGame();
                 } 

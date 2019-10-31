@@ -16,17 +16,17 @@ import com.niklas.app.model.monsters.Monster;
 
 
 /**
- * Handles all the comunication between the server and clients and handels all the output of the game.
+ * Handles all the communication between the server and clients and handels all the output of the game.
  */
-public class Comunication {
+public class Communication {
     private Scanner sc = new Scanner(System.in);
     ServerSocket aSocket;
     
 
     /**
-     * Creates a comunication object.
+     * Creates a Communication object.
      */
-    public Comunication() {
+    public Communication() {
     
     }
     
@@ -59,7 +59,7 @@ public class Comunication {
      * @param monsters is the list of monsters that the clients will be assign.
      * @return a list of players with there connecion information.
      */
-    public ArrayList<Player> initComunication(ArrayList<Monster> monsters) {
+    public ArrayList<Player> initCommunication(ArrayList<Monster> monsters) {
         //Server stuffs
     	ArrayList<Player> clients = new ArrayList<Player>();
         try {
@@ -75,7 +75,7 @@ public class Comunication {
                 
                 System.out.println("Connected to " + clients.get(onlineClient).getMonster().getName());
             }
-            System.out.println("initComunication Done");
+            System.out.println("initCommunication Done");
             return clients;
         } catch (Exception e) {
         	throw new Error(e);

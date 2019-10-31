@@ -12,7 +12,7 @@ import com.niklas.app.model.GameState;
 import com.niklas.app.model.json.ReadJson;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Player;
-import com.niklas.app.online.Comunication;
+import com.niklas.app.online.Communication;
 
 
 /**
@@ -44,12 +44,12 @@ public class KTPUGame {
             monsters.remove(0);
         }
 
-		Comunication comunication = new Comunication();
-        ArrayList<Player> players = comunication.initComunication(monsters);
+		Communication communication = new Communication();
+        ArrayList<Player> players = communication.initCommunication(monsters);
 		Collections.shuffle(players);
 		CardStore cardStore = new CardStore(jsonReader.readStoreDeckFromJson(storeCardFilepath));
 		
-		gameState = new GameState(players, cardStore, comunication);
+		gameState = new GameState(players, cardStore, communication);
     }
 	
 	
@@ -73,7 +73,7 @@ public class KTPUGame {
 			gameState.nextTurn();
 		}
 
-		gameState.getComunication().closeSocet();
+		gameState.getCommunication().closeSocet();
 	}
 	
 

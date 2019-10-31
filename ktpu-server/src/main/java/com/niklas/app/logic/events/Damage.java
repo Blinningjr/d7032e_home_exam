@@ -55,7 +55,7 @@ public class Damage extends Event {
                     players.add(gameState.getCurrentPlayer());
                     players.addAll(gameState.getPlayers());
                     players.remove(player);
-                    gameState.getComunication().sendMonsterDied(player, players);
+                    gameState.getCommunication().sendMonsterDied(player, players);
 
                     CheckForWinByElimination cfwbe = new CheckForWinByElimination(gameState);
                     cfwbe.execute();
