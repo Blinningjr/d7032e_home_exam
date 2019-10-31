@@ -71,6 +71,30 @@ public class CheckDice extends Event {
 			}
         }
         gameState.getComunication().sendRolledDice(dice, gameState.getCurrentPlayer());
+
+        HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, numHearts);
+		cnh.execute();
+	
+		PowerUp powerUp = new PowerUp(gameState, numHearts);
+		powerUp.execute();
+    	
+		// 6c. 3 of a number = victory points
+		CheckNumOfOnes cnoo = new CheckNumOfOnes(gameState, numOnes);
+        cnoo.execute();
+        
+    	CheckNumOfTwos cnoTwos = new CheckNumOfTwos(gameState, numTwos);
+        cnoTwos.execute();
+        
+    	CheckNumOfThrees cnoThrees= new CheckNumOfThrees(gameState, numThrees);
+		cnoThrees.execute();
+    	
+		// 6d. claws = attack (if in Tokyo attack everyone, else attack monster in Tokyo)
+		Attack attack = new Attack(gameState, gameState.getCurrentPlayer(), numClaws);
+		attack.execute();
+    	
+		// 6f. energy = energy tokens
+		AwardEnergy awardEnergy = new AwardEnergy(gameState, gameState.getCurrentPlayer(), numEnergy);
+		awardEnergy.execute();
     }
 
 

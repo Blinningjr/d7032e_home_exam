@@ -57,6 +57,9 @@ public class RollDice extends Event{
         		return;
         	}
         }
+
+        CheckDice checkDice = new CheckDice(gameState, dice);
+		checkDice.execute();
     }
 
 

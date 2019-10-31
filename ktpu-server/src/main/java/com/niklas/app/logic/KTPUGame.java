@@ -5,19 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.niklas.app.model.cards.CardStore;
-import com.niklas.app.logic.events.Attack;
-import com.niklas.app.logic.events.AwardEnergy;
 import com.niklas.app.logic.events.AwardStarIfCurrentPlayerInTokyo;
-import com.niklas.app.logic.events.CheckDice;
-import com.niklas.app.logic.events.HealingNotInTokyo;
-import com.niklas.app.logic.events.CheckNumOfOnes;
-import com.niklas.app.logic.events.CheckNumOfThrees;
-import com.niklas.app.logic.events.CheckNumOfTwos;
-import com.niklas.app.logic.events.PowerUp;
 import com.niklas.app.logic.events.RollDice;
 import com.niklas.app.logic.events.Shopping;
 import com.niklas.app.model.GameState;
-import com.niklas.app.model.dice.KTPUDice;
 import com.niklas.app.model.json.ReadJson;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
@@ -73,19 +64,21 @@ public class KTPUGame {
 	        8. Check victory conditions
 		*/
     	while (gameState.getIsGameOn()) {
+			
 			if (!gameState.getCurrentPlayer().getMonster().getIsDead()) {
 				// pre: Award a monster in Tokyo 1 star
-				awardStarIfInTokyo();
+				AwardStarIfCurrentPlayerInTokyo asicpit = new AwardStarIfCurrentPlayerInTokyo(gameState);
+				asicpit.execute();
 				
 				// 1-5.
-				ArrayList<KTPUDice> dice = rollDice();
-				
-				// 6. Sum up totals 
-				checkDice(dice);
+				RollDice rollDice = new RollDice(gameState);
+				rollDice.execute();
 				
 				// 7. Decide to buy things for energy
-				shopping();
+				Shopping shopping = new Shopping(gameState);
+	        	shopping.execute();
 			}
+
 			gameState.nextTurn();
 		}
 		gameState.getComunication().closeSocet();
@@ -94,48 +87,4 @@ public class KTPUGame {
 	public GameState getGameState() {
 		return gameState;
 	}
-    
-    private void awardStarIfInTokyo() {
-		AwardStarIfCurrentPlayerInTokyo asicpit = new AwardStarIfCurrentPlayerInTokyo(gameState);
-		asicpit.execute();
-	}
-	
-	private ArrayList<KTPUDice> rollDice() {
-		RollDice rollDice = new RollDice(gameState);
-		rollDice.execute();
-        return rollDice.getDice();
-	}
-
-	private void checkDice(ArrayList<KTPUDice> dice) {
-		CheckDice checkDice = new CheckDice(gameState, dice);
-		checkDice.execute();
-		
-		
-		HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, checkDice.getNumHearts());
-		cnh.execute();
-	
-		PowerUp powerUp = new PowerUp(gameState, checkDice.getNumHearts());
-		powerUp.execute();
-    	
-		// 6c. 3 of a number = victory points
-		CheckNumOfOnes cnoo = new CheckNumOfOnes(gameState, checkDice.getNumOnes());
-		cnoo.execute();
-    	CheckNumOfTwos cnoTwos = new CheckNumOfTwos(gameState, checkDice.getNumTwos());
-		cnoTwos.execute();
-    	CheckNumOfThrees cnoThrees= new CheckNumOfThrees(gameState, checkDice.getNumThrees());
-		cnoThrees.execute();
-    	
-		// 6d. claws = attack (if in Tokyo attack everyone, else attack monster in Tokyo)
-		Attack attack = new Attack(gameState, gameState.getCurrentPlayer(), checkDice.getNumClaws());
-		attack.execute();
-    	
-		// 6f. energy = energy tokens
-		AwardEnergy awardEnergy = new AwardEnergy(gameState, gameState.getCurrentPlayer(), checkDice.getNumEnergy());
-		awardEnergy.execute();
-    }
-	
-	 private void shopping() {
-			Shopping shopping = new Shopping(gameState);
-	        shopping.execute();
-    }
 }
