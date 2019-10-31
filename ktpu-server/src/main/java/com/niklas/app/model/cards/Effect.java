@@ -65,6 +65,9 @@ public class Effect {
         case "PowerUp":
           this.activation = Activation.PowerUp;
           break;
+        case "RerollDice":
+          this.activation = Activation.RerollDice;
+          break;
         case "ResetStore":
           this.activation = Activation.ResetStore;
           break;

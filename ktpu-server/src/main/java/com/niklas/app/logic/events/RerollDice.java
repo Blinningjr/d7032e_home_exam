@@ -16,57 +16,61 @@ import com.niklas.app.online.Client;
 
 
 /**
- * RollDice class is a event which handels the logic of rolling dice.
+ * RerollDice class is a event which handels the logic of rerolling dice.
  */
-public class RollDice extends Event{
+public class RerollDice extends Event{
     private GameState gameState;
     private ArrayList<KTPUDice> dice;
-    private int numDice;
-    
+    private int numRerolls;
+
 
     /**
-     * Creates a RollDice event with the given parameters.
+     * Creates a RerollDice event with the given parameters.
      * @param gameState is the games state which has all the information about the current game.
+     * @param dice is the dice that can be rerolled.
      */
-    public RollDice(GameState gameState) {
+    public RerollDice(GameState gameState, ArrayList<KTPUDice> dice) {
         this.gameState = gameState;
-        numDice = 6;
+        this.dice = dice;
+        numRerolls = 2;
     }
 
 
     /**
-     * Starts the RollDice event and handels the logic for it.
+     * Starts the RerollDice event and handels the logic for it.
      */
     public void execute() {
         checkCards();
-        dice = new ArrayList<KTPUDice>();
-        for (int i = 0; i < numDice; i++) {
-        	dice.add(new KTPUDice());
+        for (int i = 0; i < numRerolls; i++) {
+        	int[] reroll = gameState.getComunication().sendRerollDice(dice, gameState.getCurrentPlayer());
+        	if (reroll.length > 0 && reroll[0] > 0) {
+                for (int j : reroll) {
+                    if (j > 0 && j < 7) {
+                        dice.get(j-1).roll();
+                    }
+                }
+        	} else{
+        		return;
+        	}
         }
-        
-        RerollDice rerollDice = new RerollDice(gameState, dice);
-        rerollDice.execute();
-
-        CheckDice checkDice = new CheckDice(gameState, dice);
-		checkDice.execute();
     }
 
 
     /**
-     * Retrives the dice result of the RollDice event.
-     * @return An ArrayList whith the rolled KTPUDice 
+     * Retrives the dice from the RerollDice event.
+     * @return An ArrayList whith the KTPUDice 
      */
     public ArrayList<KTPUDice> getDice() {
         return dice;
     }
 
-    
+
     /**
-     * Adds extra dice that will be rolled.
-     * @param numDice is the added extra dice that will be rolled.
+     * Addes extra rerolls to the event.
+     * @param numRerolls is the number of extra rerolls.
      */
-    public void addDice(int numDice) {
-        this.numDice += numDice;
+    public void addRerolls(int numRerolls){
+        this.numRerolls += numRerolls;
     }
 
 
@@ -80,7 +84,7 @@ public class RollDice extends Event{
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);
             Effect effect = storeCard.getEffect();
-			if (effect.getActivation() == Activation.RollDice) {
+			if (effect.getActivation() == Activation.RerollDice) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
@@ -90,7 +94,7 @@ public class RollDice extends Event{
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event RollDice");
+                            + " is not implemented for event RerollDice");
                 }
 				if (storeCard.getType() == StoreCardType.discard) {
 					currentMonster.storeCards.remove(i);
@@ -101,7 +105,7 @@ public class RollDice extends Event{
         for (int i = 0; i < currentMonster.evolutionCards.size(); i++) {
             EvolutionCard evolutionCard = currentMonster.evolutionCards.get(i);
             Effect effect = evolutionCard.getEffect();
-			if (effect.getActivation() == Activation.RollDice) {
+			if (effect.getActivation() == Activation.RerollDice) {
 				switch (effect.getAction()) {
                     case giveStarsEnergyAndHp:
                         gameState.action.giveStarsEnergyAndHp(gameState, client, effect);
@@ -111,7 +115,7 @@ public class RollDice extends Event{
                         break;
                     default:
                         throw new Error("action=" + effect.getAction() 
-                            + " is not implemented for event RollDice");
+                            + " is not implemented for event RerollDice");
                 }
 				if (evolutionCard.getDuration() == Duration.temporaryEvolution) {
 					currentMonster.evolutionCards.remove(i);

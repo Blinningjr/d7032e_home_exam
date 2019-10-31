@@ -18,6 +18,7 @@ public enum Activation {
     HealingNotInTokyo,
     Now,
     PowerUp,
+    RerollDice,
     ResetStore,
     RollDice,
     Shopping,
