@@ -14,17 +14,31 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class Damage implements Event {
+/**
+ * Damage class is a event which handels the logic of a monster being damaged.
+ */
+public class Damage extends Event {
     private GameState gameState;
     private Client client;
     private int damage;
 
+
+    /**
+     * Creates a Damage event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     * @param client is the client of the monster which is being damaged.
+     * @param damage is the amount of damaged being dealt.
+     */
     public Damage(GameState gameState, Client client, int damage) {
         this.gameState = gameState;
         this.client = client;
         this.damage = damage;
     }
 
+
+    /**
+     * Starts the Damage event and handels the logic for it.
+     */
     public void execute() {
         checkCards();
         Monster monster = client.getMonster();
@@ -45,7 +59,12 @@ public class Damage implements Event {
     	}
     }
 
-    private void checkCards() {
+
+    /**
+     * Checks all the clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);

@@ -17,7 +17,7 @@ import com.niklas.app.logic.events.Attack;
 import com.niklas.app.logic.events.AwardEnergy;
 import com.niklas.app.logic.events.AwardStar;
 import com.niklas.app.logic.events.AwardStarIfCurrentPlayerInTokyo;
-import com.niklas.app.logic.events.CheckNumHearts;
+import com.niklas.app.logic.events.HealingNotInTokyo;
 import com.niklas.app.logic.events.CheckNumOfOnes;
 import com.niklas.app.logic.events.CheckNumOfThrees;
 import com.niklas.app.logic.events.CheckNumOfTwos;
@@ -460,7 +460,7 @@ public class AppTest {
         monster.setInTokyo(true);
         monster.setHp(5);
         int expectedHp = monster.getHp() + hearts;
-        CheckNumHearts cnh = new CheckNumHearts(gameState, hearts);
+        HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, hearts);
         cnh.execute();
 
         assertEquals(expectedHp, client.getMonster().getHp());
@@ -479,7 +479,7 @@ public class AppTest {
         monster.setInTokyo(false);
         monster.setHp(5);
         int expectedHp = monster.getHp() + hearts;
-        CheckNumHearts cnh = new CheckNumHearts(gameState, hearts);
+        HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, hearts);
         cnh.execute();
 
         assertEquals(expectedHp, client.getMonster().getHp());
@@ -498,7 +498,7 @@ public class AppTest {
         monster.setInTokyo(true);
         monster.setHp(monster.getMaxHp() / 2 -1);
         int expectedHp = monster.getHp();
-        CheckNumHearts cnh = new CheckNumHearts(gameState, hearts);
+        HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, hearts);
         cnh.execute();
 
         assertEquals(expectedHp, client.getMonster().getHp());
@@ -517,7 +517,7 @@ public class AppTest {
         monster.setInTokyo(false);
         monster.setHp(monster.getMaxHp() / 2 -1);
         int expectedHp = monster.getHp() + hearts;
-        CheckNumHearts cnh = new CheckNumHearts(gameState, hearts);
+        HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, hearts);
         cnh.execute();
 
         assertEquals(expectedHp, client.getMonster().getHp());
@@ -536,7 +536,7 @@ public class AppTest {
         monster.setInTokyo(false);
         monster.setHp(monster.getMaxHp() - 2);
         int expectedHp = monster.getMaxHp();
-        CheckNumHearts cnh = new CheckNumHearts(gameState, hearts);
+        HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, hearts);
         cnh.execute();
 
         assertEquals(expectedHp, client.getMonster().getHp());
@@ -612,7 +612,7 @@ public class AppTest {
         int expectedHpM0 = m0.getHp() - claws;
         int expectedHpM1 = m1.getHp() - claws;
 
-        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        Attack attack = new Attack(gameState, client, claws);
         attack.execute();
     
         assertEquals(expectedHpM0, m0.getHp());
@@ -636,7 +636,7 @@ public class AppTest {
         int expectedHpM0 = m0.getHp() - claws;
         int expectedHpM1 = m1.getHp() - claws;
 
-        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        Attack attack = new Attack(gameState, client, claws);
         attack.execute();
     
         assertEquals(expectedHpM0, m0.getHp());
@@ -663,7 +663,7 @@ public class AppTest {
         int expectedStars = 0;
         boolean expectedInTokyo = false;
 
-        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        Attack attack = new Attack(gameState, client, claws);
         attack.execute();
     
         assertEquals(expectedStars, monster.getStars());
@@ -687,7 +687,7 @@ public class AppTest {
         monster.setStars(0);
         int claws = rnd.nextInt(5) + 1;
 
-        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        Attack attack = new Attack(gameState, client, claws);
         attack.execute();
     
         assertEquals(1, monster.getStars());
@@ -722,7 +722,7 @@ public class AppTest {
         int claws = 0;
         int monsterInTokyoHP = monsterInTokyo.getHp();
 
-        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        Attack attack = new Attack(gameState, client, claws);
         attack.execute();
     
         assertEquals(0, monster.getStars());
@@ -759,7 +759,7 @@ public class AppTest {
         int claws = 2;
         int monsterInTokyoHP = monsterInTokyo.getHp()- claws;
 
-        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        Attack attack = new Attack(gameState, client, claws);
         attack.execute();
     
         assertEquals(1, monster.getStars());
@@ -796,7 +796,7 @@ public class AppTest {
         int claws = 0;
         int monsterInTokyoHP = monsterInTokyo.getHp()- claws;
 
-        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        Attack attack = new Attack(gameState, client, claws);
         attack.execute();
     
         assertEquals(0, monster.getStars());
@@ -833,7 +833,7 @@ public class AppTest {
         int claws = 2;
         int monsterInTokyoHP = monsterInTokyo.getHp() - claws;
 
-        Attack attack = new Attack(gameState, client, gameState.getPlayers(), claws);
+        Attack attack = new Attack(gameState, client, claws);
         attack.execute();
     
         assertEquals(0, monster.getStars());

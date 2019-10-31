@@ -12,12 +12,21 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class CheckNumOfThrees implements Event {
+/**
+ * CheckNumOfThrees class is a event which handels the logic of giving a stars for the number of threes rolled.
+ */
+public class CheckNumOfThrees extends Event {
     private GameState gameState;
     private int numThrees;
     private int numThreesNeeded;
     private int starsAdded;
 
+
+    /**
+     * Creates a CheckNumOfThrees event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     * @param numThrees is the number of threes rolled.
+     */
     public CheckNumOfThrees(GameState gameState, int numThrees) {
         this.gameState = gameState;
         this.numThrees = numThrees;
@@ -25,6 +34,10 @@ public class CheckNumOfThrees implements Event {
         starsAdded = 3;
     }
 
+
+    /**
+     * Starts the CheckNumOfThrees event and handels the logic for it.
+     */
     public void execute() {
         Client client = gameState.getCurrentPlayer();
         if (numThrees >= numThreesNeeded) {
@@ -33,7 +46,12 @@ public class CheckNumOfThrees implements Event {
     	}
     }
 
-    private void checkCards() {
+
+    /**
+     * Checks all the current clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Client client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {

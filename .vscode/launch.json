@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-App<ktpu-client>",
+            "request": "launch",
+            "mainClass": "com.niklas.app.App",
+            "projectName": "ktpu-client"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-App<ktpu-server>",
+            "request": "launch",
+            "mainClass": "com.niklas.app.App",
+            "projectName": "ktpu-server"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-KingTokyoPowerUpClient",
+            "request": "launch",
+            "mainClass": "KingTokyoPowerUpClient"
+        }
+    ]
+}

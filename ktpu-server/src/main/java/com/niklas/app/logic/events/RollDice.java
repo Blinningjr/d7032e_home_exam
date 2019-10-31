@@ -15,18 +15,30 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class RollDice implements Event{
+/**
+ * RollDice class is a event which handels the logic of rolling and rerolling dice.
+ */
+public class RollDice extends Event{
     private int numDice;
     private int numRerolls;
     private GameState gameState;
     private ArrayList<KTPUDice> dice;
 
+
+    /**
+     * Creates a RollDice event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     */
     public RollDice(GameState gameState) {
         this.gameState = gameState;
         numDice = 6;
         numRerolls = 2;
     }
 
+
+    /**
+     * Starts the RollDice event and handels the logic for it.
+     */
     public void execute() {
         checkCards();
         dice = new ArrayList<KTPUDice>();
@@ -47,19 +59,39 @@ public class RollDice implements Event{
         }
     }
 
+
+    /**
+     * Retrives the dice result of the RollDice event.
+     * @return An ArrayList whith the rolled KTPUDice 
+     */
     public ArrayList<KTPUDice> getDice() {
         return dice;
     }
 
+    
+    /**
+     * Adds extra dice that will be rolled.
+     * @param numDice is the added extra dice that will be rolled.
+     */
     public void addDice(int numDice) {
         this.numDice += numDice;
     }
 
+
+    /**
+     * Addes extra rerolls to the event.
+     * @param numRerolls is the number of extra rerolls.
+     */
     public void addRerolls(int numRerolls){
         this.numRerolls += numRerolls;
     }
 
-    private void checkCards() {
+
+    /**
+     * Checks all the current clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Client client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {

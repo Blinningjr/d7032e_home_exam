@@ -14,13 +14,25 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class CheckForWinByElimination implements Event {
+/**
+ * CheckForWinByElimination class is a event which handels the logic of checking if any player have won by being the last monster alvie.
+ */
+public class CheckForWinByElimination extends Event {
     private GameState gameState;
 
+
+    /**
+     * Creates a CheckForWinByElimination event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     */
     public CheckForWinByElimination(GameState gameState) {
         this.gameState = gameState;
     }
 
+
+    /**
+     * Starts the CheckForWinByElimination event and handels the logic for it.
+     */
     public void execute() {
         checkCards();
         ArrayList<Client> clients = new ArrayList<Client>();
@@ -42,7 +54,11 @@ public class CheckForWinByElimination implements Event {
     }
 
 
-    private void checkCards() {
+    /**
+     * Checks all the current clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Client client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {

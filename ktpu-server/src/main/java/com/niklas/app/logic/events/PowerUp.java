@@ -12,17 +12,30 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class PowerUp implements Event {
+/**
+ * PowerUp class is a event which handels the logic of a monster powering up.
+ */
+public class PowerUp extends Event {
     private GameState gameState;
     private int numHearts;
     private int heartsNeeded;
 
+
+    /**
+     * Creates a PowerUp event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     * @param numHearts is the number of hearts rolled.
+     */
     public PowerUp(GameState gameState, int numHearts) {
         this.gameState = gameState;
         this.numHearts = numHearts;
         heartsNeeded = 3;
     }
 
+
+    /**
+     * Starts the PowerUp event and handels the logic for it.
+     */
     public void execute(){
         Monster monster = gameState.getCurrentPlayer().getMonster();
         if (numHearts >= heartsNeeded) {
@@ -33,10 +46,11 @@ public class PowerUp implements Event {
         }
     }
 
-    public void addHeartsNeeded(int addedHeartsNeeded) {
-        heartsNeeded += addedHeartsNeeded;
-    }
 
+    /**
+     * Checks if the current clients new evolution card should activate instantly
+     * and executes the cards effect.
+     */
     private void checkNewCard() {
         Client client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
@@ -62,7 +76,12 @@ public class PowerUp implements Event {
         }
     }
 
-    private void checkCards() {
+
+    /**
+     * Checks all the current clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Client client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {

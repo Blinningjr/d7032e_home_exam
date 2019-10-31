@@ -1,6 +1,7 @@
 package com.niklas.app.logic.events;
 
 
-public interface Event {
-    public void execute();
+public abstract class Event {
+    abstract public void execute();
+    abstract protected void checkCards();
 }

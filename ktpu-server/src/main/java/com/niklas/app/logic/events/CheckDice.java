@@ -15,7 +15,12 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class CheckDice implements Event {
+/**
+ * CheckDice class is a event which handels the logic of checking the result of the dice roll.
+ */
+public class CheckDice extends Event {
+    private ArrayList<KTPUDice> dice;
+    private GameState gameState;
     private int numOnes;
     private int numTwos;
     private int numThrees;
@@ -23,15 +28,22 @@ public class CheckDice implements Event {
     private int numClaws;
     private int numEnergy;
 
-    private ArrayList<KTPUDice> dice;
-    private GameState gameState;
 
+    /**
+     * Creates a CheckDice event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     * @param dice is the rolled dice that will be check for result.
+     */
     public CheckDice(GameState gameState, ArrayList<KTPUDice> dice) {
         this.gameState = gameState;
         this.dice = dice;
         resetNum();
     }
 
+
+    /**
+     * Starts the CheckDice event and handels the logic for it.
+     */
     public void execute() {
         checkCards();
         for (KTPUDice ktpuDice : dice) {
@@ -61,6 +73,10 @@ public class CheckDice implements Event {
         gameState.getComunication().sendRolledDice(dice, gameState.getCurrentPlayer());
     }
 
+
+    /**
+     * Resetes the result to 0.
+     */
     private void resetNum() {
         numOnes = 0;
         numTwos = 0;
@@ -70,31 +86,66 @@ public class CheckDice implements Event {
         numEnergy = 0;
     }
 
+
+    /**
+     * Returns the number of ones rolled.
+     * @return the number of ones rolled.
+     */
     public int getNumOnes() {
         return numOnes;
     }
 
+
+    /**
+     * Returns the number of twos rolled.
+     * @return the number of twos rolled.
+     */
     public int getNumTwos() {
         return numTwos;
     }
 
+
+    /**
+     * Returns the number of threes rolled.
+     * @return the number of threes rolled.
+     */
     public int getNumThrees() {
         return numThrees;
     }
 
+
+    /**
+     * Returns the number of hearts rolled.
+     * @return the number of hearts rolled.
+     */
     public int getNumHearts() {
         return numHearts;
     }
 
+
+    /**
+     * Returns the number of claws rolled.
+     * @return the number of claws rolled.
+     */
     public int getNumClaws() {
         return numClaws;
     }
 
+
+    /**
+     * Returns the number of energy rolled.
+     * @return the number of energy rolled.
+     */
     public int getNumEnergy() {
         return numEnergy;
     }
 
-    private void checkCards() {
+
+    /**
+     * Checks all the current clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Client client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {

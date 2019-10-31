@@ -1,5 +1,6 @@
 package com.niklas.app.logic.events;
 
+
 import java.util.ArrayList;
 
 import com.niklas.app.model.GameState;
@@ -12,66 +13,105 @@ import com.niklas.app.model.cards.StoreCardType;
 import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
-public class Attack implements Event {
+
+/**
+ * Attack class is a event which handels the logic of attacking.
+ */
+public class Attack extends Event {
     private GameState gameState;
     private Client attackingClient;
     private ArrayList<Client> clients;
     private int numClaws;
     private int bonusDamage;
 
-    public Attack(GameState gameState, Client attackingClient, ArrayList<Client> clients, int numClaws) {
+
+    /**
+     * Creates a Attack event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     * @param attackingClient is the client for the monster that is attacking.
+     * @param numClaws is the number of claws the monster has rolled(numClaws = damage).
+     */
+    public Attack(GameState gameState, Client attackingClient, int numClaws) {
         this.gameState = gameState;
         this.attackingClient = attackingClient;
-        this.clients = clients;
         this.numClaws = numClaws;
+
+        ArrayList<Client> theRestOfTheClients = new ArrayList<Client>();
+        theRestOfTheClients.add(gameState.getCurrentPlayer());
+        theRestOfTheClients.addAll(gameState.getPlayers());
+        theRestOfTheClients.remove(attackingClient);
+
+        clients = theRestOfTheClients;
 
         bonusDamage = 0;
     }
 
+
+    /**
+     * Starts the Attack event and handels the logic for it.
+     */
     public void execute() {
-        checkCards();
-        if (numClaws + bonusDamage > 0) {
-    		boolean enterTokyo = true;
-    		if (attackingClient.getMonster().getInTokyo()) {
-    			for (Client client : clients) {
-    				attack(client, numClaws + bonusDamage);
-				}
-    		} else {
-    			for (Client client : clients) {
-    				if (client.getMonster().getInTokyo()) {
-						attack(client,numClaws);
-						if (client.getMonster().getInTokyo()) {
-                            // 6e. If you were outside, then the monster inside tokyo may decide to leave Tokyo
-                            String answer = gameState.getComunication().sendLeaveTokyo(client);
-                            if(answer.equalsIgnoreCase("YES")) {
-                                client.getMonster().setInTokyo(false);
-                            } else {
-                                enterTokyo = false;
+        if (gameState.getIsGameOn()) {
+            checkCards();
+            if (numClaws + bonusDamage > 0) {
+                boolean enterTokyo = true;
+                if (attackingClient.getMonster().getInTokyo()) {
+                    for (Client client : clients) {
+                        attack(client, numClaws + bonusDamage);
+                    }
+                } else {
+                    for (Client client : clients) {
+                        if (client.getMonster().getInTokyo()) {
+                            attack(client,numClaws);
+                            if (client.getMonster().getInTokyo()) {
+                                // 6e. If you were outside, then the monster inside tokyo may decide to leave Tokyo
+                                String answer = gameState.getComunication().sendLeaveTokyo(client);
+                                if(answer.equalsIgnoreCase("YES")) {
+                                    client.getMonster().setInTokyo(false);
+                                } else {
+                                    enterTokyo = false;
+                                }
                             }
                         }
-					}
-				}
-    			if (enterTokyo) {
-                    AwardStar aw = new AwardStar(gameState, attackingClient, 1);
-                    aw.execute();
-                    attackingClient.getMonster().setInTokyo(true);
-    			}
-    		}
-    	}
+                    }
+                    if (enterTokyo) {
+                        AwardStar aw = new AwardStar(gameState, attackingClient, 1);
+                        aw.execute();
+                        attackingClient.getMonster().setInTokyo(true);
+                    }
+                }
+            }
+        }
     }
 
+
+    /**
+     * Attacks a specific clients monster.
+     * @param defendingClient the client which monster will be attackt.
+     * @param damage the damage of the attack.
+     */
     private void attack(Client defendingClient, int damage) {
         Defend defend = new Defend(gameState, attackingClient, defendingClient, damage);
         defend.execute();
     }
 
+
+    /**
+     * Addes more damage to the event.
+     * @param bonusDamage is damage that will be added to the attack(Most be positiv). 
+     */
     public void addBonusDamage(int bonusDamage) {
         if (bonusDamage > 0) {
             this.bonusDamage += bonusDamage;
         } 
     }
 
-    private void checkCards() {
+
+    /**
+     * Checks all the attacking clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Monster currentMonster = attackingClient.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);

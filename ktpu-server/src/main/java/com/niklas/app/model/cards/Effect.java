@@ -38,9 +38,6 @@ public class Effect {
         case "CheckForWinByStars":
           this.activation = Activation.CheckForWinByStars;
           break;
-        case "CheckNumHearts":
-          this.activation = Activation.CheckNumHearts;
-          break;
         case "CheckNumOfOnes":
           this.activation = Activation.CheckNumOfOnes;
           break;
@@ -58,6 +55,9 @@ public class Effect {
           break;
         case "Heal":
           this.activation = Activation.Heal;
+          break;
+        case "HealingNotInTokyo":
+          this.activation = Activation.HealingNotInTokyo;
           break;
         case "Now":
           this.activation = Activation.Now;

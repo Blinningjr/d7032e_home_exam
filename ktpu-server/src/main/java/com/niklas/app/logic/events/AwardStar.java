@@ -12,17 +12,31 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class AwardStar implements Event {
+/**
+ * AwardStar class is a event which handels the logic of giving a monster stars.
+ */
+public class AwardStar extends Event {
     private GameState gameState;
     private Client client;
     private int stars;
 
+
+    /**
+     * Creates a AwardStar event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     * @param client is the client Which mosnter will recive the starts
+     * @param stars is the number of star added to the monster.
+     */
     public AwardStar(GameState gameState, Client client, int stars) {
         this.gameState = gameState;
         this.client = client;
         this.stars = stars;
     }
 
+
+    /**
+     * Starts the AwardStar event and handels the logic for it.
+     */
     public void execute() {
         checkCards();
         client.getMonster().setStars(client.getMonster().getStars() + stars);
@@ -31,11 +45,21 @@ public class AwardStar implements Event {
         cfwbs.execute();
     }
 
-    public void add_stars(int stars) {
+
+    /**
+     * Adds stars to the number of stars given to the monster.
+     * @param stars is the stars that will be added to the number of stars given to the monster.
+     */
+    public void addStars(int stars) {
         this.stars += stars;
     }
 
-    private void checkCards() {
+
+    /**
+     * Checks all the clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);

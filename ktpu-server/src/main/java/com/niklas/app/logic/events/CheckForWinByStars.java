@@ -14,14 +14,27 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class CheckForWinByStars implements Event {
+/**
+ * CheckForWinByStars class is a event which handels the logic of checking if any client 
+ * has won the game by having over 20 stars.
+ */
+public class CheckForWinByStars extends Event {
     private static final int NUM_STARS_NEEDED_TO_WIN = 20;
     private GameState gameState;
 
+
+    /**
+     * Creates a CheckForWinByStars event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     */
     public CheckForWinByStars(GameState gameState) {
         this.gameState = gameState;
     }
 
+
+    /**
+     * Starts the CheckForWinByStars event and handels the logic for it.
+     */
     public void execute() {
         checkCards();
         ArrayList<Client> clients = new ArrayList<Client>();
@@ -40,7 +53,11 @@ public class CheckForWinByStars implements Event {
     }
 
 
-    private void checkCards() {
+    /**
+     * Checks all the current clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Client client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {

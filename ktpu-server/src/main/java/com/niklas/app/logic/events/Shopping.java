@@ -13,15 +13,27 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class Shopping implements Event {
+/**
+ * Shopping class is a event which handels the logic of shopping.
+ */
+public class Shopping extends Event {
     private GameState gameState;
     private int extraCost;
 
+
+    /**
+     * Creates a Shopping event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     */
     public Shopping(GameState gameState) {
         this.gameState = gameState;
         extraCost = 0;
     }
 
+
+    /**
+     * Starts the Shopping event and handels the logic for it.
+     */
     public void execute() {
         checkCards();
         Client currentPlayer = gameState.getCurrentPlayer();
@@ -49,10 +61,20 @@ public class Shopping implements Event {
         }
     }
 
+
+    /**
+     * Addes cost to the cards in the store.
+     * @param addedCost is the amount of extra cost(Can be negative for reduced cost).
+     */
     public void addCost(int addedCost) {
         extraCost += addedCost;
     }
 
+
+    /**
+     * Checks all the current clients cards for cards that should activate when they are bought
+     * and executes the cards effect.
+     */
     private void checkBoughtCard() {
         Client currentPlayer = gameState.getCurrentPlayer();
         Monster currentMonster = currentPlayer.getMonster();
@@ -78,7 +100,12 @@ public class Shopping implements Event {
         }
     }
 
-    private void checkCards() {
+
+    /**
+     * Checks all the current clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Client client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {

@@ -12,13 +12,24 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class Defend implements Event {
+/**
+ * Defend class is a event which handels the logic of defending an attack.
+ */
+public class Defend extends Event {
     private GameState gameState;
     private Client attackingClient;
     private Client defendingClient;
     private int damage;
     private int armor;
 
+
+    /**
+     * Creates a Defend event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     * @param attackingClient is the client of the monster attacking.
+     * @param defendingClient is the client of the monster deffending.
+     * @param damage is the damage of the attack.
+     */
     public Defend(GameState gameState, Client attackingClient, Client defendingClient, int damage) {
         this.gameState = gameState;
         this.attackingClient = attackingClient;
@@ -28,19 +39,33 @@ public class Defend implements Event {
         armor = 0;
     }
 
+
+    /**
+     * Starts the Defend event and handels the logic for it.
+     */
     public void execute() {
         checkCards();
         Damage d = new Damage(gameState, defendingClient, damage - armor);
         d.execute();
     }
 
+
+    /**
+     * Adds armor to the deffending monster in this attack.
+     * @param addedArmor is added to the armor.
+     */
     public void addArmor(int addedArmor) {
         if (addedArmor > 0) {
             armor += addedArmor;
         } 
     }
 
-    private void checkCards() {
+
+    /**
+     * Checks all the defending clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Monster currentMonster = defendingClient.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);

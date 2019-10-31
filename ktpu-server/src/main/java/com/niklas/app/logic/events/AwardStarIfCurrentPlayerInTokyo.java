@@ -12,35 +12,52 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class AwardStarIfCurrentPlayerInTokyo implements Event {
+/**
+ * AwardStarIfCurrentPlayerInTokyo class is a event which handels the logic of giving a star to a monster if it is in tokyo.
+ */
+public class AwardStarIfCurrentPlayerInTokyo extends Event {
     private GameState gameState;
     private int stars;
 
+
+    /**
+     * Creates a AwardStarIfCurrentPlayerInTokyo event with the given parameters.
+     * @param gameStateis the games state which has all the information about the current game.
+     */
     public AwardStarIfCurrentPlayerInTokyo(GameState gameState) {
     	this.gameState = gameState;
         stars = 1;
     }
 
+
+    /**
+     * Starts the AwardStarIfCurrentPlayerInTokyo event and handels the logic for it.
+     */
     public void execute() {
         Client currentPlayer = gameState.getCurrentPlayer();
-        giveStarIfInTokyo(currentPlayer);
-        gameState.getComunication().sendAllStats(currentPlayer, gameState.getPlayers());
-    }
-
-    public void giveStarIfInTokyo(Client currentPlayer) {
         if (currentPlayer.getMonster().getInTokyo()) {
             checkCards();
             AwardStar awardStar = new AwardStar(gameState, currentPlayer, stars);
             awardStar.execute();
         }
+        gameState.getComunication().sendAllStats(currentPlayer, gameState.getPlayers());
     }
 
 
+    /**
+     * Adds to the amount of stars given to the monster.
+     * @param stars is the amount of stars that will be added to the amount of stars given to the monster.
+     */
     public void addStars(int stars) {
         this.stars += stars;
     }
 
-    private void checkCards() {
+
+    /**
+     * Checks all the current clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Client client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {

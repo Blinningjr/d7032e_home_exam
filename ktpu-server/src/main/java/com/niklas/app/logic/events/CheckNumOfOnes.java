@@ -12,13 +12,21 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class CheckNumOfOnes implements Event {
+/**
+ * CheckNumOfOnes class is a event which handels the logic of giving stars for the number of ones rolled.
+ */
+public class CheckNumOfOnes extends Event {
     private GameState gameState;
-
     private int numOnes;
     private int numOnesNeeded;
     private int starsAdded;
 
+
+    /**
+     * Creates a CheckNumOfOnes event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     * @param numOnes is the number of ones rolled.
+     */
     public CheckNumOfOnes(GameState gameState, int numOnes) {
         this.gameState = gameState;
         this.numOnes = numOnes;
@@ -26,6 +34,10 @@ public class CheckNumOfOnes implements Event {
         starsAdded = 1;
     }
 
+
+    /**
+     * Starts the CheckNumOfOnes event and handels the logic for it.
+     */
     public void execute() {
         Client client = gameState.getCurrentPlayer();
         if (numOnes >= numOnesNeeded) {
@@ -34,7 +46,12 @@ public class CheckNumOfOnes implements Event {
     	}
     }
 
-    private void checkCards() {
+
+    /**
+     * Checks all the current clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Client client = gameState.getCurrentPlayer();
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {

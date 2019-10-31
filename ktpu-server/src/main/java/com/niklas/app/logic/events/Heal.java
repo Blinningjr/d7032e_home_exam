@@ -1,5 +1,6 @@
 package com.niklas.app.logic.events;
 
+
 import com.niklas.app.model.GameState;
 import com.niklas.app.model.cards.Activation;
 import com.niklas.app.model.cards.Duration;
@@ -11,13 +12,22 @@ import com.niklas.app.model.monsters.Monster;
 import com.niklas.app.online.Client;
 
 
-public class Heal implements Event {
+/**
+ * Heal class is a event which handels the logic of giving a monster hp.
+ */
+public class Heal extends Event {
     private GameState gameState;
     private Client client; 
-
     private int addedMaxHp;
     private int healing;
 
+
+    /**
+     * Creates a Heal event with the given parameters.
+     * @param gameState is the games state which has all the information about the current game.
+     * @param client is the client which monster will be healed.
+     * @param numHearts is the number of hearts rolled(hearts = number of hp healed).
+     */
     public Heal(GameState gameState, Client client, int numHearts) {
         this.gameState = gameState;
         this.client = client;
@@ -26,6 +36,10 @@ public class Heal implements Event {
         addedMaxHp = 0;
     }
 
+
+    /**
+     * Starts the Heal event and handels the logic for it.
+     */
     public void execute() {
     	checkCards();
         Monster monster = client.getMonster();
@@ -39,19 +53,34 @@ public class Heal implements Event {
         }
     }
 
+
+    /**
+     * Addes to the amount being healed.
+     * @param healing adds to the amount of hp healed.
+     */
     public void addHealing(int healing) {
         if (healing >= 0) {
             this.healing += healing;
         }
     }
 
+
+    /**
+     * Addes to the monsters maximum hp when being healed.
+     * @param addedMaxHp adds to the monsters maximum hp when being healed.
+     */
     public void addMaxHp(int addedMaxHp) {
         if (addedMaxHp >= 0) {
             this.addedMaxHp += addedMaxHp;
         }
     }
 
-    private void checkCards() {
+
+    /**
+     * Checks all the current clients cards for cards that should activate at this event
+     * and executes the cards effect.
+     */
+    protected void checkCards() {
         Monster currentMonster = client.getMonster();
         for (int i = 0; i < currentMonster.storeCards.size(); i++) {
             StoreCard storeCard = currentMonster.storeCards.get(i);

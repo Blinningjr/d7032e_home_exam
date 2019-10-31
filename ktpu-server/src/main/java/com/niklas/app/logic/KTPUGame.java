@@ -9,7 +9,7 @@ import com.niklas.app.logic.events.Attack;
 import com.niklas.app.logic.events.AwardEnergy;
 import com.niklas.app.logic.events.AwardStarIfCurrentPlayerInTokyo;
 import com.niklas.app.logic.events.CheckDice;
-import com.niklas.app.logic.events.CheckNumHearts;
+import com.niklas.app.logic.events.HealingNotInTokyo;
 import com.niklas.app.logic.events.CheckNumOfOnes;
 import com.niklas.app.logic.events.CheckNumOfThrees;
 import com.niklas.app.logic.events.CheckNumOfTwos;
@@ -111,10 +111,9 @@ public class KTPUGame {
 		checkDice.execute();
 		
 		
-		CheckNumHearts cnh = new CheckNumHearts(gameState, checkDice.getNumHearts());
+		HealingNotInTokyo cnh = new HealingNotInTokyo(gameState, checkDice.getNumHearts());
 		cnh.execute();
-		
-		// 6b. 3 hearts = power-up
+	
 		PowerUp powerUp = new PowerUp(gameState, checkDice.getNumHearts());
 		powerUp.execute();
     	
@@ -127,7 +126,7 @@ public class KTPUGame {
 		cnoThrees.execute();
     	
 		// 6d. claws = attack (if in Tokyo attack everyone, else attack monster in Tokyo)
-		Attack attack = new Attack(gameState, gameState.getCurrentPlayer(), gameState.getPlayers(), checkDice.getNumClaws());
+		Attack attack = new Attack(gameState, gameState.getCurrentPlayer(), checkDice.getNumClaws());
 		attack.execute();
     	
 		// 6f. energy = energy tokens
