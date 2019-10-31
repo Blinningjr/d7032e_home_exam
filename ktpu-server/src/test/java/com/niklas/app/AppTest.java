@@ -23,6 +23,7 @@ import com.niklas.app.logic.events.CheckNumOfThrees;
 import com.niklas.app.logic.events.CheckNumOfTwos;
 import com.niklas.app.logic.events.Damage;
 import com.niklas.app.logic.events.PowerUp;
+import com.niklas.app.logic.events.RerollDice;
 import com.niklas.app.logic.events.RollDice;
 import com.niklas.app.logic.events.Shopping;
 import com.niklas.app.model.GameState;
@@ -142,12 +143,12 @@ public class AppTest {
 
     /** 
      *  5.Shuffle the evolution cards for the respective monsters (todo: add support for more evolution cards) 
-     *  Can't test with only one card and because the result is random.
+     *  Can't test results because the result is random.
      */
      
     /**
      * 6.Randomise which monster starts the game.
-     * Can't test because the result is random.
+     * Can't test results because the result is random.
      */
 
 	/**
@@ -205,9 +206,10 @@ public class AppTest {
     /**
      * 9. Select which of your 6 dice to reroll.
      * 10. Reroll the selected dice
+     * OBS! Result can't be test becouse it is random.
      */
     @Test
-    public void testRerollDice() {
+    public void testRerollDiceInput() {
         String input = "1\n";
         testClient1.setRerollInput(input);
         testClient2.setRerollInput(input);
@@ -271,6 +273,8 @@ public class AppTest {
 
         rollDice = new RollDice(gameState);
         rollDice.execute();
+
+        assertTrue(true);
     }
 
     /**
@@ -282,19 +286,24 @@ public class AppTest {
         testClient1.setRerollInput(input);
         testClient2.setRerollInput(input);
         testClient3.setRerollInput(input);
-        
-        RollDice rollDice = new RollDice(gameState);
-        rollDice.execute();
+
+        ArrayList<KTPUDice> dice = new ArrayList<KTPUDice>();
+        for (int i = 0; i < 6; i++) {
+            dice.add(new KTPUDice());
+        }
+
+        RerollDice rerollDice = new RerollDice(gameState, dice);
+        rerollDice.execute();
 
         gameState.nextTurn();
 
-        rollDice = new RollDice(gameState);
-        rollDice.execute();
+        rerollDice = new RerollDice(gameState, dice);
+        rerollDice.execute();
 
         gameState.nextTurn();
 
-        rollDice = new RollDice(gameState);
-        rollDice.execute();
+        rerollDice = new RerollDice(gameState, dice);
+        rerollDice.execute();
 
         assertEquals(2, testClient1.getNumRerolls());
         assertEquals(2, testClient2.getNumRerolls());
